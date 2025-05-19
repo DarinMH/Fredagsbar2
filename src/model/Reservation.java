@@ -9,6 +9,7 @@ public class Reservation {
 	private Customer customer;
 	private int amount; 
 	private boolean status; 
+	private BorrowableProduct borrowableProduct; 
 	
 	public Reservation(int reservationId, LocalDate date, int amount, Customer customer,
 			boolean status) {
@@ -18,6 +19,7 @@ public class Reservation {
 		this.customer = customer;
 		this.amount=amount; 
 		this.status=status; 
+		this.borrowableProduct = borrowableProduct; 
 	}
 
 	public int getReservationId() {
@@ -61,6 +63,9 @@ public class Reservation {
 		this.status = status;
 	}
 	
+	public void setBorrowableProduct(BorrowableProduct borrowableProduct) { 
+		this.borrowableProduct = borrowableProduct;
+	}
 	
 	
 	
