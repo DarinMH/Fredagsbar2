@@ -7,12 +7,17 @@ public class Reservation {
 	private int reservationId;
 	private LocalDate date;
 	private Customer customer;
+	private int amount; 
+	private boolean status; 
 	
-	public Reservation(int reservationId, LocalDate date, int amount, Customer customer) {
+	public Reservation(int reservationId, LocalDate date, int amount, Customer customer,
+			boolean status) {
 		super();
 		this.reservationId = reservationId;
 		this.date = date;
 		this.customer = customer;
+		this.amount=amount; 
+		this.status=status; 
 	}
 
 	public int getReservationId() {
@@ -39,5 +44,24 @@ public class Reservation {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	
+	
+	
 	
 }

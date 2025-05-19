@@ -11,4 +11,6 @@ public interface ReservationDBIF {
 
     // Finder én reservation baseret på ID
     Reservation findByReservationId(int reservationId) throws DataAccessException;
+    
+    void insertReservation(Reservation reservation) throws DataAccessException; 
 }
