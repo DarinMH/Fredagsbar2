@@ -54,6 +54,10 @@ public class InventoryGui extends JDialog {
 	private JTextField maxCapacityTF;
 	private JScrollPane scrollPane_1;
 	private JList<Product> Category;
+	private JComboBox<Inventory> comboBoxFraLager;
+	private JComboBox<Inventory> comboBoxTilLager;
+	private JTextField flytMængdeTF;
+
 
 	/**
 	 * Launch the application.
@@ -123,7 +127,10 @@ public class InventoryGui extends JDialog {
 		for(int i = 0; i < in.size(); i++) {
 			inventory.addElement(in.get(i));
 		}
-		this.inventoryBox.setModel(inventory); 
+		this.inventoryBox.setModel(inventory);
+		comboBoxFraLager.setModel(inventoryBox.getModel());
+		comboBoxTilLager.setModel(inventoryBox.getModel());
+
 	}
 	
 	
@@ -174,10 +181,49 @@ public class InventoryGui extends JDialog {
 				findInventoryProduct();
 				updateStockInfo(product, inventory);
 			}
+
+
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(this, "Ugyldig mængde angivet", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		}
+		private void flytVare() throws DataAccessException {
+			Product produkt = (Product) productBox.getSelectedItem();
+			Inventory fra = (Inventory) comboBoxFraLager.getSelectedItem();
+			Inventory til = (Inventory) comboBoxTilLager.getSelectedItem();
+
+			if (produkt == null || fra == null || til == null || fra.equals(til) || flytMængdeTF.getText().trim().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			try {
+				int mængde = Integer.parseInt(flytMængdeTF.getText());
+
+				int fraBeholdning = inventoryCtr.getInventoryStockForProduct(fra.getInventoryId(), produkt.getProductId());
+				int tilBeholdning = inventoryCtr.getTotalInventoryStock(til.getInventoryId());
+
+				if (mængde > fraBeholdning) {
+					JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (tilBeholdning + mængde > til.getCapacity()) {
+					JOptionPane.showMessageDialog(this, "'Til'-lageret har ikke nok kapacitet", "Fejl", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				inventoryCtr.removeStock(fra, produkt, mængde);
+				inventoryCtr.addStock(til, produkt, mængde);
+
+				findInventoryProduct(); // opdater visning
+				updateStockInfo(produkt, fra);
+				updateStockInfo(produkt, til);
+				flytMængdeTF.setText("");
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
+			}
 	}
+	
 	
 	
 	public void removeStock() throws DataAccessException {
@@ -382,6 +428,64 @@ public class InventoryGui extends JDialog {
 		gbc_removeStockTF.gridy = 5;
 		getContentPane().add(removeStockTF, gbc_removeStockTF);
 		removeStockTF.setColumns(10);
+		
+		JLabel lblFra = new JLabel("Flyt fra Lager");
+		GridBagConstraints gbc_lblFra = new GridBagConstraints();
+		gbc_lblFra.anchor = GridBagConstraints.EAST;
+		gbc_lblFra.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFra.gridx = 17;
+		gbc_lblFra.gridy = 7;
+		getContentPane().add(lblFra, gbc_lblFra);
+		
+		comboBoxFraLager = new JComboBox<>();
+		GridBagConstraints gbc_comboBoxFraLager = new GridBagConstraints();
+		gbc_comboBoxFraLager.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBoxFraLager.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxFraLager.gridx = 18;
+		gbc_comboBoxFraLager.gridy = 7;
+		getContentPane().add(comboBoxFraLager, gbc_comboBoxFraLager);;
+		
+		JLabel lblTil = new JLabel("Flyt ti Lager");
+		GridBagConstraints gbc_lblTil = new GridBagConstraints();
+		gbc_lblTil.anchor = GridBagConstraints.EAST;
+		gbc_lblTil.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTil.gridx = 17;
+		gbc_lblTil.gridy = 9;
+		getContentPane().add(lblTil, gbc_lblTil);
+		
+		comboBoxTilLager = new JComboBox<>();
+		GridBagConstraints gbc_comboBoxTilLager = new GridBagConstraints();
+		gbc_comboBoxTilLager.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBoxTilLager.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxTilLager.gridx = 18;
+		gbc_comboBoxTilLager.gridy = 9;
+		getContentPane().add(comboBoxTilLager, gbc_comboBoxTilLager);
+		
+		flytMængdeTF = new JTextField();
+		GridBagConstraints gbc_flytMængdeTF = new GridBagConstraints();
+		gbc_flytMængdeTF.insets = new Insets(0, 0, 5, 0);
+		gbc_flytMængdeTF.fill = GridBagConstraints.HORIZONTAL;
+		gbc_flytMængdeTF.gridx = 18;
+		gbc_flytMængdeTF.gridy = 11;
+		getContentPane().add(flytMængdeTF, gbc_flytMængdeTF);
+		flytMængdeTF.setColumns(10);
+		
+		JButton flytBtn = new JButton("Flyt vare");
+		flytBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					flytVare();
+				} catch (DataAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		GridBagConstraints gbc_flytBtn = new GridBagConstraints();
+		gbc_flytBtn.anchor = GridBagConstraints.NORTH;
+		gbc_flytBtn.insets = new Insets(0, 0, 5, 0);
+		gbc_flytBtn.gridx = 18;
+		gbc_flytBtn.gridy = 12;
+		getContentPane().add(flytBtn, gbc_flytBtn);
 		
 		JLabel lblNewLabel_1 = new JLabel("I alt på lager:");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
