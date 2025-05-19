@@ -10,6 +10,7 @@ import model.BorrowableProduct;
 public class BorrowableProductCtr {
     
     private BorrowableProductDBIF borrowableProductDB;
+    private ReservationCtr reservationCtr; 
 
     public BorrowableProductCtr() throws DataAccessException {
         this.borrowableProductDB = new BorrowableProductDB();
@@ -24,4 +25,8 @@ public class BorrowableProductCtr {
     public BorrowableProduct findByProductId(int productId) throws DataAccessException {
         return borrowableProductDB.findByProductId(productId);
     }
+    
+   
+ 
+    
 }

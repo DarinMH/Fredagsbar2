@@ -1,106 +1,64 @@
 package Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGenerator.Simple;
 import org.junit.jupiter.api.Test;
 
 import DB.DBConnection;
 import DB.DataAccessException;
+import DB.InventoryDB;
+import DB.ProductDB;
+import controller.InventoryCtr;
 import controller.SaleOrderCtr;
 import model.Customer;
-import model.Drink;
+import model.Inventory;
+import model.InventoryProduct;
 import model.Product;
 import model.SaleOrder;
 import model.SaleOrderLine;
-import model.Staff;
-import model.Supplier;
 
-
-
-
-
-class testCreateOrder {
+class TestUpdateInventory {
 	
 	
-	
-	private SaleOrder accountSmallAmount;
-	private SaleOrder accountBigAmount; 
-	private SaleOrderCtr saleOrderCtr; 
-	private Customer testCustomer; 
-	private SaleOrder saleOrder; 
-	private Product testProduct; 
+	private InventoryCtr inventoryCtr; 
+	private InventoryDB inventoryDB; 
+	private ProductDB productDB; 
 	private DBConnection dbConnection; 
-
+	private Connection con; 
 	
-	
 
-
-
-//	@BeforeAll
-//	static void setUpBeforeClass() throws Exception {
-//	}
-//
-//	@AfterAll
-//	static void tearDownAfterClass() throws Exception {
-//	}
-
-
-	
-	
-//	@Test 
-//	public void testRedraw() {
-//		System.out.println("testRedraw()"); 
-//		boolean result = a.withdraw(3000); 
-//		assertTrue(result); 
-//		double expBal = 0d; 
-//		assertEquals(expBal, a.getBalance(), 0d); 
-//	}
-	
 	
 	@BeforeEach 
-	void setUp() throws Exception {
+	void setUp() throws DataAccessException {
+		
+		inventoryDB = new InventoryDB(); 
+		productDB = new ProductDB(); 
+		
+		inventoryCtr = new InventoryCtr(); 
+		
+		dbConnection = DBConnection.getInstance();
+		
+		con = dbConnection.getConnection(); 
+		
+		dbConnection.startTransaction();
+		
 
-		
-		
-
-		
-		
-dbConnection = DBConnection.getInstance();
-		
-	Connection con = dbConnection.getConnection(); 
-		
-		con.setAutoCommit(false);
-		
-		saleOrderCtr = new SaleOrderCtr();
-
-
-		 
-		
-		
-		
-		
 	}
 	
-@AfterEach 
-void tearDown() throws  Exception {
-	dbConnection.rollbackTransaction();
-
-}
-
-
-@AfterAll
-static void tearDownAfterClass() throws Exception {
-    DBConnection.getInstance().getConnection().close();
-}
+	
+	@AfterEach
+	void tearDown() throws DataAccessException {
+		
+		
+		
+		dbConnection.rollbackTransaction();
+	}
 
 	
 	
@@ -109,32 +67,27 @@ static void tearDownAfterClass() throws Exception {
 void test1() throws DataAccessException {
 
 	
-	int studentId = 696969; 
-	int productId = 2; 
+	
+	int inventoryId = 2; 
+	int productId = 43; 
 	
 //	int expStudentId = 1234; 
-
-	
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
-	
-	SaleOrder order = saleOrderCtr.createSaleOrder(
-            48291, LocalDate.now(), false, foundCustomer, null, 0, 0);
-	
-	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
-
-	
-	order.addOrderline(saleOrderLine);
-	
-	saleOrderCtr.addCustomerToOrder(foundCustomer); 
-	
-	
-	
-	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 	
 
-	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
+
+	
+	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
+	
+	InventoryProduct inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, 2); 
+	
+	
+
+	assertEquals(inventoryProduct.getQuantityInStock(), 2); 
+	assertEquals(inventoryCtr.getTotalStock(productId), inventoryProduct.getQuantityInStock());
 	
 	
 	
@@ -153,7 +106,7 @@ void test2() throws DataAccessException {
 	Product foundProduct2 = saleOrderCtr.getProductCtr().findByProductId(productId2); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            5614, LocalDate.now(), false, foundCustomer, null, 0, 0);
+            58199, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 	
@@ -194,7 +147,7 @@ void noCustomerAdded() throws DataAccessException {
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            918134, LocalDate.now(), false, null, null, 0, 0);
+            74919, LocalDate.now(), false, null, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
@@ -231,7 +184,7 @@ void addMultipleInstancesOfOneProduct() throws DataAccessException {
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            57281, LocalDate.now(), false, foundCustomer, null, 0, 0);
+            59190, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
@@ -314,6 +267,9 @@ void invalidCustomer() throws DataAccessException {
 	
 	
 	
+
+
+
 
 
 
