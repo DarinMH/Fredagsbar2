@@ -18,9 +18,11 @@ public class ReservationDB implements ReservationDBIF {
         "JOIN Customer c ON r.customerId = c.customerId";
 
     private static final String FIND_BY_ID_Q = FIND_ALL_Q + " WHERE r.reservationId = ?";
-
+private static final String INSERT_RESERVATION_Q = "insert into Reservation(ReservationId, Date, Amount, StudentId, Status) values(?, ?, ?, ?, ?)"; 
     private PreparedStatement findAll;
     private PreparedStatement findById;
+    private PreparedStatement insertReservation; 
+    private DBConnection connection; 
 
     // Initialiserer databasen og forbereder SQL-statements
     public ReservationDB() throws DataAccessException {
@@ -28,6 +30,7 @@ public class ReservationDB implements ReservationDBIF {
             Connection con = DBConnection.getInstance().getConnection();
             findAll = con.prepareStatement(FIND_ALL_Q);
             findById = con.prepareStatement(FIND_BY_ID_Q);
+            insertReservation = con.prepareStatement(INSERT_RESERVATION_Q); 
         } catch (SQLException e) {
             throw new DataAccessException(e, "Kunne ikke forberede statements i ReservationDB");
         }
@@ -73,6 +76,7 @@ public class ReservationDB implements ReservationDBIF {
         int id = rs.getInt("reservationId");
         LocalDate date = rs.getDate("date").toLocalDate();
         int amount = rs.getInt("amount");
+        boolean status = rs.getBoolean("Status"); 
 
         // Opretter kundeobjektet ud fra oplysninger fra resultatet
         Customer customer = new Customer(
@@ -84,6 +88,42 @@ public class ReservationDB implements ReservationDBIF {
         );
 
         // Returnerer en komplet Reservation med kundeinformation
-        return new Reservation(id, date, amount, customer);
+        return new Reservation(id, date, amount, customer, status);
     }
+
+	@Override
+	public void insertReservation(Reservation reservation) throws DataAccessException {
+		// TODO Auto-generated 	try {
+		
+		try {
+		connection.startTransaction();
+		
+
+		
+		insertReservation.setInt(1, reservation.getReservationId());
+		insertReservation.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
+		insertReservation.setInt(3, reservation.getAmount());
+		insertReservation.setInt(4, reservation.getCustomer().getStudentId()); 
+		insertReservation.setBoolean(5, reservation.isStatus());
+        insertReservation.executeUpdate();
+		
+        connection.commitTransaction();
+			System.out.println("dbconnection.commitTransaction();");
+			System.out.println("try: connection.commit();");
+			System.out.println("finally: connection.setAutoCommit(true);");
+	
+		} catch(Exception e){
+				connection.rollbackTransaction();
+				
+				System.out.println("dbconnection.rollbackTransaction();");
+				System.out.println("try: connection.rollback();");
+				System.out.println("finally: connection.setAutoCommit(true);");
+				
+				throw new DataAccessException(e, "save order failed");
+				
+	
+		
+	}
+
+}
 }
