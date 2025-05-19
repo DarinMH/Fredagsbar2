@@ -42,11 +42,9 @@ class TestUpdateInventory {
 		
 		inventoryCtr = new InventoryCtr(); 
 		
-		dbConnection = DBConnection.getInstance();
 		
-		con = dbConnection.getConnection(); 
 		
-		dbConnection.startTransaction();
+
 		
 
 	}
@@ -56,22 +54,65 @@ class TestUpdateInventory {
 	void tearDown() throws DataAccessException {
 		
 		
-		
-		dbConnection.rollbackTransaction();
+
 	}
 
 	
 	
 	
 @Test 
-void test1() throws DataAccessException {
+void addStock() throws DataAccessException {
 
 	
 	
-	int inventoryId = 2; 
-	int productId = 43; 
+	int inventoryId = 420; 
+	int productId = 88; 
 	
 //	int expStudentId = 1234; 
+	
+	
+	
+	
+
+
+	
+	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+	int quantity = 1; 
+	
+//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
+	
+	
+	
+	
+	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
+	
+	
+	int formerValue = inventoryProduct.getQuantityInStock(); 
+	
+	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
+	
+
+	assertEquals(formerValue + quantity, inventoryProduct.getQuantityInStock()); 
+
+	
+	
+	
+	
+}
+
+@Test 
+void removeStock() throws DataAccessException {
+	
+	int inventoryId = 420; 
+	int productId = 88; 
+	
+//	int expStudentId = 1234; 
+	
+	
+	int quantity = 1; 
 	
 
 
@@ -82,152 +123,138 @@ void test1() throws DataAccessException {
 	
 //	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
 	
-	InventoryProduct inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, 2); 
-	
-	
-
-	assertEquals(inventoryProduct.getQuantityInStock(), 2); 
-	assertEquals(inventoryCtr.getTotalStock(productId), inventoryProduct.getQuantityInStock());
 	
 	
 	
-	
-}
-
-@Test 
-void test2() throws DataAccessException {
-	
-	int studentId = 696969; 
-	int productId = 2; 
-	int productId2 = 3; 
-	
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
-	Product foundProduct2 = saleOrderCtr.getProductCtr().findByProductId(productId2); 
-	
-	SaleOrder order = saleOrderCtr.createSaleOrder(
-            58199, LocalDate.now(), false, foundCustomer, null, 0, 0);
-	
-	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
-	
-	SaleOrderLine saleOrderLine2 = new SaleOrderLine(order, foundProduct2, 1); 
-
-	
-	order.addOrderline(saleOrderLine);
-	
-	order.addOrderline(saleOrderLine2);
-	
-	saleOrderCtr.addCustomerToOrder(foundCustomer); 
+	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
 	
-	saleOrderCtr.addProductToOrder(foundProduct2, 1); 
+	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
-	saleOrderCtr.addProductToOrder(foundProduct, 1); 
+	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
 	
 
-	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
-	assertEquals(productId2, foundProduct2.getProductId());
+	assertEquals(formerValue - quantity, inventoryProduct.getQuantityInStock()); 
+
+	
 	
  
 }
 
 
 @Test 
-void noCustomerAdded() throws DataAccessException {
+void addMultipleProducts() throws DataAccessException {
 
 	
-//	int studentId = 696969; 
-	int productId = 2; 
+	
+	int inventoryId = 420; 
+	int productId = 88; 
 	
 //	int expStudentId = 1234; 
-
-	
-//	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
-	
-	SaleOrder order = saleOrderCtr.createSaleOrder(
-            74919, LocalDate.now(), false, null, null, 0, 0);
-	
-	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
-
-	
-	order.addOrderline(saleOrderLine);
-	
-//	saleOrderCtr.addCustomerToOrder(foundCustomer); 
 	
 	
 	
-	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 	
 
-//	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
+
 	
 	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+	int quantity = 2; 
+	
+//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
+	
+	
+	
+	
+	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
+	
+	
+	int formerValue = inventoryProduct.getQuantityInStock(); 
+	
+	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
+	
+
+	assertEquals(formerValue + quantity, inventoryProduct.getQuantityInStock()); 
 	
 	
 }
 
 
 @Test 
-void addMultipleInstancesOfOneProduct() throws DataAccessException {
+void removeMultipleProducts() throws DataAccessException {
 
 	
-	int studentId = 696969; 
-	int productId = 2; 
+	
+	int inventoryId = 420; 
+	int productId = 88; 
 	
 //	int expStudentId = 1234; 
-
-	
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
-	
-	SaleOrder order = saleOrderCtr.createSaleOrder(
-            59190, LocalDate.now(), false, foundCustomer, null, 0, 0);
-	
-	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
-
-	
-	order.addOrderline(saleOrderLine);
-	
-	saleOrderCtr.addCustomerToOrder(foundCustomer); 
 	
 	
 	
-	saleOrderCtr.addProductToOrder(foundProduct, 2); 
 	
 
-	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
+
 	
 	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+	int quantity = 2; 
+	
+//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
+	
+	
+	
+	
+	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
+	
+	
+	int formerValue = inventoryProduct.getQuantityInStock(); 
+	
+	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
+	
+
+	assertEquals(formerValue - quantity, inventoryProduct.getQuantityInStock()); 
 	
 	
 }
 
 
 @Test 
-void invalidProduct() throws DataAccessException {
+void invalidInventoryId() throws DataAccessException {
 
 	
-	int studentId = 696969; 
-	int productId = 6; 
+	
+	int inventoryId = 421; 
+	int productId = 88; 
 	
 //	int expStudentId = 1234; 
-
-	
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	
-	assertNull(foundProduct, "Product should be null");
-	
+	int quantity = 2; 
 	
 
 
-
 	
+	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
+	
+	
+	int formerValue = inventoryProduct.getQuantityInStock(); 
+	
+	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
+	
+	
+	
+	assert
+	assertNull(foundInventory, "Inventory should be null"); 
 	
 	
 	

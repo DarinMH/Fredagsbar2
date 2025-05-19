@@ -51,10 +51,15 @@ public class InventoryCtr {
 		inventory = findByInventoryId(inventory.getInventoryId()); 
 		
 		product = productCtr.findByProductId(product.getProductId()); 
-
+		
+		
+//		InventoryProduct inventoryProduct = new InventoryProduct(inventory, quantity, product); 
 		
 		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
 		
+
+		
+//		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
 		
 	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
 		
@@ -104,9 +109,18 @@ public class InventoryCtr {
 		return totalStock; 
 		
 	}
+	
+	
+//	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
+//		InventoryProduct ip = findInventoryProduct(productId, inventoryId);
+//		return ip != null ? ip.getQuantityInStock() : 0;
+//
+//	}
+	
 	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
 		InventoryProduct ip = findInventoryProduct(productId, inventoryId);
-		return ip != null ? ip.getQuantityInStock() : 0;
+		return ip.getQuantityInStock(); 
+
 	}
 
 	
@@ -116,24 +130,20 @@ public class InventoryCtr {
 	}
 	
 	public InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
-	inventory = findByInventoryId(inventory.getInventoryId()); 
-		
+		inventory = findByInventoryId(inventory.getInventoryId()); 
 		product = productCtr.findByProductId(product.getProductId()); 
-		
-		
-//		InventoryProduct inventoryProduct = new InventoryProduct(inventory, quantity, product); 
-		
+
 		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
-		
-		int newQuantity = inventoryProduct.getQuantityInStock() - quantity; 
-		
-	inventoryProduct.setQuantityInStock(newQuantity); 
-		
-	inventoryDB.updateInventoryProduct(inventoryProduct);
-	
-	return inventoryProduct; 
-		
+
+		int newQuantity = inventoryProduct.getQuantityInStock() - quantity;
+
+		inventoryProduct.setQuantityInStock(newQuantity);
+
+		inventoryDB.updateInventoryProduct(inventoryProduct);
+
+		return inventoryProduct; 
 	}
+
 	
 	
 	

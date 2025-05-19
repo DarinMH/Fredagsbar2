@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterAll;
@@ -39,6 +40,7 @@ class testCreateOrder {
 	private SaleOrder saleOrder; 
 	private Product testProduct; 
 	private DBConnection dbConnection; 
+	private Connection con; 
 
 	
 	
@@ -66,40 +68,47 @@ class testCreateOrder {
 //	}
 	
 	
-	@BeforeEach 
-	void setUp() throws Exception {
-
-		
-		
-
-		
-		
-dbConnection = DBConnection.getInstance();
-		
-	Connection con = dbConnection.getConnection(); 
-		
-		con.setAutoCommit(false);
-		
-		saleOrderCtr = new SaleOrderCtr();
-
-
-		 
-		
-		
-		
-		
-	}
+//	@BeforeEach 
+//	void setUp() throws Exception {
+//
+//		
+//		
+//
+//		
+//		
+//dbConnection = DBConnection.getInstance();
+//		
+//	Connection con = dbConnection.getConnection(); 
+//		
+//		con.setAutoCommit(false);
+//		
+//		saleOrderCtr = new SaleOrderCtr();
+//
+//
+//		 
+//		
+//		
+//		
+//		
+//	}
+	
+	
+	@BeforeEach
+	void setUp() throws  DataAccessException {
+	
+	    
+	    saleOrderCtr = new SaleOrderCtr();
+	} 
 	
 @AfterEach 
 void tearDown() throws  Exception {
-	dbConnection.rollbackTransaction();
 
 }
 
 
 @AfterAll
 static void tearDownAfterClass() throws Exception {
-    DBConnection.getInstance().getConnection().close();
+
 }
 
 	
@@ -109,17 +118,17 @@ static void tearDownAfterClass() throws Exception {
 void test1() throws DataAccessException {
 
 	
-	int studentId = 696969; 
-	int productId = 2; 
+	int studentId = 1234; 
+	int productId = 88; 
 	
 //	int expStudentId = 1234; 
 
-	
+	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            48291, LocalDate.now(), false, foundCustomer, null, 0, 0);
+            orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
@@ -144,16 +153,18 @@ void test1() throws DataAccessException {
 @Test 
 void test2() throws DataAccessException {
 	
-	int studentId = 696969; 
-	int productId = 2; 
-	int productId2 = 3; 
+	int studentId = 1234; 
+	int productId = 88; 
+	int productId2 = 420; 
+	
+	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	Product foundProduct2 = saleOrderCtr.getProductCtr().findByProductId(productId2); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            5614, LocalDate.now(), false, foundCustomer, null, 0, 0);
+            orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 	
@@ -189,12 +200,13 @@ void noCustomerAdded() throws DataAccessException {
 	
 //	int expStudentId = 1234; 
 
+	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
 //	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            918134, LocalDate.now(), false, null, null, 0, 0);
+            orderNumber, LocalDate.now(), false, null, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
@@ -221,17 +233,18 @@ void noCustomerAdded() throws DataAccessException {
 void addMultipleInstancesOfOneProduct() throws DataAccessException {
 
 	
-	int studentId = 696969; 
+	int studentId = 1234; 
 	int productId = 2; 
 	
 //	int expStudentId = 1234; 
 
+	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            57281, LocalDate.now(), false, foundCustomer, null, 0, 0);
+            orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
@@ -258,7 +271,7 @@ void addMultipleInstancesOfOneProduct() throws DataAccessException {
 void invalidProduct() throws DataAccessException {
 
 	
-	int studentId = 696969; 
+	int studentId = 1234; 
 	int productId = 6; 
 	
 //	int expStudentId = 1234; 
@@ -296,7 +309,7 @@ void invalidCustomer() throws DataAccessException {
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	
-	assertNull(foundCustomer, "Product should be null");
+	assertNull(foundCustomer, "Customer should be null");
 	
 	
 

@@ -1,15 +1,12 @@
-
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.*;
 
 import controller.InventoryCtr;
 import DB.DataAccessException;
@@ -17,37 +14,14 @@ import model.Inventory;
 import model.InventoryProduct;
 import model.Product;
 
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-
-import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Button;
-import javax.swing.JScrollPane;
-import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import javax.swing.JList;
-import javax.swing.JRadioButton;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-
 public class InventoryGui extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JComboBox<Inventory> inventoryBox; 
-	private InventoryCtr inventoryCtr; 
-	private JComboBox<Product> productBox; 
-	private JList<InventoryProduct> inventoryProductList;  
-	private DefaultListModel<InventoryProduct> modelInventoryProduct; 
+	private JComboBox<Inventory> inventoryBox;
+	private InventoryCtr inventoryCtr;
+	private JComboBox<Product> productBox;
+	private JList<InventoryProduct> inventoryProductList;
+	private DefaultListModel<InventoryProduct> modelInventoryProduct;
 	private JTextField textField;
 	private JTextField addStockTF;
 	private JTextField removeStockTF;
@@ -58,10 +32,6 @@ public class InventoryGui extends JDialog {
 	private JComboBox<Inventory> comboBoxTilLager;
 	private JTextField flytMængdeTF;
 
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		try {
 			InventoryGui dialog = new InventoryGui(null, null);
@@ -71,78 +41,71 @@ public class InventoryGui extends JDialog {
 			e.printStackTrace();
 		}
 	}
-	
-	
 
-
-	/**
-	 * Create the dialog.
-	 */
 	public InventoryGui(KasseSystem kasseSystem, KasseSystemBes kasseSystemBes) {
-	
-		
 		try {
 			inventoryCtr = new InventoryCtr();
 		} catch (DataAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		
-		
-		modelInventoryProduct = new DefaultListModel<>(); 
-		inventoryProductList = new JList<>(modelInventoryProduct); 
-		inventoryProductList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
-		
-		init(); 
-		
-		
+		}
+
+		modelInventoryProduct = new DefaultListModel<>();
+		inventoryProductList = new JList<>(modelInventoryProduct);
+		inventoryProductList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		init();
+
 		try {
 			loadProducts();
-		} catch (DataAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		try {
 			loadInventory();
-		} catch (DataAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
 			findInventoryProduct();
 		} catch (DataAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
 	}
-
 
 	private void loadInventory() throws DataAccessException {
-		List<Inventory> in = inventoryCtr.findAll(); 
-		
-		DefaultComboBoxModel<Inventory> inventory = new DefaultComboBoxModel<Inventory>(); 
-		for(int i = 0; i < in.size(); i++) {
-			inventory.addElement(in.get(i));
-		}
-		this.inventoryBox.setModel(inventory);
-		comboBoxFraLager.setModel(inventoryBox.getModel());
-		comboBoxTilLager.setModel(inventoryBox.getModel());
+		List<Inventory> inventories = inventoryCtr.findAll();
+		DefaultComboBoxModel<Inventory> modelFra = new DefaultComboBoxModel<>();
+		DefaultComboBoxModel<Inventory> modelTil = new DefaultComboBoxModel<>();
+		DefaultComboBoxModel<Inventory> modelInventory = new DefaultComboBoxModel<>();
 
-	}
-	
-	
-	private void loadProducts() throws DataAccessException {
-		List<Product> product = inventoryCtr.getProductCtr().findAll(); 
-		
-		DefaultComboBoxModel<Product> products = new DefaultComboBoxModel<Product>(); 
-		for(int i = 0; i < product.size(); i++) {
-			products.addElement(product.get(i));
+		for (Inventory inv : inventories) {
+			modelFra.addElement(inv);
+			modelTil.addElement(inv);
+			modelInventory.addElement(inv);
 		}
-		this.productBox.setModel(products); 
+
+		inventoryBox.setModel(modelInventory);
+		comboBoxFraLager.setModel(modelFra);
+		comboBoxTilLager.setModel(modelTil);
+
+		// Prevent selecting same inventory in both boxes
+		comboBoxFraLager.addActionListener(e -> {
+			Inventory fra = (Inventory) comboBoxFraLager.getSelectedItem();
+			Inventory til = (Inventory) comboBoxTilLager.getSelectedItem();
+			if (fra != null && fra.equals(til)) {
+				comboBoxTilLager.setSelectedItem(null);
+			}
+		});
+
+		comboBoxTilLager.addActionListener(e -> {
+			Inventory fra = (Inventory) comboBoxFraLager.getSelectedItem();
+			Inventory til = (Inventory) comboBoxTilLager.getSelectedItem();
+			if (til != null && til.equals(fra)) {
+				comboBoxFraLager.setSelectedItem(null);
+			}
+		});
 	}
+
+	private void loadProducts() throws DataAccessException {
+		List<Product> product = inventoryCtr.getProductCtr().findAll();
+		DefaultComboBoxModel<Product> products = new DefaultComboBoxModel<>();
+		for (Product p : product) {
+			products.addElement(p);
+		}
+		this.productBox.setModel(products);
+	}
+
 
 	
 	private void findInventoryProduct() throws DataAccessException {
@@ -187,42 +150,70 @@ public class InventoryGui extends JDialog {
 			JOptionPane.showMessageDialog(this, "Ugyldig mængde angivet", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		}
-		private void flytVare() throws DataAccessException {
-			Product produkt = (Product) productBox.getSelectedItem();
-			Inventory fra = (Inventory) comboBoxFraLager.getSelectedItem();
-			Inventory til = (Inventory) comboBoxTilLager.getSelectedItem();
+	
+	
+	
+	private void flytVare() throws DataAccessException {
+	    Product product = (Product) productBox.getSelectedItem();
+	    Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
+	    Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
 
-			if (produkt == null || fra == null || til == null || fra.equals(til) || flytMængdeTF.getText().trim().isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
+	    if (product == null || from == null || to == null || from.equals(to) || flytMængdeTF.getText().trim().isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
 
-			try {
-				int mængde = Integer.parseInt(flytMængdeTF.getText());
+	    try {
+	        int quantity = Integer.parseInt(flytMængdeTF.getText());
 
-				int fraBeholdning = inventoryCtr.getInventoryStockForProduct(fra.getInventoryId(), produkt.getProductId());
-				int tilBeholdning = inventoryCtr.getTotalInventoryStock(til.getInventoryId());
+	        int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId());
+	        
+	        
 
-				if (mængde > fraBeholdning) {
-					JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if (tilBeholdning + mængde > til.getCapacity()) {
-					JOptionPane.showMessageDialog(this, "'Til'-lageret har ikke nok kapacitet", "Fejl", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
+	        if (quantity > fromInventory) {
+	            JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        } 
+	        
+	        
+	        int toInventory = inventoryCtr.getTotalInventoryStock(to.getCapacity()); 
+	        
+	        if(inventoryCtr.getTotalInventoryStock(to.getInventoryId()) + quantity > to.getCapacity() ) {
+	        	 JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Fejl", JOptionPane.ERROR_MESSAGE);
+	        	 return; 
+	        } 
+	    
+	        	
+	        
 
-				inventoryCtr.removeStock(fra, produkt, mængde);
-				inventoryCtr.addStock(til, produkt, mængde);
+	        inventoryCtr.removeStock(from, product, quantity);
+	        inventoryCtr.addStock(to, product, quantity);
 
-				findInventoryProduct(); // opdater visning
-				updateStockInfo(produkt, fra);
-				updateStockInfo(produkt, til);
-				flytMængdeTF.setText("");
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-			}
+	        updateStockInfo(product, (Inventory) inventoryBox.getSelectedItem()); // behold aktiv visning
+	        flytMængdeTF.setText("");
+
+	        Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
+	        InventoryProduct updated = inventoryCtr.findInventoryProduct(product.getProductId(), inventoryView.getInventoryId());
+	        modelInventoryProduct.clear();
+	        if (updated != null) {
+	            modelInventoryProduct.addElement(updated);
+	        }
+
+	        System.out.println("Flyttede " + quantity + " fra " + from.getLocation() + " til " + to.getLocation());
+	        System.out.println("Fra-lager: " + inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId()));
+	        System.out.println("Til-lager: " + inventoryCtr.getInventoryStockForProduct(to.getInventoryId(), product.getProductId()));
+	        
+	        
+
+	    } catch (NumberFormatException e) {
+	        JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
+
+
+
+
+
 	
 	
 	
@@ -242,8 +233,9 @@ public class InventoryGui extends JDialog {
 				JOptionPane.showMessageDialog(this, "Så stor mængde af dette produkt findes slet ikke på lageret!", "Error", JOptionPane.ERROR_MESSAGE); 
 			} else {
 				inventoryCtr.removeStock(inventory, product, quantity); 
-				findInventoryProduct();
-				updateStockInfo(product, inventory);
+				findInventoryProduct(); // så beholdningen i det valgte inventoryBox vises korrekt
+				updateStockInfo((Product) productBox.getSelectedItem(), (Inventory) inventoryBox.getSelectedItem());
+
 			}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(this, "Ugyldig mængde angivet", "Error", JOptionPane.ERROR_MESSAGE);
@@ -429,37 +421,44 @@ public class InventoryGui extends JDialog {
 		getContentPane().add(removeStockTF, gbc_removeStockTF);
 		removeStockTF.setColumns(10);
 		
-		JLabel lblFra = new JLabel("Flyt fra Lager");
+		JLabel lblFra = new JLabel("Flyt til Lager");
+		lblFra.setFont(new Font("Tahoma", Font.BOLD, 12));
 		GridBagConstraints gbc_lblFra = new GridBagConstraints();
 		gbc_lblFra.anchor = GridBagConstraints.EAST;
 		gbc_lblFra.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFra.gridx = 17;
-		gbc_lblFra.gridy = 7;
+		gbc_lblFra.gridy = 9; // 👈 flyttet ned
+
 		getContentPane().add(lblFra, gbc_lblFra);
-		
+
 		comboBoxFraLager = new JComboBox<>();
 		GridBagConstraints gbc_comboBoxFraLager = new GridBagConstraints();
 		gbc_comboBoxFraLager.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBoxFraLager.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBoxFraLager.gridx = 18;
-		gbc_comboBoxFraLager.gridy = 7;
-		getContentPane().add(comboBoxFraLager, gbc_comboBoxFraLager);;
-		
-		JLabel lblTil = new JLabel("Flyt ti Lager");
+		gbc_comboBoxFraLager.gridy = 7; // 👈 flyttet ned
+
+		getContentPane().add(comboBoxFraLager, gbc_comboBoxFraLager);
+
+		JLabel lblTil = new JLabel("Flyt fra Lager");
+		lblTil.setFont(new Font("Tahoma", Font.BOLD, 12));
 		GridBagConstraints gbc_lblTil = new GridBagConstraints();
 		gbc_lblTil.anchor = GridBagConstraints.EAST;
 		gbc_lblTil.insets = new Insets(0, 0, 5, 5);
 		gbc_lblTil.gridx = 17;
-		gbc_lblTil.gridy = 9;
+		gbc_lblTil.gridy = 7; // 👈 flyttet op
+
 		getContentPane().add(lblTil, gbc_lblTil);
-		
+
 		comboBoxTilLager = new JComboBox<>();
 		GridBagConstraints gbc_comboBoxTilLager = new GridBagConstraints();
 		gbc_comboBoxTilLager.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBoxTilLager.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBoxTilLager.gridx = 18;
-		gbc_comboBoxTilLager.gridy = 9;
+		gbc_comboBoxTilLager.gridy = 9; // 👈 flyttet op
+
 		getContentPane().add(comboBoxTilLager, gbc_comboBoxTilLager);
+
 		
 		flytMængdeTF = new JTextField();
 		GridBagConstraints gbc_flytMængdeTF = new GridBagConstraints();
