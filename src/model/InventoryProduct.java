@@ -5,7 +5,8 @@ public class InventoryProduct {
 	private Inventory inventory;
 	private int quantityInStock;
 	private Product product;
-	
+	public int quantity;
+
 	
 	
 	public InventoryProduct() {
@@ -13,11 +14,22 @@ public class InventoryProduct {
 	}
 	
 	
-	public InventoryProduct(Inventory inventory, int quantityInStock, Product product) {
+	public InventoryProduct(Inventory inventory, int quantityInStock, Product product, int quantity) {
 		this.inventory = inventory;
 		this.quantityInStock = quantityInStock;
 		this.product = product;
+		this.quantity = quantity;
 	}
+
+    public int quantity() {
+        return quantity;
+    }
+
+
+	public void setGetQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
 
 	public Inventory getInventory() {
 		return inventory;

@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import java.awt.image.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import javax.swing.JComboBox;
 
 public class LogInd extends JFrame {
 
@@ -78,7 +79,7 @@ public class LogInd extends JFrame {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 71, 0, 0, 0, 0, 0, 123, 0, 77, 0};
 		gbl_contentPane.rowHeights = new int[]{50, 0, 0, 0, 0, 0, 39, 0, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 	

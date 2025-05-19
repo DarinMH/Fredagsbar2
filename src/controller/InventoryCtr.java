@@ -109,6 +109,10 @@ public class InventoryCtr {
 		return totalStock; 
 		
 	}
+	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
+		return ip != null ? ip.getQuantity() : 0;
+	}
+
 	
 	
 	public List<InventoryProduct> findAllInventoryProduct() throws DataAccessException {
