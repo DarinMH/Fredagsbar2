@@ -23,9 +23,11 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
     private PreparedStatement findById;
     private PreparedStatement insertReservation; 
     private DBConnection connection; 
+    private CustomerDB customerDB; 
+    
 
     // Initialiserer databasen og forbereder SQL-statements
-    public ReservationDB() throws DataAccessException {
+    public ReservationDB () throws DataAccessException {
         try {
             Connection con = DBConnection.getInstance().getConnection();
             findAll = con.prepareStatement(FIND_ALL_Q);
@@ -36,14 +38,18 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
         }
     }
 
-    @Override
+    
+   
     // Henter alle reservationer fra databasen
-    public List<Reservation> findAll() throws DataAccessException {
+    public List<Reservation> findAll(boolean fullAssociation) throws DataAccessException {
         try {
             ResultSet rs = findAll.executeQuery();
-            return buildObjects(rs);
+            List<Reservation> res = buildObjects (rs);
+            System.out.println("Number of objects found: " + res.size()); 
+            return res;
         } catch (SQLException e) {
-            throw new DataAccessException(e, "Kunne ikke hente alle reservationer");
+            DataAccessException d = new DataAccessException(e, "Kunne ikke hente alle reservationer");
+            throw d;
         }
     }
 
@@ -54,7 +60,7 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
             findById.setInt(1, reservationId);
             ResultSet rs = findById.executeQuery();
             if (rs.next()) {
-                return buildObject(rs);
+                return buildObject(rs, false);
             }
         } catch (SQLException e) {
             throw new DataAccessException(e, "Kunne ikke finde reservation med ID = " + reservationId);
@@ -66,39 +72,39 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
     private List<Reservation> buildObjects(ResultSet rs) throws SQLException {
         List<Reservation> list = new ArrayList<>();
         while (rs.next()) {
-            list.add(buildObject(rs));
+            list.add(buildObject(rs, false));
         }
         return list;
     }
 
     // Bygger et enkelt Reservation-objekt ud fra en række i resultatet
-    private Reservation buildObject(ResultSet rs) throws SQLException {
-        int id = rs.getInt("reservationId");
-        LocalDate date = rs.getDate("date").toLocalDate();
-        int amount = rs.getInt("amount");
-        boolean status = rs.getBoolean("Status"); 
+    private Reservation buildObject(ResultSet rs, boolean fullAssociation) throws DataAccessException {
+    	Reservation reservation = new Reservation(0, null, 0, null, fullAssociation); 
+    	try { 
+    	reservation.setReservationId(rs.getInt("reservationId")); 
+    	reservation.setDate(rs.getDate("date").toLocalDate());
+    	reservation.setAmount(rs.getInt("amount")); 
+    	reservation.setCustomer(new Customer (rs.getInt ("CustomerId"))); 
+    	reservation.setStatus(rs.getBoolean("Status"));
+    	if (fullAssociation) { 
+    		Customer customer = this.customerDB.findByStudentId(reservation.getCustomer().getStudentId(), true);
+    		
+    		reservation.setCustomer(customer); 
+    	}
+    	} catch (SQLException e) {
+    		
+    		throw new DataAccessException (e, "could not build.."); 
+    	}
+    	return reservation; 
+ 
 
-        // Opretter kundeobjektet ud fra oplysninger fra resultatet
-        Customer customer = new Customer(
-            rs.getInt("customerId"),
-            rs.getString("firstName"),
-            rs.getString("lastName"),
-            rs.getString("email"),
-            rs.getInt("customerAmount")
-        );
-
-        // Returnerer en komplet Reservation med kundeinformation
-        return new Reservation(id, date, amount, customer, status);
     }
-
 	@Override
 	public void insertReservation(Reservation reservation) throws DataAccessException {
 		// TODO Auto-generated 	try {
 		
 		try {
 		connection.startTransaction();
-		
-
 		
 		insertReservation.setInt(1, reservation.getReservationId());
 		insertReservation.setDate(2, java.sql.Date.valueOf(reservation.getDate()));
@@ -126,4 +132,14 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
 	}
 
 }
-}
+
+
+	@Override
+	public List<Reservation> findAll() throws DataAccessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+    
+} 
+

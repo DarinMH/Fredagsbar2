@@ -7,7 +7,6 @@ import DB.DataAccessException;
 import DB.ReservationDBIF;
 import model.BorrowableProduct;
 import model.Customer;
-import model.Product;
 import model.Reservation;
 import DB.ReservationDB;
 
@@ -25,7 +24,7 @@ public class ReservationCtr {
 
     public boolean endReservation() throws DataAccessException { 
         this.currentReservation.setStatus(true); 
-        this.currentReservation.get
+        //this.currentReservation.isStatus();
         return currentReservation.isStatus(); 
     }
 
@@ -33,8 +32,8 @@ public class ReservationCtr {
         return reservationDB.findAll(); 
     }
 
-    public Reservation createReservation(int reservationId, LocalDate date, int amount, Customer customer, boolean status) throws DataAccessException {
-        Reservation newReservation = new Reservation(reservationId, date, amount, customer, status);
+    public Reservation createReservation(int reservationId, LocalDate date, int amount, Customer customer, boolean status, BorrowableProduct borrowableProduct) throws DataAccessException {
+        Reservation newReservation = new Reservation(reservationId, date, amount, customer, status, borrowableProduct);
         reservationDB.insertReservation(newReservation);
         this.currentReservation = newReservation;
         return newReservation;
