@@ -6,6 +6,8 @@ import java.util.List;
 
 import model.BoardGames;
 import model.BorrowableProduct;
+import model.Product;
+import model.Reservation;
 import model.Table;
 
 public class BorrowableProductDB implements BorrowableProductDBIF {
@@ -24,6 +26,8 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
     // Samme som ovenfor, men filtrerer på ét bestemt produktId
     private static final String FIND_BY_ID_Q = FIND_ALL_Q + " WHERE bp.productId = ?";
 
+
+
     private PreparedStatement findAll;
     private PreparedStatement findById;
 
@@ -41,6 +45,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
     // Henter alle lånbare produkter fra databasen
     @Override
     public List<BorrowableProduct> findAll() throws DataAccessException {
+    	
         try {
             ResultSet rs = findAll.executeQuery();
             return buildObjects(rs);
@@ -65,41 +70,58 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
     }
 
     // Går alle rækker i resultatet igennem og bygger en liste af produktobjekter
-    private List<BorrowableProduct> buildObjects(ResultSet rs) throws SQLException {
-        List<BorrowableProduct> list = new ArrayList<>();
-        while (rs.next()) {
-            list.add(buildObject(rs));
-        }
-        return list;
-    }
 
-    private BorrowableProduct buildObject(ResultSet rs) throws SQLException {
-        int boardGameId = rs.getInt("boardGameId");
-        int tableNr = rs.getInt("tableNr");
-        
+
+    private BorrowableProduct buildObject(ResultSet rs, boolean fullAssociation) throws SQLException {
+    
+//        int boardGameId = rs.getInt("boardGameId");
+//        int tableNr = rs.getInt("tableNr");.
+    	
+     String productType = rs.getString("productType"); 
         BorrowableProduct product = null;
 
-        if (boardGameId != 0) {
-            product = new BoardGames(
-                boardGameId,
-                rs.getString("productName"),
-                rs.getDouble("compensationalPrice"),
-                null, // reservation
-                rs.getInt("amount"),
-                rs.getString("productName"),
-                rs.getInt("productId")
-            );
-        } else if (tableNr != 0) {
-            product = new Table(
-                tableNr,
-                rs.getInt("seatAmount"),
-                null, // reservation
-                rs.getInt("amount"),
-                rs.getString("productName"),
-                rs.getInt("productId")
-            );
-        }
-
+      ;
+		switch (productType.toLowerCase()) { 
+        case "BoardGames": product = new BoardGames(
+        
+        		
+        		rs.getDouble("compensationalPrice"),
+        		new Reservation(rs.getInt("reservationId"), null, 0, null, false, null),
+        		rs.getInt("amount"), 
+        		rs.getString ("borrowableProductName"), 
+        		rs.getInt("productId"), 
+        		rs.getString("productType"),
+        		rs.getBoolean("status")
+        		); 
+          
+        break; 
+        case "table": product = new Table ( 
+        		rs.getInt("tableNr"),
+        		rs.getInt("seatAmount"),
+        		 rs.getInt("amount"),
+        		 rs.getString("productType"), 
+        		 rs.getBoolean("status"),
+        		 new Reservation(rs.getInt("reservationId"), null, 0, null, false, null),
+                 rs.getString("productName"),
+                 rs.getInt("productId")
+             );
+        
+      break; 
+      default: 
+    	  System.out.println ("Unknown product type: " + productType);
+    	  product = null; //set borrowable product to null for unknown types
+    	  break;
+		}
         return product;
     }
-}
+
+ // Inserts a new product into the database.
+ 	private List<BorrowableProduct> buildObjects(ResultSet rs, boolean fullAssociation) throws SQLException {
+ 		List<BorrowableProduct> res = new ArrayList<>(); 
+ 		while(rs.next()) {
+ 			res.add(buildObject(rs, fullAssociation)); 
+ 		}
+ 		return res; 
+ 	
+ 	}
+}  

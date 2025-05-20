@@ -11,6 +11,16 @@ public class Reservation {
 	private boolean status; 
 	private BorrowableProduct borrowableProduct; 
 	
+	
+	public Reservation() {
+		
+	}
+	
+	
+	public Reservation(int reservationId) {
+		this.reservationId=reservationId; 
+	}
+	
 	public Reservation(int reservationId, LocalDate date, int amount, Customer customer,
 			boolean status, BorrowableProduct borrowableProduct) {
 		super();
