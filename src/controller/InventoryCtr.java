@@ -95,7 +95,7 @@ public class InventoryCtr {
 //	}
 	
 	
-	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException, OverStockCapacity {
 		
 		
 
@@ -110,14 +110,17 @@ public class InventoryCtr {
 		
 		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
 		
-
 		
+		 int newQuantity = inventoryProduct.getQuantityInStock() + quantity;
+		    if (newQuantity > inventory.getCapacity()) {
+		        throw new OverStockCapacity(
+		            "Cannot add " + quantity + " units. Current stock: " + 
+		            inventoryProduct.getQuantityInStock() + 
+		            ", Max capacity: " + inventory.getCapacity()
+		        );
+		    }
 		
 
-	    
-	    // Check capacity (THIS IS WHAT YOU WERE MISSING)
-
-	
 		
 	
 //		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
