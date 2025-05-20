@@ -7,7 +7,6 @@ import DB.DataAccessException;
 import DB.ReservationDBIF;
 import model.BorrowableProduct;
 import model.Customer;
-import model.Product;
 import model.Reservation;
 import DB.ReservationDB;
 
