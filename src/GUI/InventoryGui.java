@@ -221,13 +221,12 @@ public class InventoryGui extends JDialog {
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(this, "Ugyldig mængde angivet", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-<<<<<<< HEAD
 		}
 	
 	
 	
 	private void transferStock() throws DataAccessException {
-	    Product product = (Product) productBox.getSelectedItem();
+	    Product product = (Product) Category.getSelectedValue();
 	    Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
 	    Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
 
@@ -281,8 +280,7 @@ public class InventoryGui extends JDialog {
 	    } catch (NumberFormatException e) {
 	        JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
 	    }
-=======
->>>>>>> ce9ce9357151089f4a76e07b29043870939aed81
+
 	}
 	
 	
@@ -309,55 +307,55 @@ public class InventoryGui extends JDialog {
 		}
 	}
 	
-	private void flytVare() throws DataAccessException {
-		Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
-		Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
-		
-		if (selectedProduct == null || from == null || to == null || from.equals(to) || flytMængdeTF.getText().trim().isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
-		try {
-			int quantity = Integer.parseInt(flytMængdeTF.getText());
-			
-			int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), selectedProduct.getProductId());
-			
-			if (quantity > fromInventory) {
-				JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			
-			int toInventory = inventoryCtr.getTotalInventoryStock(to.getInventoryId());
-			
-			if (toInventory + quantity > to.getCapacity()) {
-				JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Fejl", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			
-			inventoryCtr.removeStock(from, selectedProduct, quantity);
-			inventoryCtr.addStock(to, selectedProduct, quantity);
-			
-			updateStockInfo(selectedProduct, (Inventory) inventoryBox.getSelectedItem()); // behold aktiv visning
-			flytMængdeTF.setText("");
-			
-			Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
-			if (inventoryView != null) {
-				InventoryProduct updated = inventoryCtr.findInventoryProduct(selectedProduct.getProductId(), inventoryView.getInventoryId());
-				modelInventoryProduct.clear();
-				if (updated != null) {
-					modelInventoryProduct.addElement(updated);
-				}
-			}
-			
-			System.out.println("Flyttede " + quantity + " fra " + from.getLocation() + " til " + to.getLocation());
-			System.out.println("Fra-lager: " + inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), selectedProduct.getProductId()));
-			System.out.println("Til-lager: " + inventoryCtr.getInventoryStockForProduct(to.getInventoryId(), selectedProduct.getProductId()));
-			
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-		}
-	}
+//	private void flytVare() throws DataAccessException {
+//		Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
+//		Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
+//		
+//		if (selectedProduct == null || from == null || to == null || from.equals(to) || flytMængdeTF.getText().trim().isEmpty()) {
+//			JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
+//			return;
+//		}
+//		
+//		try {
+//			int quantity = Integer.parseInt(flytMængdeTF.getText());
+//			
+//			int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), selectedProduct.getProductId());
+//			
+//			if (quantity > fromInventory) {
+//				JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
+//				return;
+//			}
+//			
+//			int toInventory = inventoryCtr.getTotalInventoryStock(to.getInventoryId());
+//			
+//			if (toInventory + quantity > to.getCapacity()) {
+//				JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Fejl", JOptionPane.ERROR_MESSAGE);
+//				return;
+//			}
+//			
+//			inventoryCtr.removeStock(from, selectedProduct, quantity);
+//			inventoryCtr.addStock(to, selectedProduct, quantity);
+//			
+//			updateStockInfo(selectedProduct, (Inventory) inventoryBox.getSelectedItem()); // behold aktiv visning
+//			flytMængdeTF.setText("");
+//			
+//			Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
+//			if (inventoryView != null) {
+//				InventoryProduct updated = inventoryCtr.findInventoryProduct(selectedProduct.getProductId(), inventoryView.getInventoryId());
+//				modelInventoryProduct.clear();
+//				if (updated != null) {
+//					modelInventoryProduct.addElement(updated);
+//				}
+//			}
+//			
+//			System.out.println("Flyttede " + quantity + " fra " + from.getLocation() + " til " + to.getLocation());
+//			System.out.println("Fra-lager: " + inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), selectedProduct.getProductId()));
+//			System.out.println("Til-lager: " + inventoryCtr.getInventoryStockForProduct(to.getInventoryId(), selectedProduct.getProductId()));
+//			
+//		} catch (NumberFormatException e) {
+//			JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
+//		}
+//	}
 	
 	private void updateStockInfo(Product product, Inventory inventory) throws DataAccessException {
 		if (product != null) {
