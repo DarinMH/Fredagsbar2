@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +46,60 @@ public class InventoryCtr {
 	public List<InventoryProduct> findInventoryProductByInventoryId(int inventoryId) throws DataAccessException {
 		return inventoryDB.findInventoryProductByInventoryId(inventoryId); 
 	}
+//	
+//	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+//		
+//		try {
+//		inventory = findByInventoryId(inventory.getInventoryId()); 
+//		
+//		product = productCtr.findByProductId(product.getProductId()); 
+//		
+//		
+////		InventoryProduct inventoryProduct = new InventoryProduct(inventory, quantity, product); 
+//		
+//		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
+//		
+//
+//		
+//	    
+//	
+//	    // Check if new quantity exceeds capacity
+//			int newQuantity = inventoryProduct.getQuantityInStock() + quantity;
+//	    if (newQuantity > inventory.getCapacity()) {
+//	    	  throw new DataAccessException(
+//	                  new RuntimeException("Capacity exceeded"), 
+//	                  "Cannot add " + quantity + " units. Max capacity: " + inventory.getCapacity()
+//	              );
+//	     
+//	    }
+//		
+//	
+////		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
+//		
+//	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
+//		
+//	inventoryDB.updateInventoryProduct(inventoryProduct);
+//	
+//	return inventoryProduct; 
+//	
+//	} catch (SQLException e) {
+//        // Handle ACTUAL database errors
+//        throw new DataAccessException(e, "Database error while updating stock");
+//    }
+//	
+//		
+//
+//
+//		
+//		
+//	}
+	
 	
 	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+		
+		
+
+		
 		
 		inventory = findByInventoryId(inventory.getInventoryId()); 
 		
@@ -59,6 +112,14 @@ public class InventoryCtr {
 		
 
 		
+		
+
+	    
+	    // Check capacity (THIS IS WHAT YOU WERE MISSING)
+
+	
+		
+	
 //		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
 		
 	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
@@ -66,12 +127,9 @@ public class InventoryCtr {
 	inventoryDB.updateInventoryProduct(inventoryProduct);
 	
 	return inventoryProduct; 
+	
+		}
 		
-
-
-		
-		
-	}
 	
 	
 //	public int getTotalStock(int productId) throws DataAccessException {

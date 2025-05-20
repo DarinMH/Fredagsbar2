@@ -6,11 +6,13 @@ public class Table extends BorrowableProduct{
 	private int seatAmount;
 	private Reservation reservation;
 	
-	public Table(int tableNr, int seatAmount, Reservation reservation, int amount, String productName, int productId) {
-		super(amount, productName, productId);
-		this.tableNr = tableNr;
-		this.seatAmount = seatAmount;
-		this.reservation = reservation;
+	public Table(int tableNr, int seatAmount, Reservation reservation, int amount, String productName, int productId, String productType, boolean status) {
+	    super(amount, productName, productId, reservation, productType, status);
+	    this.tableNr = tableNr;
+	    this.seatAmount = seatAmount;
+	    this.reservation = reservation;
+	}
+
 	}
 	public int getTableNr() {
 		return tableNr;
