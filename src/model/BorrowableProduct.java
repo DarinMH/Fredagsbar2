@@ -4,14 +4,19 @@ public abstract class BorrowableProduct {
 	private int amount;
 	private String productName;
 	private int productId;
-	private boolean status; 
+	private Reservation reservation; 
+	private String productType; 
+	private boolean status;
 	
-	public BorrowableProduct(int amount, String productName, int productId) {
+	public BorrowableProduct(int amount, String productName, int productId, Reservation reservation, String productType, boolean status) {
 		super();
 	this.amount = amount;
 	this.productName = productName;
 	this.productId = productId;
-	this.status=status; 
+	this.reservation = reservation; 
+	this.productType = productType; 
+	this.status=status;  
+
 	}
 
 	public int getAmount() {
@@ -34,6 +39,21 @@ public abstract class BorrowableProduct {
 
 	public void setProductId(int productId) {
 		this.productId = productId;
+	}
+	
+	public String getReservation (String reservationId) {
+		return reservationId; 
+	}
+	
+	public void setReservation (String reservationId) { 
+		this.reservation=reservation;
+	}
+	
+	public String getproductType () {
+		return productType;
+	}
+	 public void setProductType (String productType) {
+		 this.productType =productType; 
 	}
 	
 	public void setStatus(boolean status) {
