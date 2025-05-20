@@ -44,7 +44,7 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
     public List<Reservation> findAll(boolean fullAssociation) throws DataAccessException {
         try {
             ResultSet rs = findAll.executeQuery();
-            List<Reservation> res = buildObjects (rs);
+            List<Reservation> res = buildObjects (rs, false);
             System.out.println("Number of objects found: " + res.size()); 
             return res;
         } catch (SQLException e) {
@@ -69,17 +69,22 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
     }
 
     // Konverterer resultatet fra databasen til en liste af Reservation-objekter
-    private List<Reservation> buildObjects(ResultSet rs) throws SQLException {
+    private List<Reservation> buildObjects(ResultSet rs, boolean fullAssociation) throws DataAccessException {
         List<Reservation> list = new ArrayList<>();
+        try {
         while (rs.next()) {
             list.add(buildObject(rs, false));
-        }
-        return list;
-    }
+        }} catch (SQLException e) {
+    		// TODO Auto-generated catch block
+    		throw new DataAccessException(e, "could not build"); 
+    	} 
+    	return list; 
+    	}
+       
 
     // Bygger et enkelt Reservation-objekt ud fra en række i resultatet
     private Reservation buildObject(ResultSet rs, boolean fullAssociation) throws DataAccessException {
-    	Reservation reservation = new Reservation(0, null, 0, null, fullAssociation); 
+    	Reservation reservation = new Reservation();
     	try { 
     	reservation.setReservationId(rs.getInt("reservationId")); 
     	reservation.setDate(rs.getDate("date").toLocalDate());
