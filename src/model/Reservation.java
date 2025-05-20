@@ -12,7 +12,7 @@ public class Reservation {
 	private BorrowableProduct borrowableProduct; 
 	
 	public Reservation(int reservationId, LocalDate date, int amount, Customer customer,
-			boolean status) {
+			boolean status, BorrowableProduct borrowableProduct) {
 		super();
 		this.reservationId = reservationId;
 		this.date = date;
@@ -66,6 +66,13 @@ public class Reservation {
 	public void setBorrowableProduct(BorrowableProduct borrowableProduct) { 
 		this.borrowableProduct = borrowableProduct;
 	}
+
+	public BorrowableProduct getBorrowableProduct() {
+		return borrowableProduct;
+	}
+	
+	
+	
 	
 	
 	

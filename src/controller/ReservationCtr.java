@@ -24,6 +24,7 @@ public class ReservationCtr {
 
     public boolean endReservation() throws DataAccessException { 
         this.currentReservation.setStatus(true); 
+        this.currentReservation.get
         return currentReservation.isStatus(); 
     }
 
@@ -59,4 +60,5 @@ public class ReservationCtr {
         currentReservation.setDate(LocalDate.now());
         return product;
     }
+    
 }

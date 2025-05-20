@@ -24,6 +24,7 @@ import controller.SaleOrderCtr;
 import model.Customer;
 import model.Drink;
 import model.Inventory;
+import model.InventoryProduct;
 import model.Miscellaneous;
 import model.Product;
 import model.SaleOrder;
@@ -635,20 +636,35 @@ public class KasseSystem extends JFrame {
 		
 		if(product != null) {
 			int quantity = cartItems.getOrDefault(productName, 0) + 1; 
+			
+			
+		    int barStock = inventoryCtr.getInventoryStockForProduct(1, product.getProductId());
+		    
+
+	
+		    int totalStock = inventoryCtr.getTotalStock(product.getProductId());
+		    
+		  if(quantity > barStock) {
+			JOptionPane.showMessageDialog(this, "Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret", 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return; 
+		  }
+
+	
+		    else if(quantity > totalStock) {
+				JOptionPane.showMessageDialog(this, productName + " er udsolgt", "Error", JOptionPane.ERROR_MESSAGE);
+				return; 
 		
 
 		
-		if(quantity <= inventoryCtr.getTotalStock(product.getProductId())) {
-			
+		} else {
 			cartItems.put(productName, quantity); 
 			itemPrices.put(productName, price); 
 			
 			updateTotal();
 		saleOrderCtr.addProductToOrder(product, quantity); 
 		saleOrderCtr.updateOrder(currentOrder); 
-		
-		} else {
-			JOptionPane.showMessageDialog(this, productName + " er udsolgt", "Error", JOptionPane.ERROR_MESSAGE);
+			
 		}
 		
 //		currentOrder.setTotalPrice(total);
@@ -714,6 +730,12 @@ public class KasseSystem extends JFrame {
 		
 		if (newQuantity <= 0) {
 			cartItems.remove(item);
+			
+		}else if(inventoryCtr.getInventoryStockForProduct(1, product.getProductId()) < newQuantity) {
+			JOptionPane.showMessageDialog(this, "Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret", 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return; 
+			
 		} else {
 			cartItems.put(item, newQuantity);
 		}

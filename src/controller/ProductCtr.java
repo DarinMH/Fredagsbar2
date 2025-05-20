@@ -16,13 +16,12 @@ import model.Product;
 
 public class ProductCtr  {
 	private ProductDBIF productDB;
-	private InventoryDBIF inventoryDB; 
 	private Product product; 
 
 
 	public ProductCtr() throws DataAccessException { 
 		this.productDB = new ProductDB(); 
-		this.inventoryDB = new InventoryDB(); 
+
 	}
 	
 
