@@ -41,11 +41,11 @@ public abstract class BorrowableProduct {
 		this.productId = productId;
 	}
 	
-	public String getReservation (String reservationId) {
-		return reservationId; 
+	public Reservation getReservation () {
+		return reservation; 
 	}
 	
-	public void setReservation (String reservationId) { 
+	public void setReservation (Reservation reservation) { 
 		this.reservation=reservation;
 	}
 	
