@@ -24,7 +24,7 @@ public class ReservationCtr {
 
     public boolean endReservation() throws DataAccessException { 
         this.currentReservation.setStatus(true); 
-        //this.currentReservation.isStatus();
+        //this.currentReservation.isStatus();???
         return currentReservation.isStatus(); 
     }
 
