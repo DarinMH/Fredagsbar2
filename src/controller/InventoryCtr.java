@@ -95,7 +95,7 @@ public class InventoryCtr {
 //	}
 	
 	
-	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException, OverStockCapacity {
+	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
 		
 		
 
@@ -106,24 +106,10 @@ public class InventoryCtr {
 		product = productCtr.findByProductId(product.getProductId()); 
 		
 		
-//		InventoryProduct inventoryProduct = new InventoryProduct(inventory, quantity, product); 
 		
 		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
 		
 		
-		 int newQuantity = inventoryProduct.getQuantityInStock() + quantity;
-		    if (newQuantity > inventory.getCapacity()) {
-		        throw new OverStockCapacity(
-		            "Cannot add " + quantity + " units. Current stock: " + 
-		            inventoryProduct.getQuantityInStock() + 
-		            ", Max capacity: " + inventory.getCapacity()
-		        );
-		    }
-		
-
-		
-	
-//		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
 		
 	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
 		
@@ -132,6 +118,9 @@ public class InventoryCtr {
 	return inventoryProduct; 
 	
 		}
+	
+	
+
 		
 	
 	
@@ -204,6 +193,9 @@ public class InventoryCtr {
 
 		return inventoryProduct; 
 	}
+	
+	
+	
 
 	
 	

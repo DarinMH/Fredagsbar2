@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterEach;
@@ -40,37 +41,63 @@ class TestUpdateInventory {
 	
 
 	
-	@BeforeEach 
-	void setUp() throws DataAccessException {
-		
-		inventoryDB = new InventoryDB(); 
-		productDB = new ProductDB(); 
-		
-		inventoryCtr = new InventoryCtr(); 
-		
-		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(88, 420); 
-		
-		inventoryProduct.setQuantityInStock(0);
-		
-		
-
-		
-
-	}
+//	@BeforeEach 
+//	void setUp() throws DataAccessException {
+//		
+//		inventoryDB = new InventoryDB(); 
+//		productDB = new ProductDB(); 
+//		
+//		inventoryCtr = new InventoryCtr(); 
+//		
+//		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(88, 420); 
+//		
+//		inventoryProduct.setQuantityInStock(0);
+//		
+//		
+//
+//		
+//
+//	}
+//	
+//	
+//	@AfterEach
+//	void tearDown() throws DataAccessException {
+//		
+//		inventoryProduct.setQuantityInStock(0);
+//
+//	}
 	
 	
-	@AfterEach
-	void tearDown() throws DataAccessException {
-		
-		inventoryProduct.setQuantityInStock(0);
-
-	}
+    @BeforeEach 
+    void setUp() throws DataAccessException, SQLException {
+        dbConnection = DBConnection.getInstance();
+        con = dbConnection.getConnection();
+        
+        // Start transaction
+        con.setAutoCommit(false);
+        
+        inventoryDB = new InventoryDB(); 
+        productDB = new ProductDB(); 
+        inventoryCtr = new InventoryCtr(); 
+        
+        // Get the test inventory product but don't modify it yet
+        inventoryProduct = inventoryDB.findInventoryProduct(88, 420);
+    }
+    
+    @AfterEach
+    void tearDown() throws SQLException {
+        // Rollback transaction after each test
+        if (con != null) {
+            con.rollback();
+            con.setAutoCommit(true);
+        }
+    }
 
 	
 	
 	
 @Test 
-void addStock() throws DataAccessException {
+void addStock() throws DataAccessException, OverStockCapacity {
 
 	
 	
@@ -152,7 +179,7 @@ void removeStock() throws DataAccessException {
 
 
 @Test 
-void addMultipleProducts() throws DataAccessException {
+void addMultipleProducts() throws DataAccessException, OverStockCapacity {
 
 	
 	
@@ -354,7 +381,7 @@ void overCapacity() throws DataAccessException {
 
 
 @Test 
-void overCapacity() throws DataAccessException {
+void underCapacity() throws DataAccessException {
 
 	
 	
@@ -385,9 +412,9 @@ void overCapacity() throws DataAccessException {
 	
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
-	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
+	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
 	 
-	 assertTrue(foundInventory.getCapacity() < foundInventory.getCapacity() + quantity); 
+	 assertTrue(inventoryCtr.getInventoryStockForProduct(inventoryId, productId) <  quantity); 
 	
 
 //	Assertions.assertThrows(OverStockCapacity.class, () -> inventoryCtr.addStock(foundInventory, foundProduct, quantity)); 
