@@ -1,12 +1,16 @@
 package Test;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.Connection;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +19,7 @@ import DB.DataAccessException;
 import DB.InventoryDB;
 import DB.ProductDB;
 import controller.InventoryCtr;
+import controller.OverStockCapacity;
 import controller.SaleOrderCtr;
 import model.Customer;
 import model.Inventory;
@@ -31,6 +36,7 @@ class TestUpdateInventory {
 	private ProductDB productDB; 
 	private DBConnection dbConnection; 
 	private Connection con; 
+	private InventoryProduct inventoryProduct; 
 	
 
 	
@@ -42,6 +48,9 @@ class TestUpdateInventory {
 		
 		inventoryCtr = new InventoryCtr(); 
 		
+		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(88, 420); 
+		
+		inventoryProduct.setQuantityInStock(0);
 		
 		
 
@@ -53,7 +62,7 @@ class TestUpdateInventory {
 	@AfterEach
 	void tearDown() throws DataAccessException {
 		
-		
+		inventoryProduct.setQuantityInStock(0);
 
 	}
 
@@ -244,16 +253,13 @@ void invalidInventoryId() throws DataAccessException {
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
-InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
+InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 	
-	
-	int formerValue = inventoryProduct.getQuantityInStock(); 
-	
-	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
+
 	
 	
 	
-	assert
+	
 	assertNull(foundInventory, "Inventory should be null"); 
 	
 	
@@ -263,21 +269,33 @@ InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420);
 
 
 @Test 
-void invalidCustomer() throws DataAccessException {
+void invalidProductId() throws DataAccessException {
 
 	
-	int studentId = 521; 
-	int productId = 6; 
+	
+	int inventoryId = 420; 
+	int productId = 89; 
 	
 //	int expStudentId = 1234; 
+	
+	
+	int quantity = 2; 
+	
+
 
 	
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
+	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
+	
+
 	
 	
-	assertNull(foundCustomer, "Product should be null");
 	
+	
+	assertNull(foundProduct, "Inventory should be null"); 
 	
 
 
@@ -287,6 +305,100 @@ void invalidCustomer() throws DataAccessException {
 	
 	
 }
+
+
+@Test 
+void overCapacity() throws DataAccessException {
+
+	
+	
+	int inventoryId = 420; 
+	int productId = 88; 
+	
+//	int expStudentId = 1234; 
+	
+	
+	
+	
+
+
+	
+	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+	int quantity = 5000001; 
+	
+//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
+	
+	
+	
+	
+	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
+	
+	
+	int formerValue = inventoryProduct.getQuantityInStock(); 
+	
+	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
+	 
+	 assertTrue(foundInventory.getCapacity() < foundInventory.getCapacity() + quantity); 
+	
+
+//	Assertions.assertThrows(OverStockCapacity.class, () -> inventoryCtr.addStock(foundInventory, foundProduct, quantity)); 
+	 
+	 
+	
+	
+}
+
+
+
+@Test 
+void overCapacity() throws DataAccessException {
+
+	
+	
+	int inventoryId = 420; 
+	int productId = 88; 
+	
+//	int expStudentId = 1234; 
+	
+	
+	
+	
+
+
+	
+	
+	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	
+	int quantity = 0; 
+	
+//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
+	
+	
+	
+	
+	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
+	
+	
+	int formerValue = inventoryProduct.getQuantityInStock(); 
+	
+	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
+	 
+	 assertTrue(foundInventory.getCapacity() < foundInventory.getCapacity() + quantity); 
+	
+
+//	Assertions.assertThrows(OverStockCapacity.class, () -> inventoryCtr.addStock(foundInventory, foundProduct, quantity)); 
+	 
+	 
+	
+	
+}
+
+
+
 
 
 

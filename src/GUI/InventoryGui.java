@@ -153,7 +153,7 @@ public class InventoryGui extends JDialog {
 	
 	
 	
-	private void flytVare() throws DataAccessException {
+	private void transferStock() throws DataAccessException {
 	    Product product = (Product) productBox.getSelectedItem();
 	    Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
 	    Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
@@ -473,7 +473,7 @@ public class InventoryGui extends JDialog {
 		flytBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					flytVare();
+					transferStock();
 				} catch (DataAccessException ex) {
 					ex.printStackTrace();
 				}
