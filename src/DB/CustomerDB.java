@@ -9,6 +9,7 @@ import java.util.List;
 
 import DB.DataAccessException;
 import model.Customer;
+import model.Reservation;
 import DB.DBConnection;
 
 public class CustomerDB implements CustomerDBIF {
@@ -47,30 +48,45 @@ public class CustomerDB implements CustomerDBIF {
 			ResultSet rs = findByStudentId.executeQuery();
 			Customer customer = null;
 			if(rs.next()) {
-				customer = buildObject(rs, false);
+				customer = buildObject(rs, fullAssociation);
 			}
 			return customer;
 		}catch (SQLException e) {
 			throw new DataAccessException(e, "could not find customer by CustomerId="+ studentId);
 		}
 	}
-	private Customer buildObject (ResultSet rs, boolean fullAssociation) throws SQLException {
-		Customer customer = new Customer(
-				rs.getInt("StudentId"),
-				rs.getString("FirstName"),
-				rs.getString("LastName"),
-				rs.getString("StudentEmail"),
-				rs.getInt("numberOfCustomers")
-
-				
-				);
-		return customer;
-	}
-	private List<Customer> buildObjects(ResultSet rs, boolean fullAssociation) throws SQLException {
-		List<Customer> res = new ArrayList<>(); 
-		while(rs.next()) {
-			res.add(buildObject(rs, false)); 
+	private Customer buildObject(ResultSet rs, boolean fullAssociation) throws DataAccessException {
+		
+		Customer customer = new Customer();
+	
+		try {
+	        customer.setStudentId(rs.getInt("StudentId")); 
+	        customer.setFirstName(rs.getString("FirstName"));
+	        customer.setLastName(rs.getString("LastName"));
+	        customer.setEmail(rs.getString("StudentEmail"));
+	        customer.setAmount(rs.getInt("numberOfCustomers"));
+	        
+//	        if (fullAssociation) {
+//	            List<Reservation> reservation = reservation.findByReservationId(customer.getReservation().getReservationId());
+//	            customer.setReservations(reservation);
+		} catch (SQLException e) {
+    		
+    		throw new DataAccessException (e, "could not build.."); 
 		}
-		return res; 
+	        return customer;
+	    }
+	    
+	        private List<Customer> buildObjects(ResultSet rs, boolean fullAssociation) throws DataAccessException {
+	    		List<Customer> res = new ArrayList<>(); 
+	    		try {
+	    		while(rs.next()) {
+	    			res.add(buildObject(rs, false)); 
+	    		}
+	        } catch (SQLException e) {
+	    		// TODO Auto-generated catch block
+	    		throw new DataAccessException(e, "could not build"); }
+	    		return res; 
+	        }
+	  
 	}
-}
+	
