@@ -31,7 +31,7 @@ public class ReservationCtr {
     }
  //This method gets a list of all reservation 
     public List<Reservation> findAll() throws DataAccessException { 
-        return reservationDB.findAll(); // Gets all reservations from the database 
+        return reservationDB.findAll(false);  // Gets all reservations from the database 
     }
  // This method creates a new reservation and saves it in the database
     public Reservation createReservation(int reservationId, LocalDate date, int amount, Customer customer, boolean status, BorrowableProduct borrowableProduct) throws DataAccessException {
