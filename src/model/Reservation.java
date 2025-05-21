@@ -1,6 +1,6 @@
 package model;
 
-import java.time.*;
+import java.time.*; 
 
 public class Reservation {
 
@@ -80,10 +80,6 @@ public class Reservation {
 	public BorrowableProduct getBorrowableProduct() {
 		return borrowableProduct;
 	}
-	
-	
-	
-	
 	
 	
 }

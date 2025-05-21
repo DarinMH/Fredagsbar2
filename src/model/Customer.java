@@ -1,6 +1,8 @@
 
 package model;
 
+import java.util.List;
+
 public class Customer {
 	
 
@@ -9,7 +11,9 @@ public class Customer {
 	private String lastName;
 	private String email;
 	private int amount; 
-	
+	public Customer() {
+		
+	}
 	
 	public Customer(int studentId) {
 	this.studentId = studentId;;
@@ -47,19 +51,23 @@ public class Customer {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public void setAmount (int amount) {
+	} 
+	
 	public int getAmount() {
 		return amount;
 	}
 	public void setCustomerCategory(int amount) {
 		this.amount = amount;
-	}
-	
-	
-	@Override 
-	public String toString() {
-		return firstName + " " + lastName; 
-	}
-	
-	
+	}	
+public int getCustomerCategory (int amount) {
+	return amount; 
+}
+
+public void setReservations(List<Reservation> reservations) {
 	
 }
+	}
+	
+	
