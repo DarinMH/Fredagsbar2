@@ -9,39 +9,23 @@ import model.BorrowableProduct;
 
 //This class controls the logic for borrowable products
 public class BorrowableProductCtr {
-<<<<<<< HEAD
-   
-    private BorrowableProductDBIF borrowableProductDB;  // This connects to the database using the interface
-    private ReservationCtr reservationCtr; //used for reservation control
-=======
     
+	// This connects to the borrowable product database interface
     private BorrowableProductDBIF borrowableProductDB;
->>>>>>> 4cfca297baed991c1dcca1d0d4314366cf4b0635
 
-    // Constructor: runs when we create an object of this class
+ // Constructor: runs when a new BorrowableProductCtr object is created
     public BorrowableProductCtr() throws DataAccessException {
-        this.borrowableProductDB = new BorrowableProductDB(); // Sets up the connection to the database
+    	// Sets up the connection to the borrowable product database
+        this.borrowableProductDB = new BorrowableProductDB();
     }
 
-<<<<<<< HEAD
  // This method gets a list of all borrowable products
-=======
-    // Finds all the products 
->>>>>>> 4cfca297baed991c1dcca1d0d4314366cf4b0635
     public List<BorrowableProduct> findAll() throws DataAccessException {
-        return borrowableProductDB.findAll(); // Gets all products from the database
+        return borrowableProductDB.findAll(); // Calls the database method to fetch all products
     }
 
-<<<<<<< HEAD
- // This method gets one product by its ID number
-=======
-    // Finds one product based on the productId
->>>>>>> 4cfca297baed991c1dcca1d0d4314366cf4b0635
+    //find one borrowable product using productId 
     public BorrowableProduct findByProductId(int productId) throws DataAccessException {
-        return borrowableProductDB.findByProductId(productId);
+        return borrowableProductDB.findByProductId(productId); // Calls the database to get the product with the given productId 
     }
-    
-   
- 
-    
 }
