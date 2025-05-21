@@ -375,7 +375,7 @@ public class InventoryGui extends JDialog {
 		setBounds(100, 100, 800, 600);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{53, 145, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 32};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 38, 0, 31, 0, 0, 0, 0, 0, 56, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 38, 0, 31, 0, 0, 0, 0, 0, 56, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		getContentPane().setLayout(gridBagLayout);
