@@ -10,9 +10,9 @@ import model.Product;
 import model.Reservation;
 import model.Table;
 
-public class BorrowableProductDB implements BorrowableProductDBIF {
-
-    // SQL-forespørgsel der henter alle lånbare produkter og forsøger at matche dem med BoardGame og Tabel
+public class BorrowableProductDB implements BorrowableProductDBIF {	
+	
+	// SQL statements for performing common database operations on the table.
     private static final String FIND_ALL_Q = 
         "SELECT bp.productId, bp.productName, bp.amount, " +
         "       COALESCE(bg.boardGameId, 0) AS boardGameId, " +
@@ -22,16 +22,12 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
         "FROM BorrowableProduct bp " +
         "LEFT JOIN BoardGame bg ON bp.productId = bg.productId " +
         "LEFT JOIN Tablee t ON bp.productId = t.productId";
-
-    // Samme som ovenfor, men filtrerer på ét bestemt produktId
     private static final String FIND_BY_ID_Q = FIND_ALL_Q + " WHERE bp.productId = ?";
-
-
-
+ // PreparedStatements to safely execute the SQL queries with parameters in the Java code
     private PreparedStatement findAll;
     private PreparedStatement findById;
 
-    // Forbereder forbindelsen og SQL-statements til databasen
+    // Prepares the connection and prepares the SQL statements to be executed. 
     public BorrowableProductDB() throws DataAccessException {
         try {
             Connection con = DBConnection.getInstance().getConnection();
@@ -42,7 +38,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
         }
     }
 
-    // Henter alle lånbare produkter fra databasen
+    // finds all the objects from the database
     @Override
     public List<BorrowableProduct> findAll() throws DataAccessException {
     	
@@ -54,7 +50,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
         }
     }
 
-    // Henter ét bestemt lånbart produkt ud fra produktId
+    // finds a specific object from the database based on productID 
     @Override
     public BorrowableProduct findByProductId(int productId) throws DataAccessException {
         try {
@@ -69,9 +65,8 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
         return null;
     }
 
-    // Går alle rækker i resultatet igennem og bygger en liste af produktobjekter
-
-
+	// Builds an object from the current row of the ResultSet.
+	// If fullAssociation is true, it fetches and sets the full object.
     private BorrowableProduct buildObject(ResultSet rs, boolean fullAssociation) throws SQLException {
     
 
@@ -113,7 +108,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
         return product;
     }
 
- // Inserts a new product into the database.
+	// Converts all rows in the ResultSet into a list of objects.
  	private List<BorrowableProduct> buildObjects(ResultSet rs, boolean fullAssociation) throws SQLException {
  		List<BorrowableProduct> res = new ArrayList<>(); 
  		while(rs.next()) {

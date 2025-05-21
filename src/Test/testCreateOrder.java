@@ -31,67 +31,8 @@ import model.Supplier;
 
 class testCreateOrder {
 	
-	
-	
-	private SaleOrder accountSmallAmount;
-	private SaleOrder accountBigAmount; 
 	private SaleOrderCtr saleOrderCtr; 
-	private Customer testCustomer; 
-	private SaleOrder saleOrder; 
-	private Product testProduct; 
-	private DBConnection dbConnection; 
-	private Connection con; 
 
-	
-	
-
-
-
-//	@BeforeAll
-//	static void setUpBeforeClass() throws Exception {
-//	}
-//
-//	@AfterAll
-//	static void tearDownAfterClass() throws Exception {
-//	}
-
-
-	
-	
-//	@Test 
-//	public void testRedraw() {
-//		System.out.println("testRedraw()"); 
-//		boolean result = a.withdraw(3000); 
-//		assertTrue(result); 
-//		double expBal = 0d; 
-//		assertEquals(expBal, a.getBalance(), 0d); 
-//	}
-	
-	
-//	@BeforeEach 
-//	void setUp() throws Exception {
-//
-//		
-//		
-//
-//		
-//		
-//dbConnection = DBConnection.getInstance();
-//		
-//	Connection con = dbConnection.getConnection(); 
-//		
-//		con.setAutoCommit(false);
-//		
-//		saleOrderCtr = new SaleOrderCtr();
-//
-//
-//		 
-//		
-//		
-//		
-//		
-//	}
-	
 	
 	@BeforeEach
 	void setUp() throws  DataAccessException {
@@ -100,22 +41,9 @@ class testCreateOrder {
 	    saleOrderCtr = new SaleOrderCtr();
 	} 
 	
-@AfterEach 
-void tearDown() throws  Exception {
 
-}
-
-
-@AfterAll
-static void tearDownAfterClass() throws Exception {
-
-}
-
-	
-	
-	
 @Test 
-void orderCompletionWithOneProduct() throws DataAccessException {
+void testOrderCompletionWithOneProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
@@ -151,7 +79,7 @@ void orderCompletionWithOneProduct() throws DataAccessException {
 }
 
 @Test 
-void orderCompletionWith2Products() throws DataAccessException {
+void testOrderCompletionWith2Products() throws DataAccessException {
 	
 	int studentId = 1234; 
 	int productId = 88; 
@@ -192,7 +120,7 @@ void orderCompletionWith2Products() throws DataAccessException {
 
 
 @Test 
-void noCustomerAdded() throws DataAccessException {
+void testNoCustomerAdded() throws DataAccessException {
 
 	int productId = 2; 
 
@@ -219,7 +147,7 @@ void noCustomerAdded() throws DataAccessException {
 
 
 @Test 
-void addMultipleInstancesOfOneProduct() throws DataAccessException {
+void testAddMultipleInstancesOfOneProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
@@ -256,7 +184,7 @@ void addMultipleInstancesOfOneProduct() throws DataAccessException {
 
 
 @Test 
-void invalidProduct() throws DataAccessException {
+void testInvalidProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
@@ -267,13 +195,7 @@ void invalidProduct() throws DataAccessException {
 	
 	
 	assertNull(foundProduct, "Product should be null");
-	
-	
 
-
-
-	
-	
 	
 	
 }
@@ -281,7 +203,7 @@ void invalidProduct() throws DataAccessException {
 
 
 @Test 
-void invalidCustomer() throws DataAccessException {
+void testInvalidCustomer() throws DataAccessException {
 
 	int studentId = 521; 
 	int productId = 6; 
@@ -298,9 +220,3 @@ void invalidCustomer() throws DataAccessException {
 
 
 }
-	
-	
-	
-
-
-

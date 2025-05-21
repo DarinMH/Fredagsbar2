@@ -38,35 +38,7 @@ class TestUpdateInventory {
 	private DBConnection dbConnection; 
 	private Connection con; 
 	private InventoryProduct inventoryProduct; 
-	
 
-	
-//	@BeforeEach 
-//	void setUp() throws DataAccessException {
-//		
-//		inventoryDB = new InventoryDB(); 
-//		productDB = new ProductDB(); 
-//		
-//		inventoryCtr = new InventoryCtr(); 
-//		
-//		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(88, 420); 
-//		
-//		inventoryProduct.setQuantityInStock(0);
-//		
-//		
-//
-//		
-//
-//	}
-//	
-//	
-//	@AfterEach
-//	void tearDown() throws DataAccessException {
-//		
-//		inventoryProduct.setQuantityInStock(0);
-//
-//	}
-	
 	
     @BeforeEach 
     void setUp() throws DataAccessException, SQLException {
@@ -97,19 +69,12 @@ class TestUpdateInventory {
 	
 	
 @Test 
-void addStock() throws DataAccessException, OverStockCapacity {
+void testAddStock() throws DataAccessException, OverStockCapacity {
 
 	
 	
 	int inventoryId = 420; 
 	int productId = 88; 
-	
-//	int expStudentId = 1234; 
-	
-	
-	
-	
-
 
 	
 	
@@ -117,11 +82,7 @@ void addStock() throws DataAccessException, OverStockCapacity {
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
 	int quantity = 1; 
-	
-//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
-	
-	
-	
+
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
@@ -140,14 +101,12 @@ void addStock() throws DataAccessException, OverStockCapacity {
 }
 
 @Test 
-void removeStock() throws DataAccessException {
+void testRemoveStock() throws DataAccessException {
 	
 	int inventoryId = 420; 
 	int productId = 88; 
 	
-//	int expStudentId = 1234; 
-	
-	
+
 	int quantity = 1; 
 	
 
@@ -156,11 +115,7 @@ void removeStock() throws DataAccessException {
 	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
-	
-//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
-	
-	
-	
+
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
@@ -179,31 +134,20 @@ void removeStock() throws DataAccessException {
 
 
 @Test 
-void addMultipleProducts() throws DataAccessException, OverStockCapacity {
+void testAddMultipleProducts() throws DataAccessException, OverStockCapacity {
 
 	
 	
 	int inventoryId = 420; 
 	int productId = 88; 
-	
-//	int expStudentId = 1234; 
-	
-	
-	
-	
 
-
-	
 	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
 	int quantity = 2; 
 	
-//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
-	
-	
-	
+
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
@@ -220,32 +164,18 @@ void addMultipleProducts() throws DataAccessException, OverStockCapacity {
 
 
 @Test 
-void removeMultipleProducts() throws DataAccessException {
+void testRemoveMultipleProducts() throws DataAccessException {
 
 	
 	
 	int inventoryId = 420; 
 	int productId = 88; 
-	
-//	int expStudentId = 1234; 
-	
-	
-	
-	
 
-
-	
-	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
 	int quantity = 2; 
-	
-//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
-	
-	
-	
-	
+
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
 	
@@ -259,23 +189,17 @@ void removeMultipleProducts() throws DataAccessException {
 	
 }
 
-
+// Test for an invalid inventory ID
 @Test 
-void invalidInventoryId() throws DataAccessException {
+void testInvalidInventoryId() throws DataAccessException {
 
 	
 	
 	int inventoryId = 421; 
 	int productId = 88; 
-	
-//	int expStudentId = 1234; 
-	
-	
 	int quantity = 2; 
 	
 
-
-	
 	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
@@ -284,9 +208,6 @@ InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId,
 	
 
 	
-	
-	
-	
 	assertNull(foundInventory, "Inventory should be null"); 
 	
 	
@@ -294,23 +215,14 @@ InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId,
 }
 
 
-
+//Test for an invalid Product ID
 @Test 
-void invalidProductId() throws DataAccessException {
+void testInvalidProductId() throws DataAccessException {
 
-	
-	
 	int inventoryId = 420; 
 	int productId = 89; 
-	
-//	int expStudentId = 1234; 
-	
-	
 	int quantity = 2; 
-	
 
-
-	
 	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
@@ -333,33 +245,18 @@ InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId,
 	
 }
 
-
+// Test for the result when the amount added is more than the inventory capacity
 @Test 
-void overCapacity() throws DataAccessException {
+void testOverCapacity() throws DataAccessException {
 
-	
-	
 	int inventoryId = 420; 
 	int productId = 88; 
-	
-//	int expStudentId = 1234; 
-	
-	
-	
-	
 
-
-	
-	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
 	int quantity = 5000001; 
-	
-//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
-	
-	
-	
+
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 	
@@ -370,18 +267,13 @@ void overCapacity() throws DataAccessException {
 	 
 	 assertTrue(foundInventory.getCapacity() < foundInventory.getCapacity() + quantity); 
 	
-
-//	Assertions.assertThrows(OverStockCapacity.class, () -> inventoryCtr.addStock(foundInventory, foundProduct, quantity)); 
-	 
-	 
-	
 	
 }
 
 
-
+// Test for when the there is less instances of the product than the quantity removed
 @Test 
-void underCapacity() throws DataAccessException {
+void testRemovingMoreThanInStock() throws DataAccessException {
 
 	
 	int inventoryId = 420; 
@@ -411,7 +303,7 @@ void underCapacity() throws DataAccessException {
 
 
 @Test
-void transferStock() throws DataAccessException {
+void testTransferStock() throws DataAccessException {
 	
 
 	int inventoryId = 420; 
