@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,6 +28,7 @@ import model.Inventory;
 import model.InventoryProduct;
 import model.Miscellaneous;
 import model.Product;
+import model.Reservation;
 import model.SaleOrder;
 import model.SaleOrderLine;
 
@@ -52,7 +54,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 
-public class KasseSystem extends JFrame {
+public class ReservationGui extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private LogInd logInd;
@@ -66,8 +68,8 @@ public class KasseSystem extends JFrame {
 	private Map<String, Integer> cartItems = new HashMap<>();
 	private Map<String, Double> itemPrices = new HashMap<>();
 	private JTextField textFieldOrderNr;
-	private SaleOrderCtr saleOrderCtr; 
-	private SaleOrder currentOrder;
+	private Reservation reservationCtr; 
+	private Reservation currentReservation;
 	private double total;
 	private JTextField textFieldCustomer;
 	private JTextField textFieldCustomerSearch;
@@ -90,7 +92,7 @@ public class KasseSystem extends JFrame {
 		});
 	}
 
-	public KasseSystem(SaleOrder saleOrder, LogInd login)  {
+	public ReservationGui(Reservation reservation)  {
 			
 	try {
 		inventoryCtr = new InventoryCtr();
@@ -100,15 +102,15 @@ public class KasseSystem extends JFrame {
 	} 
 	
 		try {
-			saleOrderCtr = new SaleOrderCtr();
-			if(currentOrder == null) {
-				this.currentOrder = saleOrderCtr.createSaleOrder(generateRandomNumber(), LocalDate.now(), false, null, null, 0, 0); 
+			reservationCtr = new ReservationCtr();
+			if(currentReservation == null) {
+				this.currentReservation = reservationCtr.createReservation(generateRandomNumber(), LocalDate.now(), 0, null, false, null); 
 			} else {
 //			this.currentOrder=currentOrder; 
 			
 			}
-			saleOrderCtr.setCurrentOrder(this.currentOrder);
-			total=currentOrder.getTotalPrice(); 
+			reservationCtr.setCurrentReservation(this.currentReservation);
+			total=currentReservation.getTotalPrice(); 
 			init(); 
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
@@ -257,7 +259,7 @@ public class KasseSystem extends JFrame {
 		JButton btnLager = new JButton("Lager");
 		btnLager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InventoryGui dialog = new InventoryGui(); 
+				InventoryGui dialog = new InventoryGui(null, null); 
 				dialog.setVisible(true);
 			}
 		});
@@ -860,24 +862,19 @@ public class KasseSystem extends JFrame {
 		
 	int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
 	
-	
 	Customer customer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	
-	if(customer == null) {
-		JOptionPane.showMessageDialog(this, "Kunde ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
-	       textFieldCustomerSearch.setText("Studie ID: "); 
-					textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
-	return; 
-	}
 		
 	saleOrderCtr.addCustomerToOrder(customer); 
 	
 	textFieldCustomer.setText(String.valueOf(currentOrder.getCustomer())); 
 	
-	JOptionPane.showMessageDialog(this, customer + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
 	
+	if(customer != null) {
+		System.out.println(currentOrder.getCustomer().getFirstName() + currentOrder.getCustomer().getLastName()); 
 	
-
+	} else {
+		System.out.println("Customer does not fucking exist"); 
+	}
 
 	
 	System.out.println(currentOrder.getCustomer()); 

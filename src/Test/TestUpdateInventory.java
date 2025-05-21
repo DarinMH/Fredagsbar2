@@ -73,20 +73,20 @@ class TestUpdateInventory {
         dbConnection = DBConnection.getInstance();
         con = dbConnection.getConnection();
         
-        // Start transaction
+
         con.setAutoCommit(false);
         
         inventoryDB = new InventoryDB(); 
         productDB = new ProductDB(); 
         inventoryCtr = new InventoryCtr(); 
         
-        // Get the test inventory product but don't modify it yet
+ 
         inventoryProduct = inventoryDB.findInventoryProduct(88, 420);
     }
     
     @AfterEach
     void tearDown() throws SQLException {
-        // Rollback transaction after each test
+
         if (con != null) {
             con.rollback();
             con.setAutoCommit(true);
@@ -384,28 +384,17 @@ void overCapacity() throws DataAccessException {
 void underCapacity() throws DataAccessException {
 
 	
-	
 	int inventoryId = 420; 
 	int productId = 88; 
-	
-//	int expStudentId = 1234; 
-	
-	
-	
-	
-
 
 	
 	
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
-	int quantity = 0; 
+	int quantity = 3; 
 	
-//	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(inventoryId, productId); 
-	
-	
-	
+
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 	
@@ -417,10 +406,48 @@ void underCapacity() throws DataAccessException {
 	 assertTrue(inventoryCtr.getInventoryStockForProduct(inventoryId, productId) <  quantity); 
 	
 
-//	Assertions.assertThrows(OverStockCapacity.class, () -> inventoryCtr.addStock(foundInventory, foundProduct, quantity)); 
-	 
-	 
 	
+}
+
+
+@Test
+void transferStock() throws DataAccessException {
+	
+
+	int inventoryId = 420; 
+	int inventoryId2 = 422; 
+	int productId = 88; 
+	
+
+	
+	Inventory foundInventoryTo = inventoryCtr.findByInventoryId(inventoryId); 
+	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
+	Inventory foundInventoryFrom = inventoryCtr.findByInventoryId(inventoryId2); 
+	
+	int quantity = 2; 
+	
+
+
+	 
+		InventoryProduct inventoryProductBeforeTo = inventoryCtr.findInventoryProduct(productId, inventoryId); 
+		InventoryProduct inventoryProductBeforeFrom = inventoryCtr.findInventoryProduct(productId, inventoryId2); 
+		
+		
+		int valueBeforeTo = inventoryProductBeforeTo.getQuantityInStock(); 
+		int valueBeforeFrom = inventoryProductBeforeFrom.getQuantityInStock(); 
+		
+		
+		 inventoryCtr.transferStock(foundInventoryTo, foundInventoryFrom, foundProduct, quantity); 
+		
+		
+		InventoryProduct inventoryProductAfterTo = inventoryCtr.findInventoryProduct(productId, inventoryId); 
+		InventoryProduct inventoryProductAfterFrom = inventoryCtr.findInventoryProduct(productId, inventoryId2);
+		
+
+	 
+	 
+		assertEquals(valueBeforeFrom - quantity, inventoryProductAfterFrom.getQuantityInStock()); 
+		assertEquals(valueBeforeTo + quantity, inventoryProductAfterTo.getQuantityInStock()); 
 	
 }
 

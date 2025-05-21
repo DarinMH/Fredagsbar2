@@ -75,7 +75,7 @@ public class TryMe {
 		Inventory inventory = i.findByInventoryId(1); 
 		
 		
-		i.removeStock(inventory, p, 33); 
+		i.addStock(inventory, p, 2); 
 		
 		
 		System.out.println(i.getTotalStock(22)); 

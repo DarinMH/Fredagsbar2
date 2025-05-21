@@ -161,6 +161,26 @@ public class InventoryCtr {
 	}
 	
 	
+	public void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
+		
+		
+		inventoryFrom = inventoryDB.findByInventoryId(inventoryFrom.getInventoryId(), false); 
+		
+		inventoryTo = inventoryDB.findByInventoryId(inventoryTo.getInventoryId(), false); 
+		
+		product = productCtr.findByProductId(product.getProductId()); 
+		
+		
+		removeStock(inventoryFrom, product, quantity); 
+		addStock(inventoryTo, product, quantity); 
+		
+	
+		
+		
+		
+	}
+	
+	
 //	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
 //		InventoryProduct ip = findInventoryProduct(productId, inventoryId);
 //		return ip != null ? ip.getQuantityInStock() : 0;
