@@ -835,9 +835,19 @@ public class KasseSystemBes extends JFrame {
 		
 			Customer customer = get(); 
 			
+			
+			if(customer == null) {
+				JOptionPane.showMessageDialog(null, "Kunde ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
+			       textFieldCustomerSearch.setText("Studie ID: "); 
+							textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
+			return; 
+			
+			}
+			
 			try {
 				saleOrderCtr.addCustomerToOrder(customer);
-				textFieldCustomer.setText(String.valueOf(customer));
+				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
+				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
 			} catch (DataAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

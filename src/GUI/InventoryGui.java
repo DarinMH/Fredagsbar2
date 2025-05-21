@@ -30,6 +30,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Button;
+import java.awt.Color;
+
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
@@ -225,63 +227,7 @@ public class InventoryGui extends JDialog {
 	
 	
 	
-//	private void transferStock() throws DataAccessException {
-//	    Product product = (Product) Category.getSelectedValue();
-//	    Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
-//	    Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
-//
-//	    if (product == null || from == null || to == null || from.equals(to) || flytMængdeTF.getText().trim().isEmpty()) {
-//	        JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-//	        return;
-//	    }
-//
-//	    try {
-//	        int quantity = Integer.parseInt(flytMængdeTF.getText());
-//
-//	        int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId());
-//	        
-//	        
-//
-//	        if (quantity > fromInventory) {
-//	            JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
-//	            return;
-//	        } 
-//	        
-//	        
-//	        int toInventory = inventoryCtr.getTotalInventoryStock(to.getCapacity()); 
-//	        
-//	        if(inventoryCtr.getTotalInventoryStock(to.getInventoryId()) + quantity > to.getCapacity() ) {
-//	        	 JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Fejl", JOptionPane.ERROR_MESSAGE);
-//	        	 return; 
-//	        } 
-//	    
-//	        	
-//	        
-//
-//	        inventoryCtr.removeStock(from, product, quantity);
-//	        inventoryCtr.addStock(to, product, quantity);
-//
-//	        updateStockInfo(product, (Inventory) inventoryBox.getSelectedItem()); // behold aktiv visning
-//	        flytMængdeTF.setText("");
-//
-//	        Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
-//	        InventoryProduct updated = inventoryCtr.findInventoryProduct(product.getProductId(), inventoryView.getInventoryId());
-//	        modelInventoryProduct.clear();
-//	        if (updated != null) {
-//	            modelInventoryProduct.addElement(updated);
-//	        }
-//
-//	        System.out.println("Flyttede " + quantity + " fra " + from.getLocation() + " til " + to.getLocation());
-//	        System.out.println("Fra-lager: " + inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId()));
-//	        System.out.println("Til-lager: " + inventoryCtr.getInventoryStockForProduct(to.getInventoryId(), product.getProductId()));
-//	        
-//	        
-//
-//	    } catch (NumberFormatException e) {
-//	        JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-//	    }
-//
-//	}
+
 	
 	
 	private void transferStock() throws DataAccessException {
@@ -295,6 +241,9 @@ public class InventoryGui extends JDialog {
 	    }
 
 	    try {
+	    	
+		       flytMængdeTF.setText("Studie ID: "); 
+		       flytMængdeTF.setForeground(new Color(153, 153, 153));
 	        int quantity = Integer.parseInt(flytMængdeTF.getText());
 
 	        int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId());
@@ -352,7 +301,7 @@ public class InventoryGui extends JDialog {
 		try {
 			int quantity = Integer.parseInt(removeStockTF.getText()); 
 			
-			if(quantity > inventoryCtr.getTotalStock(selectedProduct.getProductId())) {
+			if(quantity > inventoryCtr.getInventoryStockForProduct(inventory.getInventoryId(), selectedProduct.getProductId())) {
 				JOptionPane.showMessageDialog(this, "Så stor mængde af dette produkt findes slet ikke på lageret!", "Error", JOptionPane.ERROR_MESSAGE); 
 			} else {
 				inventoryCtr.removeStock(inventory, selectedProduct, quantity); 
@@ -364,55 +313,6 @@ public class InventoryGui extends JDialog {
 		}
 	}
 	
-//	private void flytVare() throws DataAccessException {
-//		Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
-//		Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
-//		
-//		if (selectedProduct == null || from == null || to == null || from.equals(to) || flytMængdeTF.getText().trim().isEmpty()) {
-//			JOptionPane.showMessageDialog(this, "Vælg forskellige lagre, produkt og mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-//			return;
-//		}
-//		
-//		try {
-//			int quantity = Integer.parseInt(flytMængdeTF.getText());
-//			
-//			int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), selectedProduct.getProductId());
-//			
-//			if (quantity > fromInventory) {
-//				JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
-//				return;
-//			}
-//			
-//			int toInventory = inventoryCtr.getTotalInventoryStock(to.getInventoryId());
-//			
-//			if (toInventory + quantity > to.getCapacity()) {
-//				JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Fejl", JOptionPane.ERROR_MESSAGE);
-//				return;
-//			}
-//			
-//			inventoryCtr.removeStock(from, selectedProduct, quantity);
-//			inventoryCtr.addStock(to, selectedProduct, quantity);
-//			
-//			updateStockInfo(selectedProduct, (Inventory) inventoryBox.getSelectedItem()); // behold aktiv visning
-//			flytMængdeTF.setText("");
-//			
-//			Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
-//			if (inventoryView != null) {
-//				InventoryProduct updated = inventoryCtr.findInventoryProduct(selectedProduct.getProductId(), inventoryView.getInventoryId());
-//				modelInventoryProduct.clear();
-//				if (updated != null) {
-//					modelInventoryProduct.addElement(updated);
-//				}
-//			}
-//			
-//			System.out.println("Flyttede " + quantity + " fra " + from.getLocation() + " til " + to.getLocation());
-//			System.out.println("Fra-lager: " + inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), selectedProduct.getProductId()));
-//			System.out.println("Til-lager: " + inventoryCtr.getInventoryStockForProduct(to.getInventoryId(), selectedProduct.getProductId()));
-//			
-//		} catch (NumberFormatException e) {
-//			JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
-//		}
-//	}
 	
 	private void updateStockInfo(Product product, Inventory inventory) throws DataAccessException {
 		if (product != null) {
@@ -429,17 +329,10 @@ public class InventoryGui extends JDialog {
 	public void init() {
 		setBounds(100, 100, 804, 600);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-<<<<<<< HEAD
-		gridBagLayout.columnWidths = new int[]{53, 145, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 32};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 38, 0, 31, 0, 0, 0, 0, 0, 56, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-=======
 		gridBagLayout.columnWidths = new int[]{0, 25, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 38, 0, 31, 0, 0, 0, 0, 0, 56, 0, 0, 0, 0, 41, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
->>>>>>> dc79441b59ec94aee3094c55e0cfbcb5d67866b4
 		getContentPane().setLayout(gridBagLayout);
 		
 		JLabel lblNewLabel = new JLabel("Lager");

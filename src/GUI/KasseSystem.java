@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 import DB.DBConnection;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
@@ -130,7 +132,7 @@ public class KasseSystem extends JFrame {
 		setSize(953, 541);
 
 		gridBagLayout.columnWidths = new int[] {25, 10, 25, 120, 200, 25, 140, 140, 10, 25 };
-		gridBagLayout.rowHeights = new int[] { 74, 30, 31, 0, 31, 0, 31, 12, 0, 0, 0, 0, 18, 18, 0, 0, 38, 0 };
+		gridBagLayout.rowHeights = new int[] { 74, 30, 31, 0, 31, 0, 31, 12, 0, 0, 0, 0, 18, 18, 60, 0, 38, 0 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
 				1.0, 0.0, 0.0, Double.MIN_VALUE };
@@ -423,7 +425,7 @@ public class KasseSystem extends JFrame {
 			            System.out.println("Dato: " + currentOrder.getDate());   
 			    		List<SaleOrderLine> orderLines = currentOrder.getOrderLines(); 
 			    		for(SaleOrderLine orderLine: orderLines) {
-			    			System.out.println(orderLine.getProduct() + ":" + orderLine.getPrice()); 
+			    			System.out.println(orderLine.getQuantity() + "x " + orderLine.getProduct() + ": " + orderLine.getPrice() + "kr"); 
 			    		}
 			    		
 			    		
@@ -433,10 +435,7 @@ public class KasseSystem extends JFrame {
 						}
 						
 						System.out.println("Kunde: " +name); 
-//						for(String orderLine : ) {
-//							System.out.println(orderLine); 
-//							
-//						}
+
 
 
 			            System.out.println("***********************"); 
@@ -558,6 +557,7 @@ public class KasseSystem extends JFrame {
 	private void loadMisc() {
 	panelMisc.removeAll();
 	
+	   panelMisc.setLayout(new BoxLayout(panelMisc, BoxLayout.Y_AXIS));
 	
 	try {
 		List<Miscellaneous> miscellaneous = saleOrderCtr.getProductCtr().findAllMiscellaneous(); 
@@ -566,7 +566,7 @@ public class KasseSystem extends JFrame {
 			JButton miscButton = new JButton(misc.getProductName() + " - " + misc.getSalePrice() + " kr"); 
 			miscButton.addActionListener(e -> {
 				try {
-					addToOrder(misc.getProductName(), misc.getSalePrice()); 
+					addProductToOrder(misc.getProductName(), misc.getSalePrice()); 
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(),
 						"Error", JOptionPane.ERROR_MESSAGE); 
@@ -602,7 +602,7 @@ public class KasseSystem extends JFrame {
 			drink.getSalePrice() + " kr"); 
 				productButton.addActionListener(e -> {
 					try { 
-						addToOrder(drink.getProductName(), 	drink.getSalePrice());
+						addProductToOrder(drink.getProductName(), 	drink.getSalePrice());
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(),
 								"Error", JOptionPane.ERROR_MESSAGE); 
@@ -627,7 +627,7 @@ public class KasseSystem extends JFrame {
 	}
 	
 	
-	private void addToOrder(String productName, double price) throws DataAccessException {
+	private void addProductToOrder(String productName, double price) throws DataAccessException {
 		
 		 System.out.println("[DEBUG] Current order: " + this.currentOrder);
 		    System.out.println("[DEBUG] Current order number: " + (this.currentOrder != null ? this.currentOrder.getOrderNumber() : "null"));
@@ -852,35 +852,68 @@ public class KasseSystem extends JFrame {
 	private int generateRandomNumber() {
 		return 100000 + new java.util.Random().nextInt(900000); 
 	}
-	
-	
-	
-	
+
 	private void findByStudentId() throws DataAccessException {
 		
 	int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
 	
 	
-	Customer customer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	
-	if(customer == null) {
-		JOptionPane.showMessageDialog(this, "Kunde ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
-	       textFieldCustomerSearch.setText("Studie ID: "); 
-					textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
-	return; 
-	}
+	SwingWorker<Customer, Void>  worker = new SwingWorker<Customer, Void>() {
 		
-	saleOrderCtr.addCustomerToOrder(customer); 
+		
+		@Override
+		protected Customer doInBackground() throws Exception {
+//			Thread.sleep(10000);
+			return saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
+		}
+		@Override
+		protected void done() {
+			try {
+		
+			Customer customer = get(); 
+			
+			
+			if(customer == null) {
+				JOptionPane.showMessageDialog(null, "Kunde ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
+			       textFieldCustomerSearch.setText("Studie ID: "); 
+							textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
+			return; 
+			
+			}
+			
+			try {
+				saleOrderCtr.addCustomerToOrder(customer);
+				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
+				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+			} catch (DataAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 	
-	textFieldCustomer.setText(String.valueOf(currentOrder.getCustomer())); 
-	
-	JOptionPane.showMessageDialog(this, customer + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+			
+			
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			
+		} catch (ExecutionException e) {          
+            e.printStackTrace();
+        }
+			}
+		
+	 
+	 	
+	 
+	};
+
 	
 	
 
-
 	
-	System.out.println(currentOrder.getCustomer()); 
+	
+	worker.execute(); 
+	
+
 	
 	}
 	

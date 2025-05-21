@@ -74,9 +74,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
 
     private BorrowableProduct buildObject(ResultSet rs, boolean fullAssociation) throws SQLException {
     
-//        int boardGameId = rs.getInt("boardGameId");
-//        int tableNr = rs.getInt("tableNr");.
-    	
+
      String productType = rs.getString("productType"); 
         BorrowableProduct product = null;
 

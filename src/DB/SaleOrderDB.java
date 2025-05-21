@@ -267,20 +267,20 @@ import model.Buyer;
 	
 	}
 
-	@Override
-	public void insertSaleOrderBasic(SaleOrder saleOrder, boolean fullAssociation) throws DataAccessException {
-		// TODO Auto-generated method stub
-		try {
-			insertSaleOrderBasic.setInt(1, saleOrder.getOrderNumber());
-			insertSaleOrderBasic.executeUpdate(); 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new DataAccessException(e, "Could not insert order"); 
-		} 
-		
-	
-		
-	}
+//	@Override
+//	public void insertSaleOrderBasic(SaleOrder saleOrder, boolean fullAssociation) throws DataAccessException {
+//		// TODO Auto-generated method stub
+//		try {
+//			insertSaleOrderBasic.setInt(1, saleOrder.getOrderNumber());
+//			insertSaleOrderBasic.executeUpdate(); 
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			throw new DataAccessException(e, "Could not insert order"); 
+//		} 
+//		
+//	
+//		
+//	}
 
 	@Override
 	public void update(SaleOrder saleOrder, boolean fullAssociation) throws DataAccessException {
