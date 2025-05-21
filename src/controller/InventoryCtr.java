@@ -95,7 +95,7 @@ public class InventoryCtr {
 //	}
 	
 	
-	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
 		
 		
 
@@ -106,21 +106,10 @@ public class InventoryCtr {
 		product = productCtr.findByProductId(product.getProductId()); 
 		
 		
-//		InventoryProduct inventoryProduct = new InventoryProduct(inventory, quantity, product); 
 		
 		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
 		
-
 		
-		
-
-	    
-	    // Check capacity (THIS IS WHAT YOU WERE MISSING)
-
-	
-		
-	
-//		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
 		
 	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
 		
@@ -129,6 +118,9 @@ public class InventoryCtr {
 	return inventoryProduct; 
 	
 		}
+	
+	
+
 		
 	
 	
@@ -201,6 +193,9 @@ public class InventoryCtr {
 
 		return inventoryProduct; 
 	}
+	
+	
+	
 
 	
 	

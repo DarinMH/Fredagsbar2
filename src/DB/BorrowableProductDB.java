@@ -48,7 +48,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
     	
         try {
             ResultSet rs = findAll.executeQuery();
-            return buildObjects(rs);
+            return buildObjects(rs, false);
         } catch (SQLException e) {
             throw new DataAccessException(e, "Kunne ikke hente alle lånbare produkter");
         }
@@ -61,7 +61,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
             findById.setInt(1, productId);
             ResultSet rs = findById.executeQuery();
             if (rs.next()) {
-                return buildObject(rs);
+                return buildObject(rs, false);
             }
         } catch (SQLException e) {
             throw new DataAccessException(e, "Kunne ikke finde produkt med ID = " + productId);
