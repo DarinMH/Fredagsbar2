@@ -9,6 +9,9 @@ public class Buyer extends Staff{
 		this.email=email; 
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+	// Getters and setters
 
 	public String getEmail() {
 		return email;

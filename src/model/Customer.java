@@ -10,7 +10,7 @@ public class Customer {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private int amount; 
+	private int numberOfCustomers; 
 	public Customer() {
 		
 	}
@@ -19,14 +19,17 @@ public class Customer {
 	this.studentId = studentId;;
 	}
 	
-	public Customer(int studentId, String firstName, String lastName, String email, int amount) {
+	public Customer(int studentId, String firstName, String lastName, String email, int numberOfCustomers) {
 		this.studentId = studentId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.amount=amount; 
+		this.numberOfCustomers=numberOfCustomers; 
 
 	}
+	
+	
+	// Getters and setters
 	public int getStudentId() {
 		return studentId;
 	}
@@ -52,15 +55,15 @@ public class Customer {
 		this.email = email;
 	}
 	
-	public void setAmount (int amount) {
-		this.amount=amount; 
+	public void setNumberOfCustomers (int numberOfCustomers) {
+		this.numberOfCustomers=numberOfCustomers; 
 	} 
 	
-	public int getAmount() {
-		return amount;
+	public int getNumberOfCustomers() {
+		return numberOfCustomers;
 	}
-	public void setCustomerCategory(int amount) {
-		this.amount = amount;
+	public void setCustomerCategory(int numberOfCustomers) {
+		this.numberOfCustomers = numberOfCustomers;
 	}	
 public int getCustomerCategory (int amount) {
 	return amount; 

@@ -12,6 +12,9 @@ public class Supplier {
 		this.email = email;
 		this.phoneNr = phoneNr;
 	}
+	
+	
+	// Getters and setters
 
 	public int getSupplierId() {
 		return supplierId;

@@ -115,13 +115,13 @@ static void tearDownAfterClass() throws Exception {
 	
 	
 @Test 
-void test1() throws DataAccessException {
+void orderCompletionWithOneProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
 	int productId = 88; 
 	
-//	int expStudentId = 1234; 
+
 
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
@@ -151,7 +151,7 @@ void test1() throws DataAccessException {
 }
 
 @Test 
-void test2() throws DataAccessException {
+void orderCompletionWith2Products() throws DataAccessException {
 	
 	int studentId = 1234; 
 	int productId = 88; 
@@ -194,15 +194,11 @@ void test2() throws DataAccessException {
 @Test 
 void noCustomerAdded() throws DataAccessException {
 
-	
-//	int studentId = 696969; 
 	int productId = 2; 
-	
-//	int expStudentId = 1234; 
 
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
-//	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
+
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
@@ -212,19 +208,12 @@ void noCustomerAdded() throws DataAccessException {
 
 	
 	order.addOrderline(saleOrderLine);
-	
-//	saleOrderCtr.addCustomerToOrder(foundCustomer); 
-	
-	
+
 	
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
-	
 
-//	assertEquals(studentId, foundCustomer.getStudentId()); 
 	assertEquals(productId, foundProduct.getProductId());
-	
-	
-	
+
 	
 }
 
@@ -236,7 +225,6 @@ void addMultipleInstancesOfOneProduct() throws DataAccessException {
 	int studentId = 1234; 
 	int productId = 2; 
 	
-//	int expStudentId = 1234; 
 
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
@@ -273,10 +261,7 @@ void invalidProduct() throws DataAccessException {
 	
 	int studentId = 1234; 
 	int productId = 6; 
-	
-//	int expStudentId = 1234; 
 
-	
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
@@ -298,26 +283,15 @@ void invalidProduct() throws DataAccessException {
 @Test 
 void invalidCustomer() throws DataAccessException {
 
-	
 	int studentId = 521; 
 	int productId = 6; 
-	
-//	int expStudentId = 1234; 
 
-	
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	
 	assertNull(foundCustomer, "Customer should be null");
-	
-	
 
-
-
-	
-	
-	
 	
 }
 

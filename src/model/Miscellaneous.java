@@ -8,6 +8,9 @@ public class Miscellaneous extends Product {
 		super (productName, purchasePrice, salePrice, productId, productType, supplier);
 		this.amount = amount;
 	}
+	
+	
+	// Getters and setters
 
 	public int getAmount() {
 		return amount;

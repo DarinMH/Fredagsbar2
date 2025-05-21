@@ -19,6 +19,9 @@ public class PurchaseOrder {
 		this.discountPercentage = discountPercentage;
 		this.buyer = buyer;
 	}
+	
+	
+	// Getters and setters
 
 
 

@@ -27,8 +27,15 @@ public class InventoryCtr {
 	}
 	
 	
+	
+	// methods that calls the methods from the InventoryDB class
+	
 	public List<Inventory> findAll() throws DataAccessException {
 		return inventoryDB.findAll(false); 
+	}
+	
+	public List<InventoryProduct> findAllInventoryProduct() throws DataAccessException {
+		return inventoryDB.findAllInventoryProduct(); 
 	}
 	
 	public Inventory findByInventoryId(int inventoryId) throws DataAccessException {
@@ -46,71 +53,17 @@ public class InventoryCtr {
 	public List<InventoryProduct> findInventoryProductByInventoryId(int inventoryId) throws DataAccessException {
 		return inventoryDB.findInventoryProductByInventoryId(inventoryId); 
 	}
-//	
-//	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
-//		
-//		try {
-//		inventory = findByInventoryId(inventory.getInventoryId()); 
-//		
-//		product = productCtr.findByProductId(product.getProductId()); 
-//		
-//		
-////		InventoryProduct inventoryProduct = new InventoryProduct(inventory, quantity, product); 
-//		
-//		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
-//		
-//
-//		
-//	    
-//	
-//	    // Check if new quantity exceeds capacity
-//			int newQuantity = inventoryProduct.getQuantityInStock() + quantity;
-//	    if (newQuantity > inventory.getCapacity()) {
-//	    	  throw new DataAccessException(
-//	                  new RuntimeException("Capacity exceeded"), 
-//	                  "Cannot add " + quantity + " units. Max capacity: " + inventory.getCapacity()
-//	              );
-//	     
-//	    }
-//		
-//	
-////		int newQuantity = inventoryProduct.getQuantityInStock() + quantity; 
-//		
-//	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
-//		
-//	inventoryDB.updateInventoryProduct(inventoryProduct);
-//	
-//	return inventoryProduct; 
-//	
-//	} catch (SQLException e) {
-//        // Handle ACTUAL database errors
-//        throw new DataAccessException(e, "Database error while updating stock");
-//    }
-//	
-//		
-//
-//
-//		
-//		
-//	}
 	
 	
 	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
-		
-		
+
+		// Method that removes the stock from an inventory 
+		inventory = findByInventoryId(inventory.getInventoryId()); 	
+		product = productCtr.findByProductId(product.getProductId()); 
+		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
 
 		
-		
-		inventory = findByInventoryId(inventory.getInventoryId()); 
-		
-		product = productCtr.findByProductId(product.getProductId()); 
-		
-		
-		
-		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
-		
-		
-		
+		// The quantity in stock are being changed based on the quantity
 	inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() + quantity); 
 		
 	inventoryDB.updateInventoryProduct(inventoryProduct);
@@ -119,20 +72,47 @@ public class InventoryCtr {
 	
 		}
 	
+	// Method that transfers stock from one inventory to another. 
 	
+	// inventoryFrom is the inventory where stock is being removed from
+	
+	// inventoryTo is the inventory where stock is being added to
+	
+	public void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
+		
+		// Method that removes the stock from an inventory 
+		inventoryFrom = inventoryDB.findByInventoryId(inventoryFrom.getInventoryId(), false); 
+		inventoryTo = inventoryDB.findByInventoryId(inventoryTo.getInventoryId(), false); 
+		product = productCtr.findByProductId(product.getProductId()); 
+		
+		
+		// removeStock is being called, and the inventoryFrom object is the parameter. 
+		removeStock(inventoryFrom, product, quantity); 
+		// addStock is being called and the inventoryTo object is the parameter. 
+		addStock(inventoryTo, product, quantity); 
 
 		
+	}
 	
+	// Method that removes the stock from an inventory 
 	
-//	public int getTotalStock(int productId) throws DataAccessException {
-//		int total = 0; 
-//		Product p = productCtr.findByProductId(getTotalStock(productId)); 
-//		
-//		for(InventoryProduct iP : products) {
-//			total += iP.getQuantityInStock(); 
-//		}
-//		return total; 
-//	}
+	public InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+		
+//		The objects used in the method are being found
+		
+		inventory = findByInventoryId(inventory.getInventoryId()); 
+		product = productCtr.findByProductId(product.getProductId()); 
+		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
+		
+		
+		// The quantity in stock are being changed based on the quantity
+
+		inventoryProduct.setQuantityInStock(inventoryProduct.getQuantityInStock() - quantity);
+
+		inventoryDB.updateInventoryProduct(inventoryProduct);
+
+		return inventoryProduct; 
+	}
 	
 	
 	public int getTotalStock(int productId) throws DataAccessException {
@@ -160,75 +140,18 @@ public class InventoryCtr {
 		
 	}
 	
-	
-	public void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
-		
-		
-		inventoryFrom = inventoryDB.findByInventoryId(inventoryFrom.getInventoryId(), false); 
-		
-		inventoryTo = inventoryDB.findByInventoryId(inventoryTo.getInventoryId(), false); 
-		
-		product = productCtr.findByProductId(product.getProductId()); 
-		
-		
-		removeStock(inventoryFrom, product, quantity); 
-		addStock(inventoryTo, product, quantity); 
-		
-	
-		
-		
-		
-	}
-	
-	
-//	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
-//		InventoryProduct ip = findInventoryProduct(productId, inventoryId);
-//		return ip != null ? ip.getQuantityInStock() : 0;
-//
-//	}
-	
+
 	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
 		InventoryProduct ip = findInventoryProduct(productId, inventoryId);
 		return ip.getQuantityInStock(); 
 
 	}
 
-	
-	
-	public List<InventoryProduct> findAllInventoryProduct() throws DataAccessException {
-		return inventoryDB.findAllInventoryProduct(); 
-	}
-	
-	public InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
-		inventory = findByInventoryId(inventory.getInventoryId()); 
-		product = productCtr.findByProductId(product.getProductId()); 
 
-		InventoryProduct inventoryProduct = inventoryDB.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
-
-		int newQuantity = inventoryProduct.getQuantityInStock() - quantity;
-
-		inventoryProduct.setQuantityInStock(newQuantity);
-
-		inventoryDB.updateInventoryProduct(inventoryProduct);
-
-		return inventoryProduct; 
-	}
-	
-	
-	
-
-	
-	
-	
+	// getter for the productCtr, so the ProductCtr methods can be used in the UI
 	public ProductCtr getProductCtr() {
 		return productCtr; 
 	}
-	
-	
-
-	
-	
-	
 	
 
 }

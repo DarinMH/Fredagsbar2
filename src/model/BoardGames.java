@@ -4,15 +4,16 @@ public class BoardGames extends BorrowableProduct{
 	
 
 	private double compensationalPrice;
-	private Reservation reservation;
 	
 	public BoardGames(double compensationalPrice, Reservation reservation, int amount, String productName, int productId,
 			String productType, boolean status) {
 		super(amount, productName, productId, reservation, productType, status);
 	
 		this.compensationalPrice = compensationalPrice;
-		this.reservation = reservation;
 	}
+	
+	
+	// Getters and setters
 
 
 

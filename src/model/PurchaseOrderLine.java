@@ -12,6 +12,9 @@ public class PurchaseOrderLine {
 		this.purchaseOrder = purchaseOrder;
 		this.product = product;
 	}
+	
+	
+	// Getters and setters
 
 	public int getQuantity() {
 		return quantity;

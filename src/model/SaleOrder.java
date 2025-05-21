@@ -34,6 +34,9 @@ public class SaleOrder {
 		orderLines = new ArrayList<>(); 
 
 	}
+	
+	
+	// Getters and setters
 
 	public int getOrderNumber() {
 		return orderNumber;
@@ -76,31 +79,9 @@ public class SaleOrder {
 		this.staff = staff;
 	}
 
-//	public double getTotalPrice() {
-//		
-//		double sum = 0;
-//		
-//		
-//		
-//		for(SaleOrderLine orderLine: orderLines) {	
-//			 
-//			if(customer == null || customer.getAmount() < 10) {
-//				sum += orderLine.getPrice();
-//				
-//			} else { 		
-//				sum += orderLine.getPrice()*0.8; 
-//			
-//			}
-//		}
-//		
-//
-//		
-//	
-//		return sum;
-//	}
-	
-	
 	public double getTotalPrice() {
+		
+//		Total price is calculated by adding all the prices of the order lines together, by a loop:
 		double sum = 0; 
 		
 		for(SaleOrderLine orderLine : orderLines) {
@@ -115,35 +96,22 @@ public class SaleOrder {
 		this.totalPrice = totalPrice;
 	}
 	
+	public List<SaleOrderLine> getOrderLines() {
+	return orderLines; 
+}
 	
-//	public double getDiscountPercentage() {
-//		discountPercentage = 0; 
-//		
-//		
-//		
-//		if(customer == null && totalPrice >= 100) {
-//			discountPercentage = 0.90;
-//		} else if (customer != null || customer.getAmount() >= 10) {
-//			discountPercentage = 0.90;
-//		} else if ((customer != null || customer.getAmount() >= 10) && totalPrice >= 100) {
-//			discountPercentage = 0.80; 
-//		} 
-//		else {
-//			discountPercentage = 1;
-//		}
-//		
-//		return discountPercentage; 
-//	}
 	
+//	The discount percentage is being calculated in this method, based on different factors: 
 	
 	public double getDiscountPercentage() {
 		discountPercentage = 0; 
 		
 		
-		
+// the discountPercentage value is the one thats being multiplied with the total price of the order. 
+//		So if the discount percentage is 0, you multiply the total price with 1, since it just means that the total price does not change. 
 		if((customer == null && totalPrice < 100) || (customer != null && customer.getAmount() < 10 && totalPrice < 100)) {
 			discountPercentage = 1; 
-			
+//		
 		} else if (customer != null && customer.getAmount() >= 10 && totalPrice >= 100) {
 			discountPercentage = 0.80; 
 		} else if((customer == null && totalPrice >= 100) || (customer != null && customer.getAmount() >= 10)) {
@@ -155,24 +123,17 @@ public class SaleOrder {
 	}
 	
 	
-
-	
 	public void setDiscountPercentage(double discountPercentage) {
 		this.discountPercentage=discountPercentage; 
 	}
+	
 	
 	
 	public void addOrderline(SaleOrderLine orderLine) {
 		orderLines.add(orderLine); 
 	}
 	
-	public List<SaleOrderLine> getOrderLines() {
-	return orderLines; 
-}
-	
-//	public SaleOrderLine getOrderLine() {
-//		return saleOrderLine; 
-//	}
+
 
 
 }

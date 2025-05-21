@@ -14,6 +14,9 @@ public class Drink extends Product {
 		this.alcoholPercentage = alcoholPercentage;
 		this.brand = brand;
 	}
+	
+	
+	// Getters and setters
 	public String getCategory() {
 		return category;
 	}
