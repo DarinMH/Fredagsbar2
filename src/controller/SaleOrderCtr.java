@@ -16,7 +16,7 @@ import model.SaleOrder;
 import model.SaleOrderLine;
 import model.Staff;
 
-
+//This class controls everything related to sales orders
 public class SaleOrderCtr {
 private SaleOrderDBIF saleOrderDB; 
 private CustomerCtr customerCtr; 
@@ -25,18 +25,16 @@ private SaleOrder currentSaleOrder;
 private List<SaleOrderLine> orderLines; 
 
 
-
+//Constructor: runs when a new SaleOrderCtr object is created
 public SaleOrderCtr() throws DataAccessException { 
 	
 	customerCtr = new CustomerCtr(); 
 	productCtr = new ProductCtr(); 
 	this.saleOrderDB = new SaleOrderDB(); 
 	orderLines = new ArrayList<>(); 
-	
 }
 
-
-
+//Confirms the current order and updates it in the database
 public boolean confirmOrder() throws DataAccessException {
 
 	this.currentSaleOrder.setStatus(true);
@@ -50,60 +48,46 @@ public boolean confirmOrder() throws DataAccessException {
 	return false; 
 }
 
-
-// finding all the orders
+//Gets all sale orders from the database
 public List<SaleOrder> findAll() throws DataAccessException {
 return saleOrderDB.findAll(false); 
 
 }
 
-
-
+//Creates a new sale order with all needed details
 public SaleOrder createSaleOrder(int orderNumber, LocalDate date,  boolean status, 
 		Customer customer, Staff staff, double totalPrice, double discountPercentage) throws DataAccessException { 
-	 
+	 // Creates a new SaleOrder object
 	 SaleOrder newSaleOrder = new SaleOrder(orderNumber, date, status,  customer, staff, totalPrice, discountPercentage); 
 
 	 
-	 saleOrderDB.insertSaleOrder(newSaleOrder, false);
-	 this.currentSaleOrder = newSaleOrder; 
+	 saleOrderDB.insertSaleOrder(newSaleOrder, false); // Saves the new order to the database
+	 this.currentSaleOrder = newSaleOrder; // Sets it as the current working order
 	 
-
 	 
-	return newSaleOrder; 
+	return newSaleOrder; // Returns the new order
 }
 
-
-//public SaleOrder createBasicSaleOrder(int orderNumber) throws DataAccessException {
-//	
-//	SaleOrder saleOrder = createSaleOrder(orderNumber, LocalDate.now(), false, null, null, 0, 0); 
-//	
-//	saleOrderDB.insertSaleOrderBasic(saleOrder, false);
-//	
-//	return saleOrder; 
-//	
-//	
-//}
-
+//Finds a sale order by its number
 public SaleOrder findByOrderNumber(int orderNumber) throws DataAccessException {
 	
 	return saleOrderDB.findByOrderNumber(orderNumber, true);
 }
 
+// Sets the current sale order we are working on
 public void setCurrentOrder(SaleOrder order) {
-	this.currentSaleOrder=order; 
+	this.currentSaleOrder=order; //Stores the given order
 }
-
+//Deletes an order line (a product in an order)
 public void deleteOrderLine(SaleOrderLine line) throws DataAccessException {
-    saleOrderDB.deleteOrderLine(line); // You must create this in SaleOrderDB
+    saleOrderDB.deleteOrderLine(line); //Removes the product from the order in the database 
 }
-
-
-
+//Adds a product and quantity to the current sale order
 public void addProductToOrder(Product product, int quantity) throws DataAccessException {
-    List<SaleOrderLine> lines = currentSaleOrder.getOrderLines();
-    SaleOrderLine existingLine = null;
+    List<SaleOrderLine> lines = currentSaleOrder.getOrderLines(); //Get current order line 
+    SaleOrderLine existingLine = null; // used to check if product already exists in the order
 
+ // Looks through each line to see if the product is already in the order
     for (SaleOrderLine line : lines) {
         if (line.getProduct().getProductId() == product.getProductId()) {
             existingLine = line;
@@ -111,62 +95,61 @@ public void addProductToOrder(Product product, int quantity) throws DataAccessEx
         }
     }
 
+ // If the product is already in the order, just update the quantity
     if (existingLine != null) {
         existingLine.setQuantity(existingLine.getQuantity() + quantity);
-        saleOrderDB.updateOrderLine(existingLine, false);
+        saleOrderDB.updateOrderLine(existingLine, false); 
+        
+     // If the product is not in the order, create a new line
     } else {
         SaleOrderLine newLine = new SaleOrderLine(currentSaleOrder, product, quantity);
-        saleOrderDB.insertSaleOrderLine(newLine, false);
-        lines.add(newLine);
+        saleOrderDB.insertSaleOrderLine(newLine, false); // Saves the new line in the database
+        lines.add(newLine); //Adds the new line to the list 
     }
 }
 
-
-
-
+// Adds a customer to the current order
 public Customer addCustomerToOrder(Customer customer) throws DataAccessException {
-
+	customer = customerCtr.findByStudentId(customer.getStudentId()); //Finds full customer information 
 	
-	customer = customerCtr.findByStudentId(customer.getStudentId());
+	this.currentSaleOrder.setCustomer(customer); //Sets the customer in the order 
 	
-	this.currentSaleOrder.setCustomer(customer);
-	
-	saleOrderDB.update(currentSaleOrder, false);
+	saleOrderDB.update(currentSaleOrder, false); //Updates the order in the database 
 	
 	return customer; 
 	
 }
 
+//Updates the whole order and its lines in the database
 public void updateOrder(SaleOrder currentOrder) throws DataAccessException {
-	saleOrderDB.update(currentSaleOrder, false);
+	saleOrderDB.update(currentSaleOrder, false); // Updates the order itself
 	
 	for(SaleOrderLine orderLine : currentSaleOrder.getOrderLines()) {
-		saleOrderDB.updateOrderLine(orderLine, false);
+		saleOrderDB.updateOrderLine(orderLine, false); // Updates each product line
 	}
 }
 
-
+//Updates a single order line in the order 
 public void updateOrderLine(SaleOrderLine orderLine) throws DataAccessException {
 	saleOrderDB.updateOrderLine(orderLine, false);
 }
 
+//Returns the current sale order object 
 public SaleOrder getCurrentSaleOrder() {
 
 	return this.currentSaleOrder; 
 	
 }
 
-
+//Returns the product controller 
 public ProductCtr getProductCtr() {
 	return this.productCtr; 
 }
 
+//Returns the customer controller
 public CustomerCtr getCustomerCtr() {
 	return this.customerCtr; 
 }
-
-
-
 
 }
  
