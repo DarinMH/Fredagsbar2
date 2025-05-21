@@ -30,8 +30,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Button;
-import java.awt.Color;
-
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
@@ -67,6 +65,7 @@ public class InventoryGui extends JDialog {
 	private JComboBox<Inventory> comboBoxFraLager;
 	private JComboBox<Inventory> comboBoxTilLager;
 	private JTextField flytMængdeTF;
+	private JLabel lblNewLabel_2;
 
 	/**
 	 * Launch the application.
@@ -242,8 +241,7 @@ public class InventoryGui extends JDialog {
 
 	    try {
 	    	
-		       flytMængdeTF.setText("Studie ID: "); 
-		       flytMængdeTF.setForeground(new Color(153, 153, 153));
+	    	
 	        int quantity = Integer.parseInt(flytMængdeTF.getText());
 
 	        int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId());
@@ -396,6 +394,13 @@ public class InventoryGui extends JDialog {
 		gbc_maxCapacityTF.gridy = 2;
 		getContentPane().add(maxCapacityTF, gbc_maxCapacityTF);
 		maxCapacityTF.setColumns(10);
+		
+		lblNewLabel_2 = new JLabel("Angiv mængde i tal");
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_2.gridx = 18;
+		gbc_lblNewLabel_2.gridy = 2;
+		getContentPane().add(lblNewLabel_2, gbc_lblNewLabel_2);
 		GridBagConstraints gbc_textSøgprodukt = new GridBagConstraints();
 		gbc_textSøgprodukt.insets = new Insets(0, 0, 5, 5);
 		gbc_textSøgprodukt.fill = GridBagConstraints.HORIZONTAL;

@@ -12,6 +12,10 @@ public class Table extends BorrowableProduct{
 		this.tableNr = tableNr;
 		this.seatAmount = seatAmount;
 		this.reservation = reservation;
+		
+		
+		
+		// Getters and setters
 	}
 	public int getTableNr() {
 		return tableNr;

@@ -14,6 +14,9 @@ public class InventoryProduct {
         this.quantityInStock = quantityInStock;
         this.product = product;
     }
+    
+    
+	// Getters and setters
 
     public int getQuantity() {
         return quantityInStock; // returnerer korrekt felt

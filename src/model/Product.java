@@ -35,7 +35,9 @@ public abstract class Product {
 
 	}
 
-
+	// Getters and setters
+	
+	
 	public String getProductName() {
 		return productName;
 	}

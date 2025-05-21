@@ -27,6 +27,9 @@ public class Inventory {
         this.capacity = capacity;
         products = new ArrayList<>(); 
     }
+    
+    
+	// Getters and setters
 
     public int getInventoryId() {
         return inventoryId;

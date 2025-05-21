@@ -18,6 +18,8 @@ public abstract class BorrowableProduct {
 	this.status=status;  
 
 	}
+	
+	// Getters and setters
 
 	public int getAmount() {
 		return amount;

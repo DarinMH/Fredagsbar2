@@ -31,6 +31,8 @@ public class Reservation {
 		this.status=status; 
 		this.borrowableProduct = borrowableProduct; 
 	}
+	
+	// Getters and setters
 
 	public int getReservationId() {
 		return reservationId;

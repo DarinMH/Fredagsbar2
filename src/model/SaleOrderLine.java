@@ -16,6 +16,8 @@ public class SaleOrderLine {
 		this.saleOrder = saleOrder;
 	}
 
+	
+	// Getters and setters
 
 	public int getQuantity() {
 		return quantity;

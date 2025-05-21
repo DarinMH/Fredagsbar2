@@ -64,11 +64,8 @@ public class CustomerDB implements CustomerDBIF {
 	        customer.setFirstName(rs.getString("FirstName"));
 	        customer.setLastName(rs.getString("LastName"));
 	        customer.setEmail(rs.getString("StudentEmail"));
-	        customer.setAmount(rs.getInt("numberOfCustomers"));
+	        customer.setNumberOfCustomers(rs.getInt("numberOfCustomers"));
 	        
-//	        if (fullAssociation) {
-//	            List<Reservation> reservation = reservation.findByReservationId(customer.getReservation().getReservationId());
-//	            customer.setReservations(reservation);
 		} catch (SQLException e) {
     		
     		throw new DataAccessException (e, "could not build.."); 

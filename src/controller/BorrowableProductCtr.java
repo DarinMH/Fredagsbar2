@@ -10,18 +10,17 @@ import model.BorrowableProduct;
 public class BorrowableProductCtr {
     
     private BorrowableProductDBIF borrowableProductDB;
-    private ReservationCtr reservationCtr; 
 
     public BorrowableProductCtr() throws DataAccessException {
         this.borrowableProductDB = new BorrowableProductDB();
     }
 
-    // Henter alle lånbare produkter
+    // Finds all the products 
     public List<BorrowableProduct> findAll() throws DataAccessException {
         return borrowableProductDB.findAll();
     }
 
-    // Henter ét lånbart produkt baseret på produktId
+    // Finds one product based on the productId
     public BorrowableProduct findByProductId(int productId) throws DataAccessException {
         return borrowableProductDB.findByProductId(productId);
     }
