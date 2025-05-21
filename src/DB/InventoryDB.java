@@ -18,6 +18,8 @@ import DB.DBConnection;
 
 public class InventoryDB implements  InventoryDBIF{
 
+	
+	// SQL statements for performing common database operations on the table.
 	private static final String FIND_ALL_Q =
 			"select * from inventory";
 	private static final String FIND_BY_INVENTORY_ID_Q =
@@ -27,6 +29,7 @@ public class InventoryDB implements  InventoryDBIF{
 	private static final String FIND_ALL_INVENTORY_PRODUCT_Q = "select * from InventoryProduct"; 
 	private static final String UPDATE_INVENTORY_PRODUCT_Q = "update InventoryProduct set QuantityInStock = ? where inventoryId = ? and ProductId = ?"; 
 	private static final String FIND_INVENTORY_PRODUCT_BY_INVENTORY_ID_Q = FIND_ALL_INVENTORY_PRODUCT_Q + " where inventoryId = ?"; 
+	 // PreparedStatements to safely execute the SQL queries with parameters in the Java code.
 	private PreparedStatement findAll; 
 	private PreparedStatement findByInventoryId;
 	private PreparedStatement findInventoryProduct; 
@@ -46,6 +49,8 @@ public class InventoryDB implements  InventoryDBIF{
 		init(); 
 	}
 	
+	
+    // Prepares the connection and prepares the SQL statements to be executed. 
 	private void init() throws DataAccessException {
 		try {
 			findInventoryProductByInventoryId = DBConnection.getInstance().getConnection().prepareStatement(FIND_INVENTORY_PRODUCT_BY_INVENTORY_ID_Q);
@@ -121,32 +126,7 @@ public class InventoryDB implements  InventoryDBIF{
 				);
 		return inventory;
 	}
-	
-//	private InventoryProduct buildInventoryProduct(ResultSet rs) throws SQLException {
-//		String productType = rs.getString("productType"); 
-//		Product product = null; 
-//		switch(productType) {
-//		case "Drink": product = new Drink(null, 0, 0, rs.getInt("ProductId"), null, null, 0, null, null); 
-//		break; 
-//		case "Miscellaneous": product = new Miscellaneous(0, null, 0, 0, rs.getInt("ProductId"), null, null);
-//		
-//	
-//		}
-//	
-//		
-//		InventoryProduct inventoryProduct = new InventoryProduct(
-//	   new Inventory(rs.getInt("inventoryId"), null, 0),
-//		rs.getInt("QuantityInStock"),
-//		product); 
-//		
-//		
-//		return inventoryProduct; 
-//		
-//		
-//		
-//	}
-	
-	
+
 	private InventoryProduct buildInventoryProduct(ResultSet rs, boolean fullAssociation) throws DataAccessException {
 		InventoryProduct inventoryProduct = new InventoryProduct(); 
 		try {
@@ -176,6 +156,8 @@ public class InventoryDB implements  InventoryDBIF{
 		
 	}
 	
+	
+	// Converts all rows in the ResultSet into a list of objects.
 	private List<Inventory> buildObjects(ResultSet rs, boolean fullAssociation) throws SQLException {
 		List<Inventory> res = new ArrayList<>(); 
 		while(rs.next()) {
@@ -184,6 +166,9 @@ public class InventoryDB implements  InventoryDBIF{
 		return res; 
 	}
 	
+	
+	// Builds an object from the current row of the ResultSet.
+	// If fullAssociation is true, it fetches and sets the full object.
 	private List<InventoryProduct> buildInventoryProductObjects(ResultSet rs, boolean fullAssociation) throws DataAccessException {
 		List<InventoryProduct> res = new ArrayList<>(); 
 		try {
@@ -235,7 +220,6 @@ public class InventoryDB implements  InventoryDBIF{
 	}
 	@Override
 	public List<InventoryProduct> findAllInventoryProduct() throws DataAccessException {
-		// TODO Auto-generated method stub
 		try {
 			ResultSet rs = findAllInventoryProduct.executeQuery(); 
 			List<InventoryProduct> res = buildInventoryProductObjects(rs, false); 

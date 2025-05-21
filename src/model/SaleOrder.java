@@ -109,12 +109,12 @@ public class SaleOrder {
 		
 // the discountPercentage value is the one thats being multiplied with the total price of the order. 
 //		So if the discount percentage is 0, you multiply the total price with 1, since it just means that the total price does not change. 
-		if((customer == null && totalPrice < 100) || (customer != null && customer.getAmount() < 10 && totalPrice < 100)) {
+		if((customer == null && totalPrice < 100) || (customer != null && customer.getNumberOfCustomers() < 10 && totalPrice < 100)) {
 			discountPercentage = 1; 
 //		
-		} else if (customer != null && customer.getAmount() >= 10 && totalPrice >= 100) {
+		} else if (customer != null && customer.getNumberOfCustomers() >= 10 && totalPrice >= 100) {
 			discountPercentage = 0.80; 
-		} else if((customer == null && totalPrice >= 100) || (customer != null && customer.getAmount() >= 10)) {
+		} else if((customer == null && totalPrice >= 100) || (customer != null && customer.getNumberOfCustomers() >= 10)) {
 			discountPercentage = 0.90; 
 		}
 		

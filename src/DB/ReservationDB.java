@@ -10,23 +10,23 @@ import java.util.List;
 
 public class ReservationDB implements ReservationDBIF {
 
-    // SQL-forespørgsler til at hente alle reservationer eller en specifik
+	// SQL statements for performing common database operations on the table.
     private static final String FIND_ALL_Q = 
         "SELECT r.reservationId, r.date, r.amount, r.customerId, " +
         "c.firstName, c.lastName, c.email, c.amount AS customerAmount " +
         "FROM Reservation r " +
         "JOIN Customer c ON r.customerId = c.customerId";
-
     private static final String FIND_BY_ID_Q = FIND_ALL_Q + " WHERE r.reservationId = ?";
 private static final String INSERT_RESERVATION_Q = "insert into Reservation(ReservationId, Date, Amount, StudentId, Status) values(?, ?, ?, ?, ?)"; 
+// PreparedStatements to safely execute the SQL queries with parameters in the Java code.
     private PreparedStatement findAll;
     private PreparedStatement findById;
     private PreparedStatement insertReservation; 
     private DBConnection connection; 
     private CustomerDB customerDB; 
-    
 
-    // Initialiserer databasen og forbereder SQL-statements
+    
+    // Prepares the connection and prepares the SQL statements to be executed. .  
     public ReservationDB () throws DataAccessException {
         try {
             Connection con = DBConnection.getInstance().getConnection();
@@ -40,8 +40,9 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
 
     
    
-    // Henter alle reservationer fra databasen
-    public List<Reservation> findAll(boolean fullAssociation) throws DataAccessException {
+    // finds all the reservations from the database
+	@Override
+	public List<Reservation> findAll(boolean fullAssociation) throws DataAccessException {
         try {
             ResultSet rs = findAll.executeQuery();
             List<Reservation> res = buildObjects (rs, false);
@@ -51,10 +52,11 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
             DataAccessException d = new DataAccessException(e, "Kunne ikke hente alle reservationer");
             throw d;
         }
-    }
+	}
+  
 
     @Override
-    // Finder én reservation ud fra reservationId
+    // finds one reservation based on the reservation ID
     public Reservation findByReservationId(int reservationId) throws DataAccessException {
         try {
             findById.setInt(1, reservationId);
@@ -68,7 +70,8 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
         return null;
     }
 
-    // Konverterer resultatet fra databasen til en liste af Reservation-objekter
+
+	// Converts all rows in the ResultSet into a list of objects.
     private List<Reservation> buildObjects(ResultSet rs, boolean fullAssociation) throws DataAccessException {
         List<Reservation> list = new ArrayList<>();
         try {
@@ -81,8 +84,8 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
     	return list; 
     	}
        
-
-    // Bygger et enkelt Reservation-objekt ud fra en række i resultatet
+	// Builds an object from the current row of the ResultSet.
+	// If fullAssociation is true, it fetches and sets the full object.
     private Reservation buildObject(ResultSet rs, boolean fullAssociation) throws DataAccessException {
     	Reservation reservation = new Reservation();
     	try { 
@@ -104,10 +107,12 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
  
 
     }
+    
+    
+    // Reservation objects are being inserted and persisted in the database. 
 	@Override
 	public void insertReservation(Reservation reservation) throws DataAccessException {
-		// TODO Auto-generated 	try {
-		
+
 		try {
 		connection.startTransaction();
 		
@@ -119,32 +124,17 @@ private static final String INSERT_RESERVATION_Q = "insert into Reservation(Rese
         insertReservation.executeUpdate();
 		
         connection.commitTransaction();
-			System.out.println("dbconnection.commitTransaction();");
-			System.out.println("try: connection.commit();");
-			System.out.println("finally: connection.setAutoCommit(true);");
+
 	
 		} catch(Exception e){
 				connection.rollbackTransaction();
-				
-				System.out.println("dbconnection.rollbackTransaction();");
-				System.out.println("try: connection.rollback();");
-				System.out.println("finally: connection.setAutoCommit(true);");
-				
 				throw new DataAccessException(e, "save order failed");
-				
-	
-		
+
 	}
 
 }
 
 
-	@Override
-	public List<Reservation> findAll() throws DataAccessException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-    
     
 } 
 

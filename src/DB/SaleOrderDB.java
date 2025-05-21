@@ -21,22 +21,20 @@ import model.Buyer;
 	public class SaleOrderDB implements SaleOrderDBIF {
 		
 		private CustomerDBIF customerDB;
-	
+		// SQL statements for performing common database operations on the table.
 	private static final String FIND_ALL_Q = "select * from SaleOrder"; 
 	private static final String FIND_BY_ORDER_NUMBER_Q = FIND_ALL_Q + " where OrderNumber = ?"; 
 	private static final String INSERT_SALE_ORDER_Q = "INSERT INTO SaleOrder(OrderNumber, "
 	+ "Status, Date, StudentId, Username, totalPrice, discountPercentage) values(?, ?, ?, ?, ?, ?, ?)";
 	private static final String INSERT_SALE_ORDER_LINE_Q = "INSERT INTO SaleOrderLine(OrderNumber, ProductID, Quantity) VALUES(?, ?, ?)";
-	private static final String INSERT_SALE_ORDER_BASIC_Q = "INSERT INTO SaleOrder(OrderNumber, Status, Date, StudentId, Username, totalPrice, discountPercentage) "
-			+ "VALUES (?, null, null, null, null, null)";
 	private static final String UPDATE_Q = "update SaleOrder set Status = ?, Date = ?, StudentId = ?, "
 			+ "Username = ?, totalPrice = ?, discountPercentage = ? where OrderNumber = ?" ; 
 	private static final String UPDATE_ORDER_LINE_Q = "update SaleOrderLine set Quantity = ? where OrderNumber = ? and ProductID = ?"; 
+	 // PreparedStatements to safely execute the SQL queries with parameters in the Java code.
 	private PreparedStatement findAll; 
 	private PreparedStatement findByOrderNumber; 
 	private PreparedStatement insertSaleOrder; 
 	private PreparedStatement insertSaleOrderLine;
-	private PreparedStatement insertSaleOrderBasic; 
 	private PreparedStatement update; 
 	private PreparedStatement updateOrderLine; 
 	private DBConnection dbConnection; 
@@ -44,17 +42,17 @@ import model.Buyer;
 	
 	public SaleOrderDB(CustomerDBIF customerDB) throws DataAccessException {
 		this.customerDB = customerDB;
-		larmann();
+		init();
 		
 	}
 
 	public SaleOrderDB() throws DataAccessException {
 		customerDB = new CustomerDB();
-		larmann(); 
+		init(); 
 	}
 	
-
-	private void larmann() throws DataAccessException {
+    // Prepares the connection and prepares the SQL statements to be executed. 
+	private void init() throws DataAccessException {
 			try {
 				
 			dbConnection = DBConnection.getInstance(); 
@@ -68,8 +66,6 @@ import model.Buyer;
 	prepareStatement(INSERT_SALE_ORDER_Q);
 	insertSaleOrderLine = dbConnection.getConnection().
 			prepareStatement(INSERT_SALE_ORDER_LINE_Q);
-	insertSaleOrderBasic = dbConnection.getConnection().
-			prepareStatement(INSERT_SALE_ORDER_BASIC_Q);
 	update = dbConnection.getConnection().prepareStatement(UPDATE_Q); 
 	updateOrderLine = dbConnection.getConnection().prepareStatement(UPDATE_ORDER_LINE_Q); 
 	}catch(SQLException e) {
@@ -77,7 +73,8 @@ import model.Buyer;
 	}
 }
 
-	// Builds a SaleOrder object from a database result set.
+	// Builds an object from the current row of the ResultSet.
+	// If fullAssociation is true, it fetches and sets the full object.
 	private SaleOrder buildObject(ResultSet rs, boolean fullAssociation) throws DataAccessException {
 		SaleOrder saleOrder = new SaleOrder();
 		try {
@@ -102,7 +99,9 @@ import model.Buyer;
 		return saleOrder; 
 	
 	}
-	//Builds a list of SaleOrder objects from a database result set.
+	
+	
+	// Converts all rows in the ResultSet into a list of objects.
 	private List<SaleOrder> buildObjects(ResultSet rs, boolean fullAssociation) throws DataAccessException {
 	List<SaleOrder> res = new ArrayList<>();
 	try {
@@ -148,26 +147,26 @@ import model.Buyer;
 		}
 	}
 	
-	public void deleteOrderLine(SaleOrderLine line) throws DataAccessException {
-	    try {
-	        String sql = "DELETE FROM SaleOrderLine WHERE OrderNumber = ? AND ProductID = ?";
-	        PreparedStatement ps = dbConnection.getConnection().prepareStatement(sql);
-	        ps.setInt(1, line.getSaleOrder().getOrderNumber());
-	        ps.setInt(2, line.getProduct().getProductId());
-	        ps.executeUpdate();
-	    } catch (SQLException e) {
-	        throw new DataAccessException(e, "Could not delete SaleOrderLine");
-	    }
-	}
+	
+	//
+	
+//	public void deleteOrderLine(SaleOrderLine line) throws DataAccessException {
+//	    try {
+//	        String sql = "DELETE FROM SaleOrderLine WHERE OrderNumber = ? AND ProductID = ?";
+//	        PreparedStatement ps = dbConnection.getConnection().prepareStatement(sql);
+//	        ps.setInt(1, line.getSaleOrder().getOrderNumber());
+//	        ps.setInt(2, line.getProduct().getProductId());
+//	        ps.executeUpdate();
+//	    } catch (SQLException e) {
+//	        throw new DataAccessException(e, "Could not delete SaleOrderLine");
+//	    }
+//	}
 
 	
 	
-	
-	
+//	Method to insert the SaleOrder object into the database so it can be persisted.  
 	@Override
 	public void insertSaleOrder(SaleOrder saleOrder, boolean fullAssociation) throws DataAccessException {
-	// TODO Auto-generated methpood stub
-//		 Connection con = null; 
 			
 			try {
 			
@@ -208,22 +207,12 @@ import model.Buyer;
 				
 	
 		        	insertSaleOrder.executeUpdate(); 
-		        
-	
-		        
-			
-		        
+    
 		        dbConnection.commitTransaction();
-				System.out.println("dbconnection.commitTransaction();");
-				System.out.println("try: connection.commit();");
-				System.out.println("finally: connection.setAutoCommit(true);");
 				
 			}catch(Exception e){
 					dbConnection.rollbackTransaction();
-					
-					System.out.println("dbconnection.rollbackTransaction();");
-					System.out.println("try: connection.rollback();");
-					System.out.println("finally: connection.setAutoCommit(true);");
+
 					
 					throw new DataAccessException(e, "save order failed");
 					
@@ -234,10 +223,10 @@ import model.Buyer;
 
 	}
 
+	
+//	Method to insert the order line object into the database so it can be persisted. 
 	@Override
 	public void insertSaleOrderLine(SaleOrderLine saleOrderLine, boolean fullAssociation) throws DataAccessException {
-		// TODO Auto-generated method stub
-		
 		try {
 			
 			dbConnection.startTransaction();
@@ -267,24 +256,9 @@ import model.Buyer;
 	
 	}
 
-//	@Override
-//	public void insertSaleOrderBasic(SaleOrder saleOrder, boolean fullAssociation) throws DataAccessException {
-//		// TODO Auto-generated method stub
-//		try {
-//			insertSaleOrderBasic.setInt(1, saleOrder.getOrderNumber());
-//			insertSaleOrderBasic.executeUpdate(); 
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			throw new DataAccessException(e, "Could not insert order"); 
-//		} 
-//		
-//	
-//		
-//	}
-
+// method to update the sale order in the database. 
 	@Override
 	public void update(SaleOrder saleOrder, boolean fullAssociation) throws DataAccessException {
-		// TODO Auto-generated method stub
 		final int orderNumber = saleOrder.getOrderNumber(); 
 		final boolean status = saleOrder.isStatus(); 
 		final LocalDate date = saleOrder.getDate();  
@@ -333,6 +307,7 @@ import model.Buyer;
 		
 	}
 
+	// Method to update order line objects in the database
 	@Override
 	public void updateOrderLine(SaleOrderLine saleOrderLine, boolean fullAssociation) throws DataAccessException {
 		// TODO Auto-generated method stub

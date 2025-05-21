@@ -13,14 +13,18 @@ import model.Reservation;
 import DB.DBConnection;
 
 public class CustomerDB implements CustomerDBIF {
-
+	
+	// SQL statements for performing common database operations on the table.
 	private static final String FIND_ALL_Q =
 			"select * from customer";
 	private static final String FIND_BY_STUDENT_ID_Q =
 			FIND_ALL_Q + " where StudentId = ?";
+	 // PreparedStatements to safely execute the SQL queries with parameters in the Java code.
 	private PreparedStatement findAll; 
 	private PreparedStatement findByStudentId;
 	
+	
+    // Prepares the connection and prepares the SQL statements to be executed. 
 	public CustomerDB() throws DataAccessException {
 		try {
 			findAll = DBConnection.getInstance().getConnection().prepareStatement(FIND_ALL_Q);
@@ -55,6 +59,9 @@ public class CustomerDB implements CustomerDBIF {
 			throw new DataAccessException(e, "could not find customer by CustomerId="+ studentId);
 		}
 	}
+	
+	// Builds an object from the current row of the ResultSet.
+	// If fullAssociation is true, it fetches and sets the full object.
 	private Customer buildObject(ResultSet rs, boolean fullAssociation) throws DataAccessException {
 		
 		Customer customer = new Customer();
@@ -73,6 +80,8 @@ public class CustomerDB implements CustomerDBIF {
 	        return customer;
 	    }
 	    
+	
+	// Converts all rows in the ResultSet into a list of objects.
 	        private List<Customer> buildObjects(ResultSet rs, boolean fullAssociation) throws DataAccessException {
 	    		List<Customer> res = new ArrayList<>(); 
 	    		try {
