@@ -7,21 +7,23 @@ import DB.BorrowableProductDBIF;
 import DB.DataAccessException;
 import model.BorrowableProduct;
 
+//This class controls the logic for borrowable products
 public class BorrowableProductCtr {
-    
-    private BorrowableProductDBIF borrowableProductDB;
-    private ReservationCtr reservationCtr; 
+   
+    private BorrowableProductDBIF borrowableProductDB;  // This connects to the database using the interface
+    private ReservationCtr reservationCtr; //used for reservation control
 
+    // Constructor: runs when we create an object of this class
     public BorrowableProductCtr() throws DataAccessException {
-        this.borrowableProductDB = new BorrowableProductDB();
+        this.borrowableProductDB = new BorrowableProductDB(); // Sets up the connection to the database
     }
 
-    // Henter alle lånbare produkter
+ // This method gets a list of all borrowable products
     public List<BorrowableProduct> findAll() throws DataAccessException {
-        return borrowableProductDB.findAll();
+        return borrowableProductDB.findAll(); // Gets all products from the database
     }
 
-    // Henter ét lånbart produkt baseret på produktId
+ // This method gets one product by its ID number
     public BorrowableProduct findByProductId(int productId) throws DataAccessException {
         return borrowableProductDB.findByProductId(productId);
     }
