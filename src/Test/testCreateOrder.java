@@ -28,48 +28,50 @@ import model.Supplier;
 
 
 
-
+//Test class for saleOrderCtr functionalities related to order
 class testCreateOrder {
 	
-	private SaleOrderCtr saleOrderCtr; 
+	private SaleOrderCtr saleOrderCtr; // Initializes SaleOrderCtr
 
-	
+	//Method that runs before each test.
 	@BeforeEach
 	void setUp() throws  DataAccessException {
 	
-	    
+		// Initializes SaleOrderCtr
 	    saleOrderCtr = new SaleOrderCtr();
 	} 
 	
-
+//Test case
 @Test 
 void testOrderCompletionWithOneProduct() throws DataAccessException {
 
 	
-	int studentId = 1234; 
-	int productId = 88; 
+	int studentId = 1234;  //StudentId that it tests in the case
+	int productId = 88;  // ProductId that it tests in the case
 	
 
-
+// Generates an OrderNumber with the current time in miliseconds so that the same orderNumber doesnt come up twice.
+//Finds the customer and product with the controllers
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
+	//Creates a new SaleOrder object with its respective parameters
 	SaleOrder order = saleOrderCtr.createSaleOrder(
             orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
+	//Creates a SaleOrderLine with one product
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
-	
+	//adds an orderline to the SaleOrder
 	order.addOrderline(saleOrderLine);
 	
+	
+	//calls the controller methods to add a customer and a product to the order
 	saleOrderCtr.addCustomerToOrder(foundCustomer); 
-	
-	
-	
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 	
-
+	//assertions to verify that the correct customer and product were found.
 	assertEquals(studentId, foundCustomer.getStudentId()); 
 	assertEquals(productId, foundProduct.getProductId());
 	
