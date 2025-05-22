@@ -76,7 +76,7 @@ public class KasseSystem extends JFrame {
 	private LogInd login; 
  
 
-	/**
+	/*
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
@@ -91,14 +91,15 @@ public class KasseSystem extends JFrame {
 			}
 		});
 	}
-
+	//constructor For the KasseSystem GUI and initializes the controllers so a new saleorder can be made
+	
 	public KasseSystem(SaleOrder saleOrder, LogInd login)  {
 			
-	try {
+	try { //tries to create a connection to database with an instance of inventoryCtr
 		inventoryCtr = new InventoryCtr();
-	} catch (DataAccessException e) {
+	} catch (DataAccessException e) { //Catches it if a problem occurs with the connection
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		e.printStackTrace(); 
 	} 
 	
 		try {
@@ -123,7 +124,7 @@ public class KasseSystem extends JFrame {
 	}
 
 	
-	
+	//Initializes The main GUI layout and all the components on the JFrame for the Kassesystem
 	private void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Kasse System");
@@ -857,7 +858,7 @@ public class KasseSystem extends JFrame {
 		
 	int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
 	
-	
+	//Initializies a swingWorker to do background tasks without the GUI freezing or having long loading times
 	SwingWorker<Customer, Void>  worker = new SwingWorker<Customer, Void>() {
 		
 		
