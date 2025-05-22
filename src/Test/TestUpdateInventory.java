@@ -29,9 +29,12 @@ import model.Product;
 import model.SaleOrder;
 import model.SaleOrderLine;
 
+
+
+//Test class for Inventory and Product functionalities related to updates to inventory and products
 class TestUpdateInventory {
 	
-	
+	//Initializies the controllers, database and connection classes
 	private InventoryCtr inventoryCtr; 
 	private InventoryDB inventoryDB; 
 	private ProductDB productDB; 
@@ -39,10 +42,10 @@ class TestUpdateInventory {
 	private Connection con; 
 	private InventoryProduct inventoryProduct; 
 
-	
+	//Method that runs before each test.
     @BeforeEach 
     void setUp() throws DataAccessException, SQLException {
-        dbConnection = DBConnection.getInstance();
+        dbConnection = DBConnection.getInstance(); //
         con = dbConnection.getConnection();
         
 
@@ -56,6 +59,7 @@ class TestUpdateInventory {
         inventoryProduct = inventoryDB.findInventoryProduct(88, 420);
     }
     
+    //After each test the database doesnt save the tests tested.
     @AfterEach
     void tearDown() throws SQLException {
 

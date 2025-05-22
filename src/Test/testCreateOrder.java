@@ -80,39 +80,41 @@ void testOrderCompletionWithOneProduct() throws DataAccessException {
 	
 }
 
-@Test 
+
+
+@Test // Test case 2
 void testOrderCompletionWith2Products() throws DataAccessException {
 	
-	int studentId = 1234; 
-	int productId = 88; 
-	int productId2 = 420; 
+	int studentId = 1234; //StudentId that it tests in the case
+	int productId = 88;  // ProductId that it tests in the case
+	int productId2 = 420;  // ProductId2 that it tests in the case
 	
+	
+	// Generates an OrderNumber with the current time in miliseconds so that the same orderNumber doesnt come up twice.
+	//Finds the customer and product with the controllers
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
-	
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	Product foundProduct2 = saleOrderCtr.getProductCtr().findByProductId(productId2); 
 	
+	//Creates a new SaleOrder object with its respective parameters
 	SaleOrder order = saleOrderCtr.createSaleOrder(
             orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
+	//Creates two SaleOrderLines with two different products
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
-	
 	SaleOrderLine saleOrderLine2 = new SaleOrderLine(order, foundProduct2, 1); 
 
-	
+	//adds orderlines to the SaleOrder
 	order.addOrderline(saleOrderLine);
-	
 	order.addOrderline(saleOrderLine2);
 	
+	//calls the controller methods to add a customer and adds the products to the order
 	saleOrderCtr.addCustomerToOrder(foundCustomer); 
-	
-	
 	saleOrderCtr.addProductToOrder(foundProduct2, 1); 
-	
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 	
-
+	//assertions to verify that the correct customer and products were found.
 	assertEquals(studentId, foundCustomer.getStudentId()); 
 	assertEquals(productId, foundProduct.getProductId());
 	assertEquals(productId2, foundProduct2.getProductId());
@@ -121,7 +123,7 @@ void testOrderCompletionWith2Products() throws DataAccessException {
 }
 
 
-@Test 
+@Test //test case 3
 void testNoCustomerAdded() throws DataAccessException {
 
 	int productId = 2; 
@@ -148,8 +150,8 @@ void testNoCustomerAdded() throws DataAccessException {
 }
 
 
-@Test 
-void testAddMultipleInstancesOfOneProduct() throws DataAccessException {
+@Test //test case 4
+void testAddMultipleOfOneProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
@@ -185,7 +187,7 @@ void testAddMultipleInstancesOfOneProduct() throws DataAccessException {
 }
 
 
-@Test 
+@Test //test case 5
 void testInvalidProduct() throws DataAccessException {
 
 	
@@ -204,7 +206,7 @@ void testInvalidProduct() throws DataAccessException {
 
 
 
-@Test 
+@Test //test case 6
 void testInvalidCustomer() throws DataAccessException {
 
 	int studentId = 521; 
