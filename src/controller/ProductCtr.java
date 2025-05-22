@@ -51,5 +51,14 @@ public class ProductCtr  {
 	public List<Miscellaneous> findAllMiscellaneous() throws DataAccessException {
 		return productDB.findAllMiscelaneous(); // Gets all other types of products from the database
 	}
+	
+	// Method that finds all the drinks 
+	public List<Drink> findAllDrinks() throws DataAccessException {
+		return productDB.findAllDrinks(); 
+	}
+	
+	public List<String> findDistinctDrinkCategories() throws DataAccessException {
+		return productDB.findDistinctDrinkCategories(); 
+	}
 		
 	}

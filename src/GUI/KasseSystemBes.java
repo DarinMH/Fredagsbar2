@@ -524,42 +524,78 @@ public class KasseSystemBes extends JFrame {
 		getContentPane().add(orderButton, gbc_orderButton);
 
 		// Initialize UI components
-		addCategoryButtons(panelCategory);
+		try {
+			addCategoryButtons(panelCategory);
+		} catch (DataAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		pack(); 
 			}
 			
 		
-	// Dynamically adds category buttons to the provided panel, each loading drinks from that category
-	private void addCategoryButtons(JPanel panelCategory) {
-		panelCategory.setLayout(new GridLayout(0, 1));
+//	// Dynamically adds category buttons to the provided panel, each loading drinks from that category
+//	private void addCategoryButtons(JPanel panelCategory) {
+//		panelCategory.setLayout(new GridLayout(0, 1));
+//
+//		try {
+//			Connection conn = DB.DBConnection.getInstance().getConnection();
+//			String sql = "SELECT DISTINCT category FROM Drink";
+//			PreparedStatement ps = conn.prepareStatement(sql);
+//			ResultSet rs = ps.executeQuery();
+//
+//			String productSql = "SELECT DISTINCT ProductName FROM Product";
+//			PreparedStatement productPs = conn.prepareStatement(productSql);
+//			ResultSet productRs = productPs.executeQuery();
+//
+//			while (rs.next()) {
+//				String category = rs.getString("category");
+//				JButton catButton = new JButton(category);
+//
+//				catButton.addActionListener(e -> {
+//					loadDrinksForCategory(category);
+//				});
+//				panelCategory.add(catButton);
+//			}
+//			panelCategory.revalidate();
+//			panelCategory.repaint();
+//
+//		} catch (SQLException e) {
+//			panelCategory.revalidate();
+//		}
+//	}
+	
+	
+	
+	private void addCategoryButtons(JPanel panelCategory) throws DataAccessException {
+	    panelCategory.setLayout(new GridLayout(0, 1));
 
-		try {
-			Connection conn = DB.DBConnection.getInstance().getConnection();
-			String sql = "SELECT DISTINCT category FROM Drink";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
+	    try {
+	        List<String> categoryDrinks = saleOrderCtr.getProductCtr().findDistinctDrinkCategories();
+	        
+	        for (String category: categoryDrinks) {
+	            JButton catButton = new JButton(category);
 
-			String productSql = "SELECT DISTINCT ProductName FROM Product";
-			PreparedStatement productPs = conn.prepareStatement(productSql);
-			ResultSet productRs = productPs.executeQuery();
+	            catButton.addActionListener(e -> {
+	                loadDrinksForCategory(category); 
+	            });
+	            
+	            panelCategory.add(catButton);
+	        }
+	        
+	        panelCategory.revalidate();
+	        panelCategory.repaint();
 
-			while (rs.next()) {
-				String category = rs.getString("category");
-				JButton catButton = new JButton(category);
-
-				catButton.addActionListener(e -> {
-					loadDrinksForCategory(category);
-				});
-				panelCategory.add(catButton);
-			}
-			panelCategory.revalidate();
-			panelCategory.repaint();
-
-		} catch (SQLException e) {
-			panelCategory.revalidate();
-		}
+	    } catch (DataAccessException e) {
+	        panelCategory.revalidate();
+	        throw e;
+	    }
 	}
+
+	
+	
+	
 	
 	// Loads and displays all miscellaneous products 
 	private void loadMisc() {
@@ -804,7 +840,7 @@ public class KasseSystemBes extends JFrame {
 	
 		
 		if(currentOrder.isStatus() == true) {
-			JOptionPane.showMessageDialog(KasseSystem.this, "Ordre er afsluttet succesfuldt!", "Succes", JOptionPane.INFORMATION_MESSAGE); 
+			JOptionPane.showMessageDialog(KasseSystemBes.this, "Ordre er afsluttet succesfuldt!", "Succes", JOptionPane.INFORMATION_MESSAGE); 
 			Product product = null; 
 			int quantity = 0; 
 			Inventory inventory = inventoryCtr.findByInventoryId(1); 
@@ -967,7 +1003,7 @@ private void createOrder() throws DataAccessException {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			JOptionPane.showMessageDialog(KasseSystem.this, "Ordre er oprettet ", "Succes", JOptionPane.INFORMATION_MESSAGE); 
+			JOptionPane.showMessageDialog(KasseSystemBes.this, "Ordre er oprettet ", "Succes", JOptionPane.INFORMATION_MESSAGE); 
 			
 			
 			// Reset and update UI elements for the new order

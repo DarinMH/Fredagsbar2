@@ -30,12 +30,17 @@ public class ProductDB implements ProductDBIF {
 		"From Product p JOIN Drink d ON p.ProductId = d.ProductId WHERE d.category = ?"; 
 		private static final String FIND_ALL_MISCELLANEOUS_Q =   "SELECT p.*, m.amount FROM Product p JOIN Miscellaneous m ON p.ProductId = m.ProductId " +
 			    "WHERE p.productType = 'Miscellaneous'";
+		private static final String FIND_ALL_DRINKS_Q = "Select * from Drink"; 
+		private static final String FIND_DISTINCT_DRINK_CATEGORIES_Q = 
+			    "SELECT DISTINCT d.category FROM Drink d JOIN Product p ON d.ProductId = p.ProductId WHERE p.productType = 'Drink' ORDER BY d.category";
 		 // PreparedStatements to safely execute the SQL queries with parameters in the Java code.
 		private PreparedStatement findAll; 
 		private PreparedStatement findByProductId; 
 		private PreparedStatement findByProductName; 
 		private PreparedStatement findByCategory; 
 		private PreparedStatement findAllMiscellaneous; 
+		private PreparedStatement findAllDrinks;
+		private PreparedStatement findDistinctDrinkCategories; 
 		private InventoryDBIF inventoryDB; 
 
 public ProductDB(InventoryDBIF inventoryDB) throws DataAccessException {
@@ -60,6 +65,8 @@ public ProductDB() throws DataAccessException {
 				.prepareStatement(FIND_BY_PRODUCTNAME_Q);
 		findByCategory = DBConnection.getInstance().getConnection().prepareStatement(FIND_BY_CATEGORY_Q); 
 		findAllMiscellaneous = DBConnection.getInstance().getConnection().prepareStatement(FIND_ALL_MISCELLANEOUS_Q); 
+		findAllDrinks = DBConnection.getInstance().getConnection().prepareStatement(FIND_ALL_DRINKS_Q); 
+		findDistinctDrinkCategories = DBConnection.getInstance().getConnection().prepareStatement(FIND_DISTINCT_DRINK_CATEGORIES_Q);
 		}catch(SQLException e) {
 			throw new DataAccessException(e, "Could not prepare statement"); 
 		}
@@ -80,6 +87,7 @@ public ProductDB() throws DataAccessException {
 		throw d; 
 		}
 	}
+
 	
 	
 	@Override
@@ -209,6 +217,37 @@ public ProductDB() throws DataAccessException {
 		return res; 
 	
 	}
+
+	@Override
+	public List<Drink> findAllDrinks() throws DataAccessException {
+		  List<Drink> drinks = new ArrayList<>();
+		    try {
+		        ResultSet rs = findAll.executeQuery(); // Using existing findAll prepared statement
+		        while(rs.next()) {
+		            Product product = buildObject(rs, false);
+		            if (product instanceof Drink) {
+		                drinks.add((Drink) product);
+		            }
+		        }
+		        return drinks;
+		    } catch (SQLException e) {
+		        throw new DataAccessException(e, "Could not retrieve drinks");
+		    }
+	}
+
+	@Override
+	public List<String> findDistinctDrinkCategories() throws DataAccessException {
+		    List<String> categories = new ArrayList<>();
+		    try {
+		        ResultSet rs = findDistinctDrinkCategories.executeQuery();
+		        while(rs.next()) {
+		            categories.add(rs.getString("category"));
+		        }
+		        return categories;
+		    } catch(SQLException e) {
+		        throw new DataAccessException(e, "Could not retrieve distinct drink categories");
+		    }
+		}
 
 	
 

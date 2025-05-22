@@ -13,4 +13,7 @@ public interface ProductDBIF {
 		Product findByProductName(String productName) throws DataAccessException; 
 		List<Drink> findByCategory(String category) throws DataAccessException; 
 		List<Miscellaneous> findAllMiscelaneous() throws DataAccessException; 
+		List<Drink> findAllDrinks() throws DataAccessException; 
+		List<String> findDistinctDrinkCategories() throws DataAccessException; 
+
 } 
