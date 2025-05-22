@@ -94,6 +94,7 @@ public class InventoryGui extends JDialog {
 			e.printStackTrace();
 		} 
 		
+	
 		
 		modelInventoryProduct = new DefaultListModel<>(); 
 		inventoryProductList = new JList<>(modelInventoryProduct); 
@@ -121,42 +122,38 @@ public class InventoryGui extends JDialog {
 			
 	}
 
-
+	
+	
+// method that loads all the inventories in the system: 
 	private void loadInventory() throws DataAccessException {
 		List<Inventory> in = inventoryCtr.findAll(); 
 		
+
 		DefaultComboBoxModel<Inventory> inventory = new DefaultComboBoxModel<Inventory>(); 
-		DefaultComboBoxModel<Inventory> modelFra = new DefaultComboBoxModel<>();
-		DefaultComboBoxModel<Inventory> modelTil = new DefaultComboBoxModel<>();
+		DefaultComboBoxModel<Inventory> modelFrom = new DefaultComboBoxModel<>();
+		DefaultComboBoxModel<Inventory> modelTo = new DefaultComboBoxModel<>();
 		
 		for(int i = 0; i < in.size(); i++) {
 			inventory.addElement(in.get(i));
-			modelFra.addElement(in.get(i));
-			modelTil.addElement(in.get(i));
+			modelFrom.addElement(in.get(i));
+			modelTo.addElement(in.get(i));
 		}
 		
 		this.inventoryBox.setModel(inventory);
-		comboBoxFraLager.setModel(modelFra);
-		comboBoxTilLager.setModel(modelTil);
+		comboBoxFraLager.setModel(modelFrom);
+		comboBoxTilLager.setModel(modelTo);
 		
 		comboBoxFraLager.addActionListener(e -> {
-			Inventory fra = (Inventory) comboBoxFraLager.getSelectedItem();
-			Inventory til = (Inventory) comboBoxTilLager.getSelectedItem();
-			if (fra != null && fra.equals(til)) {
+			Inventory inventoryFrom = (Inventory) comboBoxFraLager.getSelectedItem();
+			Inventory inventoryTo = (Inventory) comboBoxTilLager.getSelectedItem();
+			if (inventoryFrom != null && inventoryFrom.equals(inventoryTo)) {
 				comboBoxTilLager.setSelectedItem(null);
 			}
 		});
 
-		comboBoxTilLager.addActionListener(e -> {
-			Inventory fra = (Inventory) comboBoxFraLager.getSelectedItem();
-			Inventory til = (Inventory) comboBoxTilLager.getSelectedItem();
-			if (til != null && til.equals(fra)) {
-				comboBoxFraLager.setSelectedItem(null);
-			}
-		});
 	}
 	
-	
+	// Method that loads all the products from the system
 	private void loadProducts() throws DataAccessException {
 		allProducts = inventoryCtr.getProductCtr().findAll(); 
 		categoryModel.clear();
@@ -173,6 +170,8 @@ public class InventoryGui extends JDialog {
 		if (inventory != null && selectedProduct != null) {
 			InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(selectedProduct.getProductId(), inventory.getInventoryId()); 
 			
+			
+			
 			modelInventoryProduct.clear(); 
 			if (inventoryProduct != null) {
 				modelInventoryProduct.addElement(inventoryProduct);
@@ -181,17 +180,21 @@ public class InventoryGui extends JDialog {
 		}
 	}
 	
+	
+	// Filters the product list so only products matching the search text appear in the JList.
 	private void filterProducts(String searchText) {
 		categoryModel.clear();
 		
 		if (searchText == null || searchText.trim().isEmpty()) {
 			for (Product p : allProducts) {
-				categoryModel.addElement(p);
+				if(p != null) {
+					categoryModel.addElement(p); 
+				}
 			}
 		} else {
 			searchText = searchText.toLowerCase();
 			for (Product p : allProducts) {
-				if (p.getProductName().toLowerCase().contains(searchText)) {
+				if(p != null && p.getProductName() != null && p.getProductName().toLowerCase().contains(searchText)) {
 					categoryModel.addElement(p);
 				}
 			}
@@ -265,7 +268,7 @@ public class InventoryGui extends JDialog {
 	        inventoryCtr.transferStock(to, from, product, quantity); 
 	        
 
-	        updateStockInfo(product, (Inventory) inventoryBox.getSelectedItem()); // behold aktiv visning
+	        updateStockInfo(product, (Inventory) inventoryBox.getSelectedItem()); 
 	        flytMængdeTF.setText("");
 
 	        Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
@@ -515,7 +518,6 @@ public class InventoryGui extends JDialog {
 		gbc_btnTilfjNyProdukt.gridy = 6;
 		getContentPane().add(btnTilfjNyProdukt, gbc_btnTilfjNyProdukt);
 		
-		// Add components for product transfer
 		JLabel lblFra = new JLabel("Flyt fra Lager");
 		lblFra.setFont(new Font("Tahoma", Font.BOLD, 12));
 		GridBagConstraints gbc_lblFra = new GridBagConstraints();

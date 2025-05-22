@@ -146,21 +146,6 @@ import model.Buyer;
 			throw new DataAccessException(e, "Could not find by Order Number"); 
 		}
 	}
-	
-	
-	//
-	
-//	public void deleteOrderLine(SaleOrderLine line) throws DataAccessException {
-//	    try {
-//	        String sql = "DELETE FROM SaleOrderLine WHERE OrderNumber = ? AND ProductID = ?";
-//	        PreparedStatement ps = dbConnection.getConnection().prepareStatement(sql);
-//	        ps.setInt(1, line.getSaleOrder().getOrderNumber());
-//	        ps.setInt(2, line.getProduct().getProductId());
-//	        ps.executeUpdate();
-//	    } catch (SQLException e) {
-//	        throw new DataAccessException(e, "Could not delete SaleOrderLine");
-//	    }
-//	}
 
 	
 	
@@ -328,6 +313,7 @@ import model.Buyer;
 		throw new DataAccessException(e, "Could not update orderLines " + orderNumber); 
 	}
 	}
+
 	}
 	
 	
