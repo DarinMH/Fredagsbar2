@@ -133,17 +133,22 @@ void testNoCustomerAdded() throws DataAccessException {
 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
+	
+	// Customer is being set to null here: 
 	SaleOrder order = saleOrderCtr.createSaleOrder(
             orderNumber, LocalDate.now(), false, null, null, 0, 0);
+	
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
 	
 	order.addOrderline(saleOrderLine);
 
-	
+	// Adding the product to the product through the order line
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 
+	
+	
 	assertEquals(productId, foundProduct.getProductId());
 
 	
@@ -156,8 +161,9 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	
 	int studentId = 1234; 
 	int productId = 2; 
+	int productId2 = 88;  
 	
-
+	   // Generate a unique order number based on current time
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
@@ -168,7 +174,7 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	
 	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
-	
+    // Add product to order through controller
 	order.addOrderline(saleOrderLine);
 	
 	saleOrderCtr.addCustomerToOrder(foundCustomer); 
@@ -177,7 +183,7 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	
 	saleOrderCtr.addProductToOrder(foundProduct, 2); 
 	
-
+	// Assert that the product ID matches the expected value
 	assertEquals(studentId, foundCustomer.getStudentId()); 
 	assertEquals(productId, foundProduct.getProductId());
 	
@@ -192,12 +198,15 @@ void testInvalidProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
+	// invalid product id
 	int productId = 6; 
 
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
 	
+	
+	// Assertion for the product to be null 
 	assertNull(foundProduct, "Product should be null");
 
 	
@@ -210,12 +219,12 @@ void testInvalidProduct() throws DataAccessException {
 void testInvalidCustomer() throws DataAccessException {
 
 	int studentId = 521; 
-	int productId = 6; 
+	int productId = 2; 
 
 	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
 	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
 	
-	
+	// Assertio for the customer to be null: 
 	assertNull(foundCustomer, "Customer should be null");
 
 	

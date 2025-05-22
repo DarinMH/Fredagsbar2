@@ -523,7 +523,7 @@ public class KasseSystem extends JFrame {
 			}
 			
 		
-
+	// Dynamically adds category buttons to the provided panel, each loading drinks from that category
 	private void addCategoryButtons(JPanel panelCategory) {
 		panelCategory.setLayout(new GridLayout(0, 1));
 
@@ -554,7 +554,7 @@ public class KasseSystem extends JFrame {
 		}
 	}
 	
-	
+	// Loads and displays all miscellaneous products 
 	private void loadMisc() {
 	panelMisc.removeAll();
 	
@@ -590,14 +590,19 @@ public class KasseSystem extends JFrame {
 	
 	}
 
+	// Loads and displays drink products for a given category in the UI
 	private void loadDrinksForCategory(String category) {
+		
+	    // Clear existing products and set layout for product panel
 		productPanel.removeAll();
 		productPanel.setLayout(new GridLayout(0, 1));
 
 		try {
-			
+		      // Retrieve drinks from the selected category
 			List<Drink> drinks = saleOrderCtr.getProductCtr().findByCategory(category); 
 			
+			
+		     // Creates a button for each drink with its name and price
 			for(Drink drink : drinks) {
 				JButton productButton = new JButton(drink.getProductName() + " - " + 
 			drink.getSalePrice() + " kr"); 
@@ -627,7 +632,7 @@ public class KasseSystem extends JFrame {
 		productPanel.repaint();
 	}
 	
-	
+	// Adds product to the order. 
 	private void addProductToOrder(String productName, double price) throws DataAccessException {
 		
 		 System.out.println("[DEBUG] Current order: " + this.currentOrder);
@@ -636,42 +641,42 @@ public class KasseSystem extends JFrame {
 		
 		
 		if(product != null) {
+			   // Increase quantity if product already in cart, otherwise start with 1
 			int quantity = cartItems.getOrDefault(productName, 0) + 1; 
 			
-			
+	        // Get stock levels from bar (inventory ID 1) and total stock
 		    int barStock = inventoryCtr.getInventoryStockForProduct(1, product.getProductId());
-		    
-
-	
 		    int totalStock = inventoryCtr.getTotalStock(product.getProductId());
 		    
+		    
+		    // If the product is not available at the bar inventory, an error message will be shown. 
 		  if(quantity > barStock) {
 			JOptionPane.showMessageDialog(this, "Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret", 
 					"Error", JOptionPane.ERROR_MESSAGE);
 			return; 
 		  }
 
-	
+	// If the product is out of stock, this error message will be shown. 
 		    else if(quantity > totalStock) {
 				JOptionPane.showMessageDialog(this, productName + " er udsolgt", "Error", JOptionPane.ERROR_MESSAGE);
 				return; 
 		
-
 		
 		} else {
+			// Add or update product in cart and price map
+
 			cartItems.put(productName, quantity); 
 			itemPrices.put(productName, price); 
-			
+		      // Recalculate total and update order
 			updateTotal();
+			
+			// Adds the product to the order by calling the method in the controller. 
 		saleOrderCtr.addProductToOrder(product, quantity); 
+		// updates the order with the changes 
 		saleOrderCtr.updateOrder(currentOrder); 
 			
 		}
-		
-//		currentOrder.setTotalPrice(total);
-		
-		
-		
+
 		
 		updateOrderItemsUI();
 		
@@ -689,7 +694,7 @@ public class KasseSystem extends JFrame {
 
 	
 
-
+// Updates the order items based on the products chosen by the user 
 	private void updateOrderItemsUI() {
 		orderItemsPanel.removeAll();
 
@@ -720,7 +725,7 @@ public class KasseSystem extends JFrame {
 	}
 	
 	
-	
+	// method to update the quantity of the product chosen.
 	private void updateItemQuantity(String item, int newQuantity) {
 		try {
 			Product product = saleOrderCtr.getProductCtr().findByProductName(item); 
@@ -728,10 +733,13 @@ public class KasseSystem extends JFrame {
 			
 			if(newQuantity <= inventoryCtr.getTotalStock(product.getProductId())) {
 			
-		
+		// The product is removed if the quantity is less than 0
 		if (newQuantity <= 0) {
 			cartItems.remove(item);
 			
+			
+			// 1 is the inventory ID of the inventory used for the bar.
+			// If there are no more instances of the given product, an error message appears. 
 		}else if(inventoryCtr.getInventoryStockForProduct(1, product.getProductId()) < newQuantity) {
 			JOptionPane.showMessageDialog(this, "Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret", 
 					"Error", JOptionPane.ERROR_MESSAGE);
@@ -740,6 +748,8 @@ public class KasseSystem extends JFrame {
 		} else {
 			cartItems.put(item, newQuantity);
 		}
+		
+// Sets the quantity of the order line.
 		
 		for(SaleOrderLine orderLine: currentOrder.getOrderLines()) {
 			
@@ -755,12 +765,11 @@ public class KasseSystem extends JFrame {
 		
 		saleOrderCtr.updateOrder(currentOrder);
 		
-//		saleOrderCtr.addProductToOrder(product, newQuantity); 
+
 	
 
 		updateOrderItemsUI();
-		
-//		
+			
 		currentOrder.setTotalPrice(total);
 		
 			} else {
@@ -778,10 +787,12 @@ public class KasseSystem extends JFrame {
 	
 	
 	
-	
+	// method that confirms the order
 	
 	private boolean confirmOrder() throws DataAccessException { 
 		
+		
+		// method in the saleOrderCtr class being called
 		saleOrderCtr.confirmOrder(); 
 	
 		
@@ -791,7 +802,8 @@ public class KasseSystem extends JFrame {
 			int quantity = 0; 
 			Inventory inventory = inventoryCtr.findByInventoryId(1); 
 			
-			
+			// The method removeStock from the inventory controller is now being called.
+//			the products are being removed from the inventory, when they´re being sold. 
 			for(SaleOrderLine orderLine : currentOrder.getOrderLines()) {
 				product = orderLine.getProduct(); 
 				quantity = orderLine.getQuantity();
@@ -806,7 +818,8 @@ public class KasseSystem extends JFrame {
 		
 		
 	}
-
+	
+	// Calculates the total price based on items and their quantities in the cart
 	private void updateTotal() {
 		total = 0.0;
 		for (String item : cartItems.keySet()) {
@@ -821,6 +834,8 @@ public class KasseSystem extends JFrame {
 		totalField.setText(String.format("%.2f kr", total));
 	}
 	
+	
+	// Handles payment logic based on selected method
 	private void processPayment(String method) {
 		
 
@@ -829,6 +844,8 @@ public class KasseSystem extends JFrame {
 	            "Betaling på " + String.format("%.2f", total) + " kr via " + method + " gennemført.",
 	            "Betaling Gennemført",
 	            JOptionPane.INFORMATION_MESSAGE);
+	        
+	        // Clear cart and reset UI
 	        cartItems.clear();
 	        itemPrices.clear();
 	        orderItemsPanel.removeAll();
@@ -850,9 +867,13 @@ public class KasseSystem extends JFrame {
 
 	}
 	
+	// Generates a random order number for the given order. 
 	private int generateRandomNumber() {
 		return 100000 + new java.util.Random().nextInt(900000); 
 	}
+	
+	
+	// finds the customer to add to the order. 
 
 	private void findByStudentId() throws DataAccessException {
 		
@@ -871,7 +892,7 @@ public class KasseSystem extends JFrame {
 		protected void done() {
 			try {
 		
-			Customer customer = get(); 
+			Customer customer = get(); // Retrieve the result of the background task
 			
 			
 			if(customer == null) {
@@ -910,7 +931,7 @@ public class KasseSystem extends JFrame {
 	
 	
 
-	
+	// Start the background task
 	
 	worker.execute(); 
 	
@@ -930,6 +951,8 @@ private void createOrder() throws DataAccessException {
 				textFieldOrderNr.setText(String.valueOf(generateRandomNumber())); 
 			int orderNumber =	Integer.parseInt(textFieldOrderNr.getText()); 
 			
+			
+			 // Create a new sale order, where the the date attribute is being set to the current time. 
 				currentOrder = saleOrderCtr.createSaleOrder(orderNumber, LocalDate.now(), false, null, null, 0, 0);
 		
 				
@@ -939,6 +962,8 @@ private void createOrder() throws DataAccessException {
 			}
 			JOptionPane.showMessageDialog(KasseSystem.this, "Ordre er oprettet ", "Succes", JOptionPane.INFORMATION_MESSAGE); 
 			
+			
+			// Reset and update UI elements for the new order
 				textFieldOrderNr.setText(""); 
 				textFieldOrderNr.setText(String.valueOf(currentOrder.getOrderNumber())); 
 				cartItems.clear();

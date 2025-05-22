@@ -1,10 +1,10 @@
 package Test;
 
-import static org.junit.Assert.assertThrows;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,7 +20,6 @@ import DB.DataAccessException;
 import DB.InventoryDB;
 import DB.ProductDB;
 import controller.InventoryCtr;
-import controller.OverStockCapacity;
 import controller.SaleOrderCtr;
 import model.Customer;
 import model.Inventory;
@@ -71,9 +70,9 @@ class TestUpdateInventory {
 
 	
 	
-	
+	// Testing for when stock is being added to the inventory
 @Test 
-void testAddStock() throws DataAccessException, OverStockCapacity {
+void testAddStock() throws DataAccessException {
 
 	
 	
@@ -81,7 +80,7 @@ void testAddStock() throws DataAccessException, OverStockCapacity {
 	int productId = 88; 
 
 	
-	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
@@ -90,7 +89,7 @@ void testAddStock() throws DataAccessException, OverStockCapacity {
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
-	
+	 // Store the current quantity for assertion
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
 	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
@@ -116,16 +115,18 @@ void testRemoveStock() throws DataAccessException {
 
 
 	
-	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
-	
+	 // Store the current quantity for assertion
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
+	
+	 // Add stock and retrieve updated inventoryProduct
 	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
 	
 
@@ -138,14 +139,14 @@ void testRemoveStock() throws DataAccessException {
 
 
 @Test 
-void testAddMultipleProducts() throws DataAccessException, OverStockCapacity {
+void testAddMultipleProducts() throws DataAccessException {
 
 	
 	
 	int inventoryId = 420; 
 	int productId = 88; 
 
-	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
@@ -155,9 +156,11 @@ void testAddMultipleProducts() throws DataAccessException, OverStockCapacity {
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
-	
+	 // Store the current quantity for assertion
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
+	
+	 // Add stock and retrieve updated inventoryProduct
 	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
 	
 
@@ -175,6 +178,7 @@ void testRemoveMultipleProducts() throws DataAccessException {
 	int inventoryId = 420; 
 	int productId = 88; 
 
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
@@ -182,9 +186,11 @@ void testRemoveMultipleProducts() throws DataAccessException {
 
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(88, 420); 
 	
-	
+	 // Store the current quantity for assertion
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
+	
+	 // Add stock and retrieve updated inventoryProduct
 	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
 	
 
@@ -204,14 +210,14 @@ void testInvalidInventoryId() throws DataAccessException {
 	int quantity = 2; 
 	
 
-	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
 InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 	
 
-	
+	// Assertion for the inventory to be null
 	assertNull(foundInventory, "Inventory should be null"); 
 	
 	
@@ -228,6 +234,7 @@ void testInvalidProductId() throws DataAccessException {
 	int quantity = 2; 
 
 	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
@@ -237,7 +244,7 @@ InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId,
 	
 	
 	
-	
+	// Assertion for the product to be null
 	assertNull(foundProduct, "Inventory should be null"); 
 	
 
@@ -256,17 +263,20 @@ void testOverCapacity() throws DataAccessException {
 	int inventoryId = 420; 
 	int productId = 88; 
 
+	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
 	int quantity = 5000001; 
 
-	
+
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 	
-	
+	 // Store the current quantity for assertion
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
+	 // Add stock and retrieve updated inventoryProduct
 	 inventoryProduct = inventoryCtr.addStock(foundInventory, foundProduct, quantity); 
 	 
 	 assertTrue(foundInventory.getCapacity() < foundInventory.getCapacity() + quantity); 
@@ -284,7 +294,7 @@ void testRemovingMoreThanInStock() throws DataAccessException {
 	int productId = 88; 
 
 	
-	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventory = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	
@@ -294,9 +304,11 @@ void testRemovingMoreThanInStock() throws DataAccessException {
 	
 	InventoryProduct inventoryProduct = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 	
-	
+	 // Store the current quantity for assertion
 	int formerValue = inventoryProduct.getQuantityInStock(); 
 	
+	
+	 // Remove stock and retrieve updated inventoryProduct
 	 inventoryProduct = inventoryCtr.removeStock(foundInventory, foundProduct, quantity); 
 	 
 	 assertTrue(inventoryCtr.getInventoryStockForProduct(inventoryId, productId) <  quantity); 
@@ -309,13 +321,14 @@ void testRemovingMoreThanInStock() throws DataAccessException {
 @Test
 void testTransferStock() throws DataAccessException {
 	
-
+// Inventory that the product is being transfered to
 	int inventoryId = 420; 
+	// Inventory that the product is being transfered to
 	int inventoryId2 = 422; 
 	int productId = 88; 
 	
 
-	
+	 // Retrieve inventory and product objects by their IDs
 	Inventory foundInventoryTo = inventoryCtr.findByInventoryId(inventoryId); 
 	Product foundProduct = inventoryCtr.getProductCtr().findByProductId(productId); 
 	Inventory foundInventoryFrom = inventoryCtr.findByInventoryId(inventoryId2); 
@@ -324,24 +337,25 @@ void testTransferStock() throws DataAccessException {
 	
 
 
-	 
+	 // Finding both the inventories
 		InventoryProduct inventoryProductBeforeTo = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 		InventoryProduct inventoryProductBeforeFrom = inventoryCtr.findInventoryProduct(productId, inventoryId2); 
 		
-		
+		 // Store the current quantity for assertion from before the transfer happens 
 		int valueBeforeTo = inventoryProductBeforeTo.getQuantityInStock(); 
 		int valueBeforeFrom = inventoryProductBeforeFrom.getQuantityInStock(); 
 		
-		
+		 // Transfer stock and retrieve updated inventoryProduct
 		 inventoryCtr.transferStock(foundInventoryTo, foundInventoryFrom, foundProduct, quantity); 
 		
 		
+//		 Finding the inventories product object after the transfer happened
 		InventoryProduct inventoryProductAfterTo = inventoryCtr.findInventoryProduct(productId, inventoryId); 
 		InventoryProduct inventoryProductAfterFrom = inventoryCtr.findInventoryProduct(productId, inventoryId2);
 		
 
 	 
-	 
+	    // Assert that stock was added to destination and removed from  source
 		assertEquals(valueBeforeFrom - quantity, inventoryProductAfterFrom.getQuantityInStock()); 
 		assertEquals(valueBeforeTo + quantity, inventoryProductAfterTo.getQuantityInStock()); 
 	

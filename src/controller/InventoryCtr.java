@@ -114,7 +114,7 @@ public class InventoryCtr {
 		return inventoryProduct; 
 	}
 	
-	
+	// Returns the total stock available for a given product across all inventories
 	public int getTotalStock(int productId) throws DataAccessException {
 		List<InventoryProduct> inventories = inventoryDB.findInventoryProductByProductId(productId); 
 		
@@ -125,7 +125,7 @@ public class InventoryCtr {
 		
 		return total; 
 	}
-	
+	// Returns the total stock for all products in a specific inventory
 	public int getTotalInventoryStock(int inventoryId) throws DataAccessException {
 		
 		List<InventoryProduct> products = inventoryDB.findInventoryProductByInventoryId(inventoryId); 
@@ -140,7 +140,7 @@ public class InventoryCtr {
 		
 	}
 	
-
+	// Returns the stock for a specific product in a specific inventory
 	public int getInventoryStockForProduct(int inventoryId, int productId) throws DataAccessException {
 		InventoryProduct ip = findInventoryProduct(productId, inventoryId);
 		return ip.getQuantityInStock(); 

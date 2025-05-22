@@ -22,7 +22,6 @@ private SaleOrderDBIF saleOrderDB;
 private CustomerCtr customerCtr; 
 private ProductCtr productCtr; 
 private SaleOrder currentSaleOrder; 
-private List<SaleOrderLine> orderLines; 
 
 
 //Constructor: runs when a new SaleOrderCtr object is created
@@ -30,8 +29,7 @@ public SaleOrderCtr() throws DataAccessException {
 	
 	customerCtr = new CustomerCtr(); 
 	productCtr = new ProductCtr(); 
-	this.saleOrderDB = new SaleOrderDB(); 
-	orderLines = new ArrayList<>(); 
+	this.saleOrderDB = new SaleOrderDB();  
 }
 
 //Confirms the current order and updates it in the database
