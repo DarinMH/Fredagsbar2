@@ -84,6 +84,7 @@ public class DBConnection {
 		}
 	}
 	
+	// Starts a new database transaction by disabling auto-commit mode
 	
 	public void startTransaction() throws DataAccessException {
 		try {
@@ -93,6 +94,9 @@ public class DBConnection {
 			throw new DataAccessException(e, "Could not start transaction.");
 		}
 	}
+	
+	
+	// Commits the transaction by setting autoCommit to true, so the changes made are persisted. 
 
 	public void commitTransaction() throws DataAccessException {
 		try {
@@ -100,7 +104,6 @@ public class DBConnection {
 				connection.commit();
 			} catch (SQLException e) {
 				throw e;
-				// e.printStackTrace();
 			} finally {
 				connection.setAutoCommit(true);
 			}
@@ -108,7 +111,10 @@ public class DBConnection {
 			throw new DataAccessException(e, "Could not commit transaction");
 		}
 	}
-
+	
+	
+	
+//Rolls back the current transaction by reverting the changes made from being persisted if an error occurs
 	public void rollbackTransaction() throws DataAccessException {
 		try {
 			try {
@@ -124,6 +130,8 @@ public class DBConnection {
 		}
 	}
 	
+	
+	// Executes an SQL Insert statement and returns the auto generated key
 	public int executeInsertWithIdentity(String sql) throws DataAccessException {
 		System.out.println("DBConnection, Inserting: " + sql);
 		int res = -1;
@@ -143,8 +151,10 @@ public class DBConnection {
 		return res;
 	}
 
+	
+	// Executes a PreparedStatement for an INSERT and returns the generated key
 	public int executeInsertWithIdentity(PreparedStatement ps) throws DataAccessException {
-		// requires perpared statement to be created with the additional argument PreparedStatement.RETURN_GENERATED_KEYS  
+		// requires prepared statement to be created with the additional argument PreparedStatement.RETURN_GENERATED_KEYS  
 		int res = -1;
 		try {
 			res = ps.executeUpdate();

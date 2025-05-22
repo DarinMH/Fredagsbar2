@@ -78,10 +78,8 @@ public SaleOrder findByOrderNumber(int orderNumber) throws DataAccessException {
 public void setCurrentOrder(SaleOrder order) {
 	this.currentSaleOrder=order; //Stores the given order
 }
-//Deletes an order line (a product in an order)
-public void deleteOrderLine(SaleOrderLine line) throws DataAccessException {
-    saleOrderDB.deleteOrderLine(line); //Removes the product from the order in the database 
-}
+
+
 //Adds a product and quantity to the current sale order
 public void addProductToOrder(Product product, int quantity) throws DataAccessException {
     List<SaleOrderLine> lines = currentSaleOrder.getOrderLines(); //Get current order line 

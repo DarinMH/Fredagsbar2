@@ -94,7 +94,7 @@ public class InventoryGui extends JDialog {
 			e.printStackTrace();
 		} 
 		
-	
+	// initialization of the list for the inventory Product objects
 		
 		modelInventoryProduct = new DefaultListModel<>(); 
 		inventoryProductList = new JList<>(modelInventoryProduct); 
@@ -126,18 +126,23 @@ public class InventoryGui extends JDialog {
 	
 // method that loads all the inventories in the system: 
 	private void loadInventory() throws DataAccessException {
+		
+		// Finds all the inventory objects via. the method from the controller. 
 		List<Inventory> in = inventoryCtr.findAll(); 
 		
-
+// Combo DefaultComboBoxModels that drops down all the inventory objects
 		DefaultComboBoxModel<Inventory> inventory = new DefaultComboBoxModel<Inventory>(); 
 		DefaultComboBoxModel<Inventory> modelFrom = new DefaultComboBoxModel<>();
 		DefaultComboBoxModel<Inventory> modelTo = new DefaultComboBoxModel<>();
 		
+	
 		for(int i = 0; i < in.size(); i++) {
 			inventory.addElement(in.get(i));
 			modelFrom.addElement(in.get(i));
 			modelTo.addElement(in.get(i));
 		}
+		
+		
 		
 		this.inventoryBox.setModel(inventory);
 		comboBoxFraLager.setModel(modelFrom);
@@ -155,8 +160,11 @@ public class InventoryGui extends JDialog {
 	
 	// Method that loads all the products from the system
 	private void loadProducts() throws DataAccessException {
+		// finds all the products
 		allProducts = inventoryCtr.getProductCtr().findAll(); 
 		categoryModel.clear();
+		
+		// Adds all the product objects to the categoyModel list 
 		for(Product p : allProducts) {
 			categoryModel.addElement(p);
 		}
@@ -164,7 +172,10 @@ public class InventoryGui extends JDialog {
 	}
 
 	
+	// Finds the specific object of inventory product
 	private void findInventoryProduct() throws DataAccessException {
+		
+		// Based on the inventory object and product object, the object of inventory product will show up in the JList
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem();
 		
 		if (inventory != null && selectedProduct != null) {
@@ -201,8 +212,10 @@ public class InventoryGui extends JDialog {
 		}
 	}
 	
-	
+	// method that adds products to an inventory
 	public void addStock() throws DataAccessException {
+		
+	
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
 		
 		if (inventory == null || selectedProduct == null || addStockTF.getText().trim().isEmpty()) {
@@ -211,15 +224,20 @@ public class InventoryGui extends JDialog {
 		}
 		
 		try {
+			
+			// The quantity of stock the user wants to add is decided here
 			int quantity = Integer.parseInt(addStockTF.getText()); 
 			
+			// to make sure that the max capacity of the inventory is not exceeded
 			int max = inventoryCtr.getTotalInventoryStock(inventory.getInventoryId()); 
 			
 			if(quantity + max > inventory.getCapacity()) {
 				JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Error", JOptionPane.ERROR_MESSAGE); 
 			} else {
+				// adds the stock to the inventory by calling the method in the inventory controller
 				inventoryCtr.addStock(inventory, selectedProduct, quantity); 
 				findInventoryProduct();
+				// calling the updateStockInfo method in the gui, to visualize the updated values instantly. 
 				updateStockInfo(selectedProduct, inventory);
 			}
 		} catch (NumberFormatException e) {
@@ -231,8 +249,10 @@ public class InventoryGui extends JDialog {
 	
 
 	
-	
+	// Method that transfers stock from one inventory to another. 
 	private void transferStock() throws DataAccessException {
+		
+		// Objects are based on the selected value from the combo boxes
 	    Product product = (Product) Category.getSelectedValue();
 	    Inventory from = (Inventory) comboBoxFraLager.getSelectedItem();
 	    Inventory to = (Inventory) comboBoxTilLager.getSelectedItem();
@@ -245,30 +265,30 @@ public class InventoryGui extends JDialog {
 	    try {
 	    	
 	    	
+	    	// Quantity is based on the input from the user in the text box
 	        int quantity = Integer.parseInt(flytMængdeTF.getText());
 
-	        int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId());
+
 	        
-	        
+	        int fromInventory = inventoryCtr.getTotalStock(product.getProductId()); 
 
 	        if (quantity > fromInventory) {
 	            JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        } 
-	        
-	        
-	        int toInventory = inventoryCtr.getTotalInventoryStock(to.getCapacity()); 
+
 	        
 	        if(inventoryCtr.getTotalInventoryStock(to.getInventoryId()) + quantity > to.getCapacity() ) {
 	        	 JOptionPane.showMessageDialog(this, "Du har overskredet maximum væriden for lager", "Fejl", JOptionPane.ERROR_MESSAGE);
 	        	 return; 
 	        } 
 	    
-	        
+	        // transferring stock from one inventory to another by calling the method in the inventory controller. 
 	        inventoryCtr.transferStock(to, from, product, quantity); 
 	        
-
+	     // calling the updateStockInfo method in the gui, to visualize the updated values instantly. 
 	        updateStockInfo(product, (Inventory) inventoryBox.getSelectedItem()); 
+	        // empties the text field, after the action is done. 
 	        flytMængdeTF.setText("");
 
 	        Inventory inventoryView = (Inventory) inventoryBox.getSelectedItem();
@@ -277,12 +297,7 @@ public class InventoryGui extends JDialog {
 	        if (updated != null) {
 	            modelInventoryProduct.addElement(updated);
 	        }
-
-	        System.out.println("Flyttede " + quantity + " fra " + from.getLocation() + " til " + to.getLocation());
-	        System.out.println("Fra-lager: " + inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId()));
-	        System.out.println("Til-lager: " + inventoryCtr.getInventoryStockForProduct(to.getInventoryId(), product.getProductId()));
-	        
-	        
+    
 
 	    } catch (NumberFormatException e) {
 	        JOptionPane.showMessageDialog(this, "Ugyldig mængde", "Fejl", JOptionPane.ERROR_MESSAGE);
@@ -290,8 +305,10 @@ public class InventoryGui extends JDialog {
 
 	}
 	
-	
+	// method to remove stock from inventory
 	public void removeStock() throws DataAccessException {
+		
+		
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
 		
 		if (inventory == null || selectedProduct == null || removeStockTF.getText().trim().isEmpty()) {
@@ -300,11 +317,16 @@ public class InventoryGui extends JDialog {
 		}
 		
 		try {
+			
+			// quantity of the stock to be removed is decided in this text field: 
 			int quantity = Integer.parseInt(removeStockTF.getText()); 
 			
-			if(quantity > inventoryCtr.getInventoryStockForProduct(inventory.getInventoryId(), selectedProduct.getProductId())) {
+			
+			// To make sure that the user does not remove more products from 
+			if(quantity > inventoryCtr.getTotalStock(selectedProduct.getProductId())) {
 				JOptionPane.showMessageDialog(this, "Så stor mængde af dette produkt findes slet ikke på lageret!", "Error", JOptionPane.ERROR_MESSAGE); 
 			} else {
+				// Removing product from inventory by calling the method in the inventory controller
 				inventoryCtr.removeStock(inventory, selectedProduct, quantity); 
 				findInventoryProduct();
 				updateStockInfo(selectedProduct, inventory);
@@ -314,7 +336,7 @@ public class InventoryGui extends JDialog {
 		}
 	}
 	
-	
+	// Method that updates the information about the inventory. 
 	private void updateStockInfo(Product product, Inventory inventory) throws DataAccessException {
 		if (product != null) {
 			int totalStock = inventoryCtr.getTotalStock(product.getProductId());
@@ -327,6 +349,9 @@ public class InventoryGui extends JDialog {
 		}
 	}
 	
+	
+	
+	// Sets up the graphical user interface for the inventory management screen.
 	public void init() {
 		setBounds(100, 100, 804, 600);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -347,6 +372,7 @@ public class InventoryGui extends JDialog {
 		getContentPane().add(lblNewLabel, gbc_lblNewLabel);
 		
 		inventoryBox = new JComboBox<Inventory>();
+		// Implements action listener for when a certain value in the JComboBox is selected
 		inventoryBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -510,7 +536,7 @@ public class InventoryGui extends JDialog {
 		getContentPane().add(removeStockTF, gbc_removeStockTF);
 		removeStockTF.setColumns(10);
 		
-		JButton btnTilfjNyProdukt = new JButton("Tilføj ny produkt");
+		JButton btnTilfjNyProdukt = new JButton("Tilføj nyt produkt");
 		GridBagConstraints gbc_btnTilfjNyProdukt = new GridBagConstraints();
 		gbc_btnTilfjNyProdukt.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnTilfjNyProdukt.insets = new Insets(0, 0, 5, 5);
