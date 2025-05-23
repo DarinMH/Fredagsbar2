@@ -517,42 +517,48 @@ public class KasseSystem extends JFrame {
 		getContentPane().add(orderButton, gbc_orderButton);
 
 		// Initialize UI components
-		addCategoryButtons(panelCategory);
+		try {
+			addCategoryButtons(panelCategory);
+		} catch (DataAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		pack(); 
 			}
 			
 		
-	// Dynamically adds category buttons to the provided panel, each loading drinks from that category
-	private void addCategoryButtons(JPanel panelCategory) {
-		panelCategory.setLayout(new GridLayout(0, 1));
+	
+	
+	
+	private void addCategoryButtons(JPanel panelCategory) throws DataAccessException {
+	    panelCategory.setLayout(new GridLayout(0, 1));
 
-		try {
-			Connection conn = DB.DBConnection.getInstance().getConnection();
-			String sql = "SELECT DISTINCT category FROM Drink";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
+	    try {
+	        List<String> categoryDrinks = saleOrderCtr.getProductCtr().findDistinctDrinkCategories();
+	        
+	        for (String category: categoryDrinks) {
+	            JButton catButton = new JButton(category);
 
-			String productSql = "SELECT DISTINCT ProductName FROM Product";
-			PreparedStatement productPs = conn.prepareStatement(productSql);
-			ResultSet productRs = productPs.executeQuery();
+	            catButton.addActionListener(e -> {
+	                loadDrinksForCategory(category); 
+	            });
+	            
+	            panelCategory.add(catButton);
+	        }
+	        
+	        panelCategory.revalidate();
+	        panelCategory.repaint();
 
-			while (rs.next()) {
-				String category = rs.getString("category");
-				JButton catButton = new JButton(category);
-
-				catButton.addActionListener(e -> {
-					loadDrinksForCategory(category);
-				});
-				panelCategory.add(catButton);
-			}
-			panelCategory.revalidate();
-			panelCategory.repaint();
-
-		} catch (SQLException e) {
-			panelCategory.revalidate();
-		}
+	    } catch (DataAccessException e) {
+	        panelCategory.revalidate();
+	        throw e;
+	    }
 	}
+
+	
+	
+	
 	
 	// Loads and displays all miscellaneous products 
 	private void loadMisc() {

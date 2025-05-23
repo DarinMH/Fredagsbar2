@@ -96,6 +96,7 @@ public class KasseSystemBes extends JFrame {
 	public KasseSystemBes(SaleOrder saleOrder, LogInd login)  {
 			
 	try { //tries to create a connection to database with an instance of inventoryCtr
+		this.login=login;
 		inventoryCtr = new InventoryCtr();
 	} catch (DataAccessException e) { //Catches it if a problem occurs with the connection
 		// TODO Auto-generated catch block
@@ -112,6 +113,7 @@ public class KasseSystemBes extends JFrame {
 			}
 			saleOrderCtr.setCurrentOrder(this.currentOrder);
 			total=currentOrder.getTotalPrice(); 
+ 
 			init(); 
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
@@ -267,7 +269,7 @@ public class KasseSystemBes extends JFrame {
 		JButton btnLager = new JButton("Lager");
 		btnLager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InventoryGui dialog = new InventoryGui(); 
+				InventoryGui dialog = new InventoryGui(KasseSystemBes.this); 
 				dialog.setVisible(true);
 			}
 		});
@@ -535,36 +537,6 @@ public class KasseSystemBes extends JFrame {
 			}
 			
 		
-//	// Dynamically adds category buttons to the provided panel, each loading drinks from that category
-//	private void addCategoryButtons(JPanel panelCategory) {
-//		panelCategory.setLayout(new GridLayout(0, 1));
-//
-//		try {
-//			Connection conn = DB.DBConnection.getInstance().getConnection();
-//			String sql = "SELECT DISTINCT category FROM Drink";
-//			PreparedStatement ps = conn.prepareStatement(sql);
-//			ResultSet rs = ps.executeQuery();
-//
-//			String productSql = "SELECT DISTINCT ProductName FROM Product";
-//			PreparedStatement productPs = conn.prepareStatement(productSql);
-//			ResultSet productRs = productPs.executeQuery();
-//
-//			while (rs.next()) {
-//				String category = rs.getString("category");
-//				JButton catButton = new JButton(category);
-//
-//				catButton.addActionListener(e -> {
-//					loadDrinksForCategory(category);
-//				});
-//				panelCategory.add(catButton);
-//			}
-//			panelCategory.revalidate();
-//			panelCategory.repaint();
-//
-//		} catch (SQLException e) {
-//			panelCategory.revalidate();
-//		}
-//	}
 	
 	
 	

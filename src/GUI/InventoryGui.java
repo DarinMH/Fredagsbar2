@@ -7,6 +7,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -60,6 +61,7 @@ public class InventoryGui extends JDialog {
 	private List<Product> allProducts;
 	private Product selectedProduct;
 	private JTextField kasseTextField; 
+	private LogInd login; 
 	
 	// Added components for product transfer
 	private JComboBox<Inventory> comboBoxFraLager;
@@ -72,7 +74,7 @@ public class InventoryGui extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			InventoryGui dialog = new InventoryGui();
+			InventoryGui dialog = new InventoryGui(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -86,7 +88,7 @@ public class InventoryGui extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public InventoryGui() {
+	public InventoryGui(JFrame parent) {
 		try {
 			inventoryCtr = new InventoryCtr();
 		} catch (DataAccessException e) {
@@ -94,6 +96,7 @@ public class InventoryGui extends JDialog {
 			e.printStackTrace();
 		} 
 		
+
 	// initialization of the list for the inventory Product objects
 		
 		modelInventoryProduct = new DefaultListModel<>(); 
@@ -123,8 +126,11 @@ public class InventoryGui extends JDialog {
 	}
 
 	
-	
-// method that loads all the inventories in the system: 
+
+
+
+
+	// method that loads all the inventories in the system: 
 	private void loadInventory() throws DataAccessException {
 		
 		// Finds all the inventory objects via. the method from the controller. 
@@ -270,7 +276,7 @@ public class InventoryGui extends JDialog {
 
 
 	        
-	        int fromInventory = inventoryCtr.getTotalStock(product.getProductId()); 
+	        int fromInventory = inventoryCtr.getInventoryStockForProduct(from.getInventoryId(), product.getProductId()); 
 
 	        if (quantity > fromInventory) {
 	            JOptionPane.showMessageDialog(this, "Der er ikke nok produkter i 'fra'-lageret", "Fejl", JOptionPane.ERROR_MESSAGE);
@@ -322,8 +328,8 @@ public class InventoryGui extends JDialog {
 			int quantity = Integer.parseInt(removeStockTF.getText()); 
 			
 			
-			// To make sure that the user does not remove more products from 
-			if(quantity > inventoryCtr.getTotalStock(selectedProduct.getProductId())) {
+			// To make sure that the user does not remove more products from the inventory than the stock value for the product
+			if(quantity > inventoryCtr.getInventoryStockForProduct(inventory.getInventoryId(), selectedProduct.getProductId())) {
 				JOptionPane.showMessageDialog(this, "Så stor mængde af dette produkt findes slet ikke på lageret!", "Error", JOptionPane.ERROR_MESSAGE); 
 			} else {
 				// Removing product from inventory by calling the method in the inventory controller
@@ -634,6 +640,8 @@ public class InventoryGui extends JDialog {
 		JButton btnKassesystem = new JButton("Tilbage");
 		btnKassesystem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				KasseSystem frame = new KasseSystem(null, null); 
+				frame.setVisible(true); 
 			}
 		});
 		
