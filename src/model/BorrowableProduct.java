@@ -3,17 +3,26 @@ package model;
 public abstract class BorrowableProduct {
 	private int amount;
 	private String productName;
-	private int productId;
-	private Reservation reservation; 
+	private int productId; 
 	private String productType; 
 	private boolean status;
 	
-	public BorrowableProduct(int amount, String productName, int productId, Reservation reservation, String productType, boolean status) {
+	
+	public BorrowableProduct() {
+		
+	}
+	
+	public BorrowableProduct(int productId) {
+		this.productId=productId; 
+		
+	}
+	
+	
+	public BorrowableProduct(int amount, String productName, int productId, String productType, boolean status) {
 		super();
 	this.amount = amount;
 	this.productName = productName;
 	this.productId = productId;
-	this.reservation = reservation; 
 	this.productType = productType; 
 	this.status=status;  
 
@@ -43,15 +52,7 @@ public abstract class BorrowableProduct {
 		this.productId = productId;
 	}
 	
-	public Reservation getReservation () {
-		return reservation; 
-	}
-	
-	public void setReservation (Reservation reservation) { 
-		this.reservation=reservation;
-	}
-	
-	public String getproductType () {
+	public String getProductType () {
 		return productType;
 	}
 	 public void setProductType (String productType) {
@@ -66,6 +67,12 @@ public abstract class BorrowableProduct {
 		return status; 
 	}
 
+	
+	
+	@Override 
+	public String toString() {
+		return productName; 
+	}
 
 	
 

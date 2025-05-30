@@ -24,6 +24,9 @@ public class CustomerDB implements CustomerDBIF {
 	private PreparedStatement findByStudentId;
 	
 	
+	
+	
+	
     // Prepares the connection and prepares the SQL statements to be executed. 
 	public CustomerDB() throws DataAccessException {
 		try {
@@ -52,7 +55,7 @@ public class CustomerDB implements CustomerDBIF {
 			ResultSet rs = findByStudentId.executeQuery();
 			Customer customer = null;
 			if(rs.next()) {
-				customer = buildObject(rs, fullAssociation);
+				customer = buildObject(rs, false);
 			}
 			return customer;
 		}catch (SQLException e) {

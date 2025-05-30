@@ -10,5 +10,8 @@ public interface BorrowableProductDBIF {
     List<BorrowableProduct> findAll() throws DataAccessException;
 
     // Finder ét lånbart produkt baseret på ID
-    BorrowableProduct findByProductId(int productId) throws DataAccessException;
+    BorrowableProduct findByProductId(int productId, boolean fullAssociation) throws DataAccessException;
+    
+    
+    void updateStatus(BorrowableProduct product) throws DataAccessException; 
 }

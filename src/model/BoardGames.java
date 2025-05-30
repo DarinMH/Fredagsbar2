@@ -5,9 +5,18 @@ public class BoardGames extends BorrowableProduct{
 
 	private double compensationalPrice;
 	
-	public BoardGames(double compensationalPrice, Reservation reservation, int amount, String productName, int productId,
+	public BoardGames() {
+		
+	}
+	
+	public BoardGames(int productId) {
+		super(productId);
+	
+	}
+	
+	public BoardGames(double compensationalPrice, int amount, String productName, int productId,
 			String productType, boolean status) {
-		super(amount, productName, productId, reservation, productType, status);
+		super(amount, productName, productId, productType, status);
 	
 		this.compensationalPrice = compensationalPrice;
 	}

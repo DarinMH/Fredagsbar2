@@ -14,25 +14,28 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
 	
 	// SQL statements for performing common database operations on the table.
     private static final String FIND_ALL_Q = 
-        "SELECT bp.productId, bp.productName, bp.amount, " +
-        "       COALESCE(bg.boardGameId, 0) AS boardGameId, " +
+        "SELECT bp.productId, bp.productName, bp.amount, bp.status, bp.productType, " +
         "       COALESCE(bg.compensationalPrice, 0) AS compensationalPrice, " +
         "       COALESCE(t.tableNr, 0) AS tableNr, " +
         "       COALESCE(t.seatAmount, 0) AS seatAmount " +
         "FROM BorrowableProduct bp " +
-        "LEFT JOIN BoardGame bg ON bp.productId = bg.productId " +
-        "LEFT JOIN Tablee t ON bp.productId = t.productId";
+        "LEFT JOIN boardGames bg ON bp.productId = bg.productId " +
+        "LEFT JOIN tablee t ON bp.productId = t.productId";
     private static final String FIND_BY_ID_Q = FIND_ALL_Q + " WHERE bp.productId = ?";
+    private static final String UPDATE_STATUS_Q = "update BorrowableProduct set status = ?, amount = ? where productId = ?"; 
  // PreparedStatements to safely execute the SQL queries with parameters in the Java code
     private PreparedStatement findAll;
     private PreparedStatement findById;
+    private PreparedStatement updateStatus; 
+    private DBConnection con; 
 
     // Prepares the connection and prepares the SQL statements to be executed. 
     public BorrowableProductDB() throws DataAccessException {
         try {
-            Connection con = DBConnection.getInstance().getConnection();
-            findAll = con.prepareStatement(FIND_ALL_Q);
-            findById = con.prepareStatement(FIND_BY_ID_Q);
+        con = DBConnection.getInstance(); 
+            findAll = con.getConnection().prepareStatement(FIND_ALL_Q);
+            findById = con.getConnection().prepareStatement(FIND_BY_ID_Q);
+            updateStatus = con.getConnection().prepareStatement(UPDATE_STATUS_Q); 
         } catch (SQLException e) {
             throw new DataAccessException(e, "Kunne ikke forberede statements i BorrowableProductDB");
         }
@@ -52,7 +55,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
 
     // finds a specific object from the database based on productID 
     @Override
-    public BorrowableProduct findByProductId(int productId) throws DataAccessException {
+    public BorrowableProduct findByProductId(int productId, boolean fullAssociation) throws DataAccessException {
         try {
             findById.setInt(1, productId);
             ResultSet rs = findById.executeQuery();
@@ -75,26 +78,24 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
 
       ;
 		switch (productType.toLowerCase()) { 
-        case "BoardGames": product = new BoardGames(
+        case "boardgames": product = new BoardGames(
         
         		
         		rs.getDouble("compensationalPrice"),
-        		new Reservation(rs.getInt("reservationId"), null, 0, null, false, null),
         		rs.getInt("amount"), 
-        		rs.getString ("borrowableProductName"), 
+        		rs.getString ("productName"), 
         		rs.getInt("productId"), 
         		rs.getString("productType"),
         		rs.getBoolean("status")
         		); 
           
         break; 
-        case "table": product = new Table ( 
+        case "tablee": product = new Table ( 
         		rs.getInt("tableNr"),
         		rs.getInt("seatAmount"),
         		 rs.getInt("amount"),
         		 rs.getString("productType"), 
         		 rs.getBoolean("status"),
-        		 new Reservation(rs.getInt("reservationId"), null, 0, null, false, null),
                  rs.getString("productName"),
                  rs.getInt("productId")
              );
@@ -117,4 +118,22 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
  		return res; 
  	
  	}
+
+	@Override
+	public void updateStatus(BorrowableProduct product) throws DataAccessException {
+		final boolean status = product.getStatus(); 
+		final int amount = product.getAmount(); 
+		final int productId = product.getProductId(); 
+		
+		try {
+		updateStatus.setBoolean(1, status); 
+		updateStatus.setInt(2, amount);
+		updateStatus.setInt(3, productId);
+		updateStatus.executeUpdate(); 
+		
+		}catch(SQLException e) {
+			throw new DataAccessException(e, "Could not update "); 
+		
+	}
+	}
 }  

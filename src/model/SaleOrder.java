@@ -14,7 +14,6 @@ public class SaleOrder {
 	private double totalPrice; 
 	private double discountPercentage; 
 	private List<SaleOrderLine> orderLines; 
-	private SaleOrderLine saleOrderLine; 
 	
 	public SaleOrder() {
 		

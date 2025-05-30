@@ -14,5 +14,6 @@ public interface ReservationDBIF {
     // inserts the reservation into the database. 
     void insertReservation(Reservation reservation) throws DataAccessException;
 
+    void update(Reservation reservation) throws DataAccessException; 
 
 }

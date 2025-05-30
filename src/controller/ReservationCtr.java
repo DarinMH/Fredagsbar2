@@ -36,6 +36,21 @@ public class ReservationCtr {
 
 
     }
+    
+    
+    public boolean confirmReservation() throws DataAccessException {
+		this.currentReservation.setStatus(true);
+		
+		reservationDB.update(currentReservation); 
+		
+		if(currentReservation.isStatus() == true) {
+			
+			return true; 
+			}
+			
+			return false;
+		
+	}
  // This method creates a new reservation and saves it in the database
     public Reservation createReservation(int reservationId, LocalDate date, int amount, Customer customer, boolean status, BorrowableProduct borrowableProduct) throws DataAccessException {
         Reservation newReservation = new Reservation(reservationId, date, amount, customer, status, borrowableProduct);
@@ -52,22 +67,52 @@ public class ReservationCtr {
     public void setCurrentReservation(Reservation reservation) { 
         this.currentReservation = reservation; // Stores the given reservation
     }
+    
+    
 
-    // This method adds a customer to the current reservation
-    public Customer addCustomerToOrder(Customer customer) throws DataAccessException { 
+    public Reservation getCurrentReservation() {
+		return currentReservation;
+	}
+    
+    public void updateReservation(Reservation currentReservation) throws DataAccessException {
+    	reservationDB.update(currentReservation); 
+    }
+
+	// This method adds a customer to the current reservation
+    public Customer addCustomerToReservation(int studentId) throws DataAccessException { 
     	//// Finds the full customer info using their student ID
-        customer = customerCtr.findByStudentId(customer.getStudentId()); 
+       Customer customer = customerCtr.findByStudentId(studentId); 
+       System.out.println("Customer found: " + customer); // Log entire object
+       System.out.println("Customer ID: " + customer.getStudentId()); 
         this.currentReservation.setCustomer(customer); // Adds the customer to the reservation
-        currentReservation.setDate(LocalDate.now()); // Sets today's date on the reservation 
+//        currentReservation.setDate(LocalDate.now()); // Sets today's date on the reservation 
+        reservationDB.update(currentReservation); 
         return customer; // Returns the full customer object
     }
     // Adds a product to the current reservation 
-    public BorrowableProduct addProductToReservation(BorrowableProduct product) throws DataAccessException { 
+    public BorrowableProduct addProductToReservation(int productId) throws DataAccessException { 
     	// Finds the full product using the product ID
-        product = borrowableProductCtr.findByProductId(product.getProductId()); 
+        BorrowableProduct product = borrowableProductCtr.findByProductId(productId); 
         this.currentReservation.setBorrowableProduct(product); // Adds the product to the reservation
-        currentReservation.setDate(LocalDate.now()); // Updates the date to today
+//        currentReservation.setDate(LocalDate.now()); // Updates the date to today
+        if(product.getAmount() > 0) {
+        int amount = product.getAmount() -1; 
+        if(amount == 0) {
+        product.setStatus(false);
+  
+        }
+        product.setAmount(amount);
+        borrowableProductCtr.updateStatus(product);
+        reservationDB.update(currentReservation); 
+        
+        } else {
+        	
+        }
         return product; // Returns the full product object
+    }
+    
+    public List<BorrowableProduct> findAllProducts() throws DataAccessException {
+    	return borrowableProductCtr.findAll(); 
     }
     
 }

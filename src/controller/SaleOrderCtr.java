@@ -77,6 +77,16 @@ public void setCurrentOrder(SaleOrder order) {
 	this.currentSaleOrder=order; //Stores the given order
 }
 
+public Customer findCustomerByStudentId(int studentId) throws DataAccessException {
+return customerCtr.findByStudentId(studentId); 	
+
+}
+
+public Product findProductByProductId(int productId) throws DataAccessException {
+	return productCtr.findByProductId(productId); 
+	
+}
+
 
 //Adds a product and quantity to the current sale order
 public void addProductToOrder(Product product, int quantity) throws DataAccessException {

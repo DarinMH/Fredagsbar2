@@ -72,6 +72,10 @@ public int getCustomerCategory (int amount) {
 public void setReservations(List<Reservation> reservations) {
 	
 }
+
+public String toString() {
+	return firstName + " " + lastName;
+}
 	}
 	
 	

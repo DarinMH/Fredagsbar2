@@ -26,6 +26,11 @@ public class BorrowableProductCtr {
     public List<BorrowableProduct> findAll() throws DataAccessException {
         return borrowableProductDB.findAll(); // Calls the database method to fetch all products
     }
+    
+    
+    public void updateStatus(BorrowableProduct product) throws DataAccessException {
+    	borrowableProductDB.updateStatus(product);
+    }
 
 
  // This method gets one product by its ID number

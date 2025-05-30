@@ -920,8 +920,10 @@ public class KasseSystemBes extends JFrame {
 			
 			try {
 				saleOrderCtr.addCustomerToOrder(customer);
-				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
-				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+				textFieldCustomer.setText(String.valueOf(customer));
+				JOptionPane.showMessageDialog(null, String.valueOf(customer) + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+//				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
+//				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
 			} catch (DataAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
