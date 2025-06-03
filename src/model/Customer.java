@@ -73,6 +73,8 @@ public void setReservations(List<Reservation> reservations) {
 	
 }
 
+
+@Override
 public String toString() {
 	return firstName + " " + lastName;
 }

@@ -132,7 +132,7 @@ public class ReservationGui2 extends JFrame {
 		
 		
 		for(Reservation reservation : reservations) {
-			if(reservation != null && reservation.getCustomer() != null && reservation.getBorrowableProduct() != null)  
+			if(reservation != null && reservation.getCustomer() != null && reservation.getBorrowableProduct() != null && reservation.isStatus() == true)  
 			 {
 			reservationModelList.addElement(reservation);
 		}
@@ -144,8 +144,7 @@ public class ReservationGui2 extends JFrame {
 
 		try {
 			try {
-				
-//				textFieldCustomer.setText("Standard Kunde");
+
 				
 				
 				reservationTextField.setText(String.valueOf(generateRandomNumber())); 
@@ -154,7 +153,14 @@ public class ReservationGui2 extends JFrame {
 //			Customer customer = addCustomer(); 
 			
 			 // Create a new sale order, where the the date attribute is being set to the current time. 
-			currentReservation = reservationCtr.createReservation(reservationNumber, LocalDate.now(), 0, null, false, null);
+			reservationCtr.createReservation(reservationNumber, LocalDate.now(), 0, null, false, null);
+			
+			
+		    reservationModelList.clear();
+		    fillReservationList();
+			   productsModelList.clear(); 
+			    fillProductList(); 
+
 		
 				
 			} catch (DataAccessException e) {
@@ -190,8 +196,13 @@ public class ReservationGui2 extends JFrame {
 			
 			customerTextField.setText(String.valueOf(customer)); 
 			
-			System.out.println(currentReservation.getCustomer() + " er kunden tilføjet til reservation med reservation nummer: " + 
-			currentReservation.getReservationId()); 
+		    reservationModelList.clear();
+		    fillReservationList();
+		   
+
+			
+//			System.out.println(currentReservation.getCustomer() + " er kunden tilføjet til reservation med reservation nummer: " + 
+//			currentReservation.getReservationId()); 
 			
 			return customer; 
 		
@@ -209,6 +220,12 @@ public class ReservationGui2 extends JFrame {
 			reservationCtr.addProductToReservation(productId); 
 			
 			productTF.setText(String.valueOf(product));
+			
+		    reservationModelList.clear();
+		    fillReservationList();
+		    productsModelList.clear(); 
+		    fillProductList(); 
+
 			
 			
 			return product; 
@@ -275,6 +292,24 @@ public class ReservationGui2 extends JFrame {
 		reservationTextField.setColumns(10);
 		
 		btnNewButton_1 = new JButton("Slut Reservation");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Reservation reservation = reservationList.getSelectedValue(); 
+					reservationCtr.endReservation(reservation.getReservationId());
+					
+					
+				    reservationModelList.clear();
+				    fillReservationList();
+				    productsModelList.clear(); 
+				    fillProductList(); 
+					
+				} catch (DataAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+			}
+		});
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_1.gridx = 5;
@@ -370,6 +405,9 @@ public class ReservationGui2 extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					reservationCtr.confirmReservation();
+					
+					
+				
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

@@ -222,7 +222,7 @@ public ProductDB() throws DataAccessException {
 	public List<Drink> findAllDrinks() throws DataAccessException {
 		  List<Drink> drinks = new ArrayList<>();
 		    try {
-		        ResultSet rs = findAll.executeQuery(); // Using existing findAll prepared statement
+		        ResultSet rs = findAllDrinks.executeQuery(); // Using existing findAll prepared statement
 		        while(rs.next()) {
 		            Product product = buildObject(rs, false);
 		            if (product instanceof Drink) {

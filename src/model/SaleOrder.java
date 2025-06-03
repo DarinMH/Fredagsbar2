@@ -3,6 +3,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SaleOrder {
@@ -31,6 +32,7 @@ public class SaleOrder {
 		this.totalPrice = totalPrice; 
 		this.discountPercentage=discountPercentage; 
 		orderLines = new ArrayList<>(); 
+	
 
 	}
 	
@@ -90,6 +92,8 @@ public class SaleOrder {
 		
 		return sum; 
 	}
+	
+	
 
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;

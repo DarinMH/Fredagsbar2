@@ -22,6 +22,7 @@ private SaleOrderDBIF saleOrderDB;
 private CustomerCtr customerCtr; 
 private ProductCtr productCtr; 
 private SaleOrder currentSaleOrder; 
+private List<SaleOrderLine> orderLines; 
 
 
 //Constructor: runs when a new SaleOrderCtr object is created
@@ -30,6 +31,7 @@ public SaleOrderCtr() throws DataAccessException {
 	customerCtr = new CustomerCtr(); 
 	productCtr = new ProductCtr(); 
 	this.saleOrderDB = new SaleOrderDB();  
+	orderLines = new ArrayList<>(); 
 }
 
 //Confirms the current order and updates it in the database
@@ -90,11 +92,12 @@ public Product findProductByProductId(int productId) throws DataAccessException 
 
 //Adds a product and quantity to the current sale order
 public void addProductToOrder(Product product, int quantity) throws DataAccessException {
-    List<SaleOrderLine> lines = currentSaleOrder.getOrderLines(); //Get current order line 
+
+	orderLines = currentSaleOrder.getOrderLines();  //Get current order line 
     SaleOrderLine existingLine = null; // used to check if product already exists in the order
 
  // Looks through each line to see if the product is already in the order
-    for (SaleOrderLine line : lines) {
+    for (SaleOrderLine line : orderLines) {
         if (line.getProduct().getProductId() == product.getProductId()) {
             existingLine = line;
             break;
@@ -110,7 +113,7 @@ public void addProductToOrder(Product product, int quantity) throws DataAccessEx
     } else {
         SaleOrderLine newLine = new SaleOrderLine(currentSaleOrder, product, quantity);
         saleOrderDB.insertSaleOrderLine(newLine, false); // Saves the new line in the database
-        lines.add(newLine); //Adds the new line to the list 
+        orderLines.add(newLine); //Adds the new line to the list 
     }
 }
 

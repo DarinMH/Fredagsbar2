@@ -37,6 +37,6 @@ public class BorrowableProductCtr {
 
 
     public BorrowableProduct findByProductId(int productId) throws DataAccessException {
-        return borrowableProductDB.findByProductId(productId); // Calls the database to get the product with the given productId 
+        return borrowableProductDB.findByProductId(productId, true); // Calls the database to get the product with the given productId 
     }
 }

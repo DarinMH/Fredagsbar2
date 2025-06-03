@@ -64,6 +64,13 @@ public abstract class BorrowableProduct {
 	}
 	
 	public boolean getStatus() {
+		
+		status = false; 
+		
+		if(amount > 0) {
+			status = true; 
+		}
+		
 		return status; 
 	}
 

@@ -25,9 +25,23 @@ public class ReservationCtr {
     }
 
     // This method ends the current reservation
-    public boolean endReservation() throws DataAccessException { 
-        this.currentReservation.setStatus(true); // Marks the reservation as finished (true)
-        return currentReservation.isStatus(); // Returns the current status (show now be true)
+    public boolean endReservation(int reservationId) throws DataAccessException { 
+//        this.currentReservation.setStatus(true); // Marks the reservation as finished (true)
+        
+    	Reservation reservation = findByReservationId(reservationId); 
+    	
+    	reservation.setStatus(false);
+        
+        int amount = reservation.getBorrowableProduct().getAmount() + 1; 
+        
+        reservation.getBorrowableProduct().setAmount(amount);
+        
+        reservationDB.update(reservation); 
+        
+        borrowableProductCtr.updateStatus(reservation.getBorrowableProduct());
+//        reservation.getBorrowableProduct().setStatus(true);
+//        
+        return reservation.isStatus(); // Returns the current status (show now be true)
     }
  //This method gets a list of all reservation 
     public List<Reservation> findAll() throws DataAccessException { 
@@ -103,6 +117,7 @@ public class ReservationCtr {
         }
         product.setAmount(amount);
         borrowableProductCtr.updateStatus(product);
+   
         reservationDB.update(currentReservation); 
         
         } else {
