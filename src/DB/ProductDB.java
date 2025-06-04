@@ -39,9 +39,9 @@ public class ProductDB implements ProductDBIF {
 		private PreparedStatement findByProductName; 
 		private PreparedStatement findByCategory; 
 		private PreparedStatement findAllMiscellaneous; 
-		private PreparedStatement findAllDrinks;
+		private PreparedStatement findAllDrinks; 
 		private PreparedStatement findDistinctDrinkCategories; 
-		private InventoryDBIF inventoryDB; 
+		private InventoryDBIF inventoryDB;
 
 public ProductDB(InventoryDBIF inventoryDB) throws DataAccessException {
 	this.inventoryDB=inventoryDB; 
