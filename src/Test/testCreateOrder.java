@@ -115,6 +115,8 @@ void testOrderCompletionWith2Products() throws DataAccessException {
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 	
 	//assertions to verify that the correct customer and products were found.
+	assertEquals(foundCustomer.getStudentId(), order.getCustomer().getStudentId()); 
+	assertEquals(2, order.getOrderLines().size()); 
 	assertEquals(studentId, foundCustomer.getStudentId()); 
 	assertEquals(productId, foundProduct.getProductId());
 	assertEquals(productId2, foundProduct2.getProductId());
@@ -160,8 +162,7 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 
 	
 	int studentId = 1234; 
-	int productId = 2; 
-	int productId2 = 88;  
+	int productId = 2;  
 	
 	   // Generate a unique order number based on current time
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
@@ -172,10 +173,9 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	SaleOrder order = saleOrderCtr.createSaleOrder(
             orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
-	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
 
     // Add product to order through controller
-	order.addOrderline(saleOrderLine);
+
 	
 	saleOrderCtr.addCustomerToOrder(foundCustomer); 
 	
@@ -184,6 +184,8 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	saleOrderCtr.addProductToOrder(foundProduct, 2); 
 	
 	// Assert that the product ID matches the expected value
+	assertEquals(foundCustomer.getStudentId(), order.getCustomer().getStudentId()); 
+	assertEquals(1, order.getOrderLines().size()); 
 	assertEquals(studentId, foundCustomer.getStudentId()); 
 	assertEquals(productId, foundProduct.getProductId());
 	
@@ -191,6 +193,7 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	
 	
 }
+
 
 
 @Test //test case 5

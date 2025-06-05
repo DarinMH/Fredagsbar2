@@ -55,7 +55,7 @@ public class InventoryCtr {
 	}
 	
 	
-	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
+	public synchronized InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
 
 		// Method that removes the stock from an inventory 
 		inventory = findByInventoryId(inventory.getInventoryId()); 	
@@ -78,7 +78,7 @@ public class InventoryCtr {
 	
 	// inventoryTo is the inventory where stock is being added to
 	
-	public void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
+	public synchronized void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
 		
 		// Method that removes the stock from an inventory 
 		inventoryFrom = inventoryDB.findByInventoryId(inventoryFrom.getInventoryId(), false); 
@@ -96,7 +96,7 @@ public class InventoryCtr {
 	
 	// Method that removes the stock from an inventory 
 	
-	public InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+	public synchronized InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
 		
 //		The objects used in the method are being found
 		

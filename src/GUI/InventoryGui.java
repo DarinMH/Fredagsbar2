@@ -221,7 +221,7 @@ public class InventoryGui extends JDialog {
 	
 	// method that adds products to an inventory
 	public void addStock() throws DataAccessException {
-		
+	
 	
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
 		
