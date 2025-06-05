@@ -31,6 +31,7 @@ public SaleOrderCtr() throws DataAccessException {
 	customerCtr = new CustomerCtr(); 
 	productCtr = new ProductCtr(); 
 	this.saleOrderDB = new SaleOrderDB();  
+	
 	orderLines = new ArrayList<>(); 
 }
 
