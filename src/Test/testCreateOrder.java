@@ -53,8 +53,8 @@ void testOrderCompletionWithOneProduct() throws DataAccessException {
 // Generates an OrderNumber with the current time in miliseconds so that the same orderNumber doesnt come up twice.
 //Finds the customer and product with the controllers
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
+	Customer foundCustomer = saleOrderCtr.findCustomerByStudentId(studentId); 
+	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
 	
 	//Creates a new SaleOrder object with its respective parameters
 	SaleOrder order = saleOrderCtr.createSaleOrder(
@@ -93,9 +93,9 @@ void testOrderCompletionWith2Products() throws DataAccessException {
 	// Generates an OrderNumber with the current time in miliseconds so that the same orderNumber doesnt come up twice.
 	//Finds the customer and product with the controllers
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
-	Product foundProduct2 = saleOrderCtr.getProductCtr().findByProductId(productId2); 
+	Customer foundCustomer = saleOrderCtr.findCustomerByStudentId(studentId); 
+	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
+	Product foundProduct2 = saleOrderCtr.findProductByProductId(productId2); 
 	
 	//Creates a new SaleOrder object with its respective parameters
 	SaleOrder order = saleOrderCtr.createSaleOrder(
@@ -133,7 +133,7 @@ void testNoCustomerAdded() throws DataAccessException {
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
+	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
 	
 	
 	// Customer is being set to null here: 
@@ -167,8 +167,8 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	   // Generate a unique order number based on current time
 	int orderNumber = (int) (System.currentTimeMillis() % 100000);
 	
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
+	Customer foundCustomer = saleOrderCtr.findCustomerByStudentId(studentId);
+	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
             orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
@@ -204,9 +204,8 @@ void testInvalidProduct() throws DataAccessException {
 	// invalid product id
 	int productId = 6; 
 
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
-	
+	Customer foundCustomer = saleOrderCtr.findCustomerByStudentId(studentId);
+	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
 	
 	
 	// Assertion for the product to be null 
@@ -224,8 +223,8 @@ void testInvalidCustomer() throws DataAccessException {
 	int studentId = 521; 
 	int productId = 2; 
 
-	Customer foundCustomer = saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
-	Product foundProduct = saleOrderCtr.getProductCtr().findByProductId(productId); 
+	Customer foundCustomer = saleOrderCtr.findCustomerByStudentId(studentId);
+	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
 	
 	// Assertio for the customer to be null: 
 	assertNull(foundCustomer, "Customer should be null");
