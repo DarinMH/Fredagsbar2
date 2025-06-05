@@ -55,8 +55,8 @@ public class InventoryCtr {
 	}
 	
 	
-	public synchronized InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
-
+	public InventoryProduct addStock(Inventory inventory, Product product, int quantity) throws DataAccessException  {
+		synchronized (this) {
 		// Method that removes the stock from an inventory 
 		inventory = findByInventoryId(inventory.getInventoryId()); 	
 		product = productCtr.findByProductId(product.getProductId()); 
@@ -72,14 +72,16 @@ public class InventoryCtr {
 	
 		}
 	
+		}
+	
 	// Method that transfers stock from one inventory to another. 
 	
 	// inventoryFrom is the inventory where stock is being removed from
 	
 	// inventoryTo is the inventory where stock is being added to
 	
-	public synchronized void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
-		
+	public void transferStock(Inventory inventoryTo, Inventory inventoryFrom, Product product, int quantity) throws DataAccessException {
+		synchronized (this) {
 		// Method that removes the stock from an inventory 
 		inventoryFrom = inventoryDB.findByInventoryId(inventoryFrom.getInventoryId(), false); 
 		inventoryTo = inventoryDB.findByInventoryId(inventoryTo.getInventoryId(), false); 
@@ -91,12 +93,14 @@ public class InventoryCtr {
 		// addStock is being called and the inventoryTo object is the parameter. 
 		addStock(inventoryTo, product, quantity); 
 
-		
+		}
 	}
 	
 	// Method that removes the stock from an inventory 
 	
-	public synchronized InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+	public InventoryProduct removeStock(Inventory inventory, Product product, int quantity) throws DataAccessException {
+		
+		synchronized (this) {
 		
 //		The objects used in the method are being found
 		
@@ -112,6 +116,8 @@ public class InventoryCtr {
 		inventoryDB.updateInventoryProduct(inventoryProduct);
 
 		return inventoryProduct; 
+		
+		}
 	}
 	
 	// Returns the total stock available for a given product across all inventories

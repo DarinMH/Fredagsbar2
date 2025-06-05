@@ -28,7 +28,7 @@ public class ReservationListCellRenderer extends DefaultListCellRenderer {
 		String representation = "Unknown Reservation"; 
 		if (value != null) {
 			Reservation reservation = (Reservation) value;
-			representation = String.valueOf(reservation.getCustomer()) + " " + String.valueOf(reservation.getDate() + " " + String.valueOf(reservation.getReservationId())); 
+			representation = String.valueOf(reservation.getCustomer()) + " " + String.valueOf(reservation.getDate() + " (" + String.valueOf(reservation.getReservationId() + ")")); 
 		}
 		return dlcr.getListCellRendererComponent(list, representation, index, isSelected,
 				cellHasFocus);

@@ -553,7 +553,7 @@ public class KasseSystemBes extends JFrame {
 	    panelCategory.setLayout(new GridLayout(0, 1));
 
 	    try {
-	        List<String> categoryDrinks = saleOrderCtr.getProductCtr().findDistinctDrinkCategories();
+	        List<String> categoryDrinks = saleOrderCtr.findDistinctDrinkCategories();
 	        
 	        for (String category: categoryDrinks) {
 	            JButton catButton = new JButton(category);
@@ -585,7 +585,7 @@ public class KasseSystemBes extends JFrame {
 	   panelMisc.setLayout(new BoxLayout(panelMisc, BoxLayout.Y_AXIS));
 	
 	try {
-		List<Miscellaneous> miscellaneous = saleOrderCtr.getProductCtr().findAllMiscellaneous(); 
+		List<Miscellaneous> miscellaneous = saleOrderCtr.findAllMiscellaneous(); 
 		
 		for(Miscellaneous misc : miscellaneous) {
 			JButton miscButton = new JButton(misc.getProductName() + " - " + misc.getSalePrice() + " kr"); 
@@ -623,7 +623,7 @@ public class KasseSystemBes extends JFrame {
 
 		try {
 		      // Retrieve drinks from the selected category
-			List<Drink> drinks = saleOrderCtr.getProductCtr().findByCategory(category); 
+			List<Drink> drinks = saleOrderCtr.findByCategory(category); 
 			
 			
 		     // Creates a button for each drink with its name and price
@@ -661,7 +661,7 @@ public class KasseSystemBes extends JFrame {
 		
 		 System.out.println("[DEBUG] Current order: " + this.currentOrder);
 		    System.out.println("[DEBUG] Current order number: " + (this.currentOrder != null ? this.currentOrder.getOrderNumber() : "null"));
-		Product product = saleOrderCtr.getProductCtr().findByProductName(productName); 
+		Product product = saleOrderCtr.findByProductName(productName); 
 		
 		
 		if(product != null) {
@@ -752,7 +752,7 @@ public class KasseSystemBes extends JFrame {
 	// method to update the quantity of the product chosen.
 	private void updateItemQuantity(String item, int newQuantity) {
 		try {
-			Product product = saleOrderCtr.getProductCtr().findByProductName(item); 
+			Product product = saleOrderCtr.findByProductName(item); 
 		
 			
 			if(newQuantity <= inventoryCtr.getTotalStock(product.getProductId())) {
@@ -910,7 +910,7 @@ public class KasseSystemBes extends JFrame {
 		@Override
 		protected Customer doInBackground() throws Exception {
 //			Thread.sleep(10000);
-			return saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
+			return saleOrderCtr.findCustomerByStudentId(studentId); 
 		}
 		@Override
 		protected void done() {
