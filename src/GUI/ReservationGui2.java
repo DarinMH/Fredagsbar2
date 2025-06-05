@@ -46,7 +46,7 @@ public class ReservationGui2 extends JFrame {
 	private JTextField customerTextField;
 	private JLabel lblNewLabel;
 	private JTextField reservationTextField;
-	private Reservation currentReservation; 
+//	private Reservation currentReservation; 
 	private JButton productBtn;
 	private JLabel lblNewLabel_1;
 	private JTextField productTF;
@@ -81,7 +81,7 @@ public class ReservationGui2 extends JFrame {
 		this.reservationCtr= new ReservationCtr(); 
 		
 		
-    currentReservation = this.reservationCtr.getCurrentReservation();  
+//    currentReservation = this.reservationCtr.getCurrentReservation();  
 		
 		productsModelList = new DefaultListModel<>(); 
 		reservationModelList = new DefaultListModel<>(); 
