@@ -27,6 +27,8 @@ import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDate;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -35,7 +37,6 @@ public class ReservationGui2 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JList<BorrowableProduct> productsList; 
 	private DefaultListModel<BorrowableProduct> productsModelList; 
 	private JList<Reservation> reservationList; 
 	private DefaultListModel<Reservation> reservationModelList; 
@@ -46,7 +47,6 @@ public class ReservationGui2 extends JFrame {
 	private JTextField customerTextField;
 	private JLabel lblNewLabel;
 	private JTextField reservationTextField;
-	private Reservation currentReservation; 
 	private JButton productBtn;
 	private JLabel lblNewLabel_1;
 	private JTextField productTF;
@@ -54,6 +54,13 @@ public class ReservationGui2 extends JFrame {
 	private JButton btnNewButton;
 	private JScrollPane scrollPane_1;
 	private JButton btnNewButton_1;
+<<<<<<< HEAD
+=======
+	private JScrollPane scrollPane_2;
+	private JList<BorrowableProduct> list;
+	private JScrollPane scrollPane;
+	private JLabel lblNewLabel_3;
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 
 	/**
 	 * Launch the application.
@@ -81,7 +88,7 @@ public class ReservationGui2 extends JFrame {
 		this.reservationCtr= new ReservationCtr(); 
 		
 		
-    currentReservation = this.reservationCtr.getCurrentReservation();  
+//    currentReservation = this.reservationCtr.getCurrentReservation();  
 		
 		productsModelList = new DefaultListModel<>(); 
 		reservationModelList = new DefaultListModel<>(); 
@@ -89,12 +96,24 @@ public class ReservationGui2 extends JFrame {
 		
 		init();
 		
-		productsList.setModel(productsModelList); 
-		productsList.setCellRenderer(new BorrowableProductsListCellRenderer()); 
+		list.setModel(productsModelList); 
+		list.setCellRenderer(new BorrowableProductsListCellRenderer()); 
 		
 		reservationList.setModel(reservationModelList); 
 		reservationList.setCellRenderer(new ReservationListCellRenderer()); 
 		
+<<<<<<< HEAD
+=======
+		scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 7;
+		gbc_scrollPane.gridy = 11;
+		contentPane.add(scrollPane, gbc_scrollPane);
+		
+
+		
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 
 		
 	
@@ -146,6 +165,8 @@ public class ReservationGui2 extends JFrame {
 			try {
 
 				
+				customerTextField.setText("");
+				productTF.setText("");
 				
 				reservationTextField.setText(String.valueOf(generateRandomNumber())); 
 			int reservationNumber =	Integer.parseInt(reservationTextField.getText()); 
@@ -189,20 +210,29 @@ public class ReservationGui2 extends JFrame {
 	
 	private Customer addCustomer() throws DataAccessException {
 		
+		
+		
+		
 		int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
 		
 			Customer customer = reservationCtr.addCustomerToReservation(studentId);  
 			
 			
+			
+			
 			customerTextField.setText(String.valueOf(customer)); 
 			
-		    reservationModelList.clear();
-		    fillReservationList();
+//			textFieldCustomerSearch.setText("");  
+			
 		   
+		    int orderNumber = Integer.parseInt(reservationTextField.getText()); 
+		    
+		    Reservation reservation = reservationCtr.findByReservationId(orderNumber); 
 
 			
-//			System.out.println(currentReservation.getCustomer() + " er kunden tilføjet til reservation med reservation nummer: " + 
-//			currentReservation.getReservationId()); 
+			System.out.println(reservation.getCustomer() + " er kunden tilføjet til reservation med reservation nummer: " + 
+			reservation.getReservationId()); 
+		
 			
 			return customer; 
 		
@@ -212,23 +242,34 @@ public class ReservationGui2 extends JFrame {
 	
 	
 	private BorrowableProduct addProduct() throws DataAccessException {
-		
-	BorrowableProduct product = productsList.getSelectedValue(); 
+
+	
+		try {
+	BorrowableProduct product = list.getSelectedValue(); 
 	
 	int productId = product.getProductId(); 
 		
 			reservationCtr.addProductToReservation(productId); 
 			
 			productTF.setText(String.valueOf(product));
-			
-		    reservationModelList.clear();
-		    fillReservationList();
-		    productsModelList.clear(); 
-		    fillProductList(); 
 
+
+ int orderNumber = Integer.parseInt(reservationTextField.getText()); 
+		    
+		    Reservation reservation = reservationCtr.findByReservationId(orderNumber); 
+
+			
+			System.out.println(reservation.getBorrowableProduct() + " er produktet tilføjet til reservation med reservation nummer: " + 
+			reservation.getReservationId()); 
+		
 			
 			
 			return product; 
+			
+	 } catch (IllegalArgumentException e) {
+	        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        return null;
+	 }
 		
 		}
 	
@@ -247,9 +288,15 @@ public class ReservationGui2 extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+<<<<<<< HEAD
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 141, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+=======
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 141, 0};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 		contentPane.setLayout(gbl_contentPane);
 		
 		reservationBtn = new JButton("Opret Reservation");
@@ -257,6 +304,7 @@ public class ReservationGui2 extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					createReservation();
+<<<<<<< HEAD
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -274,6 +322,8 @@ public class ReservationGui2 extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					addCustomer();
+=======
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -281,6 +331,7 @@ public class ReservationGui2 extends JFrame {
 			}
 		});
 		
+<<<<<<< HEAD
 		reservationTextField = new JTextField();
 		reservationTextField.setEditable(false);
 		GridBagConstraints gbc_reservationTextField = new GridBagConstraints();
@@ -290,6 +341,19 @@ public class ReservationGui2 extends JFrame {
 		gbc_reservationTextField.gridy = 1;
 		contentPane.add(reservationTextField, gbc_reservationTextField);
 		reservationTextField.setColumns(10);
+=======
+		lblNewLabel_3 = new JLabel("Reservations ID");
+		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3.gridx = 2;
+		gbc_lblNewLabel_3.gridy = 0;
+		contentPane.add(lblNewLabel_3, gbc_lblNewLabel_3);
+		GridBagConstraints gbc_reservationBtn = new GridBagConstraints();
+		gbc_reservationBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_reservationBtn.gridx = 1;
+		gbc_reservationBtn.gridy = 1;
+		contentPane.add(reservationBtn, gbc_reservationBtn);
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 		
 		btnNewButton_1 = new JButton("Slut Reservation");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -310,18 +374,119 @@ public class ReservationGui2 extends JFrame {
 				} 
 			}
 		});
+		
+		reservationTextField = new JTextField();
+		reservationTextField.setEditable(false);
+		GridBagConstraints gbc_reservationTextField = new GridBagConstraints();
+		gbc_reservationTextField.insets = new Insets(0, 0, 5, 5);
+		gbc_reservationTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_reservationTextField.gridx = 2;
+		gbc_reservationTextField.gridy = 1;
+		contentPane.add(reservationTextField, gbc_reservationTextField);
+		reservationTextField.setColumns(10);
+		
+		productBtn = new JButton("Tilføj Produkt Til Reservation");
+		productBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addProduct();
+				} catch (DataAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+			}
+		});
+		
+		searchCustomer = new JButton("Søg Efter Kunde");
+		searchCustomer.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addCustomer();
+				} catch (DataAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+			}
+		});
+		GridBagConstraints gbc_searchCustomer = new GridBagConstraints();
+		gbc_searchCustomer.insets = new Insets(0, 0, 5, 5);
+		gbc_searchCustomer.gridx = 1;
+		gbc_searchCustomer.gridy = 3;
+		contentPane.add(searchCustomer, gbc_searchCustomer);
+		
+		textFieldCustomerSearch = new JTextField();
+		textFieldCustomerSearch.setText("Studie ID: "); 
+		textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
+		textFieldCustomerSearch.addFocusListener(new FocusAdapter() {
+		@Override 
+		public void focusGained(FocusEvent e) {
+			if(textFieldCustomerSearch.getText().equals("Studie ID: ")) {
+				textFieldCustomerSearch.setText(""); 
+				textFieldCustomerSearch.setForeground(Color.BLACK); 
+			}
+		}
+		@Override
+		public void focusLost(FocusEvent e) {
+			if(textFieldCustomerSearch.getText().equals("")) {
+				textFieldCustomerSearch.setText("Studie ID: "); 
+				textFieldCustomerSearch.setForeground(new Color(153, 153, 153)); 
+			}
+		}
+			
+			
+		}); 
+		GridBagConstraints gbc_textFieldCustomerSearch = new GridBagConstraints();
+		gbc_textFieldCustomerSearch.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldCustomerSearch.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldCustomerSearch.gridx = 2;
+		gbc_textFieldCustomerSearch.gridy = 3;
+		contentPane.add(textFieldCustomerSearch, gbc_textFieldCustomerSearch);
+		textFieldCustomerSearch.setColumns(10);
+		
+		
+		GridBagConstraints gbc_productBtn = new GridBagConstraints();
+		gbc_productBtn.insets = new Insets(0, 0, 5, 5);
+		gbc_productBtn.gridx = 1;
+		gbc_productBtn.gridy = 4;
+		contentPane.add(productBtn, gbc_productBtn);
+		
+		scrollPane_2 = new JScrollPane();
+		GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
+		gbc_scrollPane_2.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane_2.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_2.gridx = 2;
+		gbc_scrollPane_2.gridy = 4;
+		contentPane.add(scrollPane_2, gbc_scrollPane_2);
+		
+		list = new JList<>();
+		scrollPane_2.setViewportView(list);
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_1.gridx = 5;
+<<<<<<< HEAD
 		gbc_btnNewButton_1.gridy = 2;
+=======
+		gbc_btnNewButton_1.gridy = 4;
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
 		
 		scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
+<<<<<<< HEAD
 		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.gridx = 7;
 		gbc_scrollPane_1.gridy = 2;
+=======
+		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_1.gridx = 7;
+		gbc_scrollPane_1.gridy = 4;
+		gbc_scrollPane_1.gridwidth = 1; 
+		gbc_scrollPane_1.gridheight = 8; 
+		gbc_scrollPane_1.weightx = 2.0; 
+		gbc_scrollPane_1.weighty = 1.0; 
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 		contentPane.add(scrollPane_1, gbc_scrollPane_1);
 		
 		reservationList = new JList<>();
@@ -345,7 +510,11 @@ public class ReservationGui2 extends JFrame {
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_2.gridx = 2;
+<<<<<<< HEAD
 		gbc_lblNewLabel_2.gridy = 5;
+=======
+		gbc_lblNewLabel_2.gridy = 7;
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		lblNewLabel = new JLabel("Kunde: ");
@@ -387,6 +556,7 @@ public class ReservationGui2 extends JFrame {
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.gridx = 1;
+<<<<<<< HEAD
 		gbc_lblNewLabel_1.gridy = 7;
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
@@ -436,6 +606,46 @@ public class ReservationGui2 extends JFrame {
 		
 		productsList = new JList<>();
 		scrollPane.setViewportView(productsList);
+=======
+		gbc_lblNewLabel_1.gridy = 9;
+		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		
+		productTF = new JTextField();
+		productTF.setEditable(false);
+		GridBagConstraints gbc_productTF = new GridBagConstraints();
+		gbc_productTF.insets = new Insets(0, 0, 5, 5);
+		gbc_productTF.fill = GridBagConstraints.HORIZONTAL;
+		gbc_productTF.gridx = 2;
+		gbc_productTF.gridy = 9;
+		contentPane.add(productTF, gbc_productTF);
+		productTF.setColumns(10);
+		
+		btnNewButton = new JButton("Bekræft Reservation");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					reservationCtr.confirmReservation();
+					createReservation(); 
+					
+					
+				
+				} catch (DataAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+			}
+		});
+		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
+		gbc_btnNewButton.gridx = 2;
+		gbc_btnNewButton.gridy = 11;
+		contentPane.add(btnNewButton, gbc_btnNewButton);
+		
+		list = new JList<>();
+		scrollPane_2.setViewportView(list);
+		
+		pack(); 
+>>>>>>> 2a0f52d1212397f224be16d91d5ab4dd715d835b
 	}
 
 }

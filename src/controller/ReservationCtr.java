@@ -8,6 +8,7 @@ import DB.ReservationDBIF;
 import model.BorrowableProduct;
 import model.Customer;
 import model.Reservation;
+import model.Table;
 import DB.ReservationDB;
 
 // this class handles the logic for reservations 
@@ -107,6 +108,17 @@ public class ReservationCtr {
     public BorrowableProduct addProductToReservation(int productId) throws DataAccessException { 
     	// Finds the full product using the product ID
         BorrowableProduct product = borrowableProductCtr.findByProductId(productId); 
+        
+        if(product.getProductType().equals("tablee")) {
+        	Table table = (Table) product; 
+        	Customer customer = currentReservation.getCustomer(); 
+        	
+        	
+        	if(customer != null && table.getSeatAmount() < customer.getNumberOfCustomers()) {
+        		throw new IllegalArgumentException("Så mange pladser er der ikke ved bordet");   
+        	}
+        }
+        
         this.currentReservation.setBorrowableProduct(product); // Adds the product to the reservation
 //        currentReservation.setDate(LocalDate.now()); // Updates the date to today
         if(product.getAmount() > 0) {

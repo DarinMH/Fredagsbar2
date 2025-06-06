@@ -11,6 +11,7 @@ import DB.SaleOrderDBIF;
 import model.Buyer;
 import model.Customer;
 import model.Drink;
+import model.Miscellaneous;
 import model.Product;
 import model.SaleOrder;
 import model.SaleOrderLine;
@@ -31,6 +32,7 @@ public SaleOrderCtr() throws DataAccessException {
 	customerCtr = new CustomerCtr(); 
 	productCtr = new ProductCtr(); 
 	this.saleOrderDB = new SaleOrderDB();  
+	
 	orderLines = new ArrayList<>(); 
 }
 
@@ -52,6 +54,15 @@ public boolean confirmOrder() throws DataAccessException {
 public List<SaleOrder> findAll() throws DataAccessException {
 return saleOrderDB.findAll(false); 
 
+}
+
+
+public List<Drink> findByCategory(String category) throws DataAccessException {
+	return productCtr.findByCategory(category); 
+}
+
+public List<Miscellaneous> findAllMiscellaneous() throws DataAccessException {
+	return productCtr.findAllMiscellaneous(); 
 }
 
 //Creates a new sale order with all needed details
@@ -89,6 +100,13 @@ public Product findProductByProductId(int productId) throws DataAccessException 
 	
 }
 
+public Product findByProductName(String productName) throws DataAccessException {
+	return productCtr.findByProductName(productName); 
+}
+
+public List<String> findDistinctDrinkCategories() throws DataAccessException {
+	return productCtr.findDistinctDrinkCategories(); 
+}
 
 //Adds a product and quantity to the current sale order
 public void addProductToOrder(Product product, int quantity) throws DataAccessException {
@@ -150,15 +168,15 @@ public SaleOrder getCurrentSaleOrder() {
 	
 }
 
-//Returns the product controller 
-public ProductCtr getProductCtr() {
-	return this.productCtr; 
-}
-
-//Returns the customer controller
-public CustomerCtr getCustomerCtr() {
-	return this.customerCtr; 
-}
+////Returns the product controller 
+//public ProductCtr getProductCtr() {
+//	return this.productCtr; 
+//}
+//
+////Returns the customer controller
+//public CustomerCtr getCustomerCtr() {
+//	return this.customerCtr; 
+//}
 
 }
  

@@ -68,6 +68,7 @@ public class InventoryGui extends JDialog {
 	private JComboBox<Inventory> comboBoxTilLager;
 	private JTextField flytMængdeTF;
 	private JLabel lblNewLabel_2;
+	private JLabel lblNewLabel_3;
 
 	/**
 	 * Launch the application.
@@ -220,7 +221,7 @@ public class InventoryGui extends JDialog {
 	
 	// method that adds products to an inventory
 	public void addStock() throws DataAccessException {
-		
+	
 	
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
 		
@@ -583,6 +584,13 @@ public class InventoryGui extends JDialog {
 		gbc_comboBoxTilLager.gridx = 18;
 		gbc_comboBoxTilLager.gridy = 9;
 		getContentPane().add(comboBoxTilLager, gbc_comboBoxTilLager);
+		
+		lblNewLabel_3 = new JLabel("Angiv Mængde i Tal");
+		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_3.gridx = 18;
+		gbc_lblNewLabel_3.gridy = 10;
+		getContentPane().add(lblNewLabel_3, gbc_lblNewLabel_3);
 		
 		JLabel lblMængde = new JLabel("Mængde");
 		lblMængde.setFont(new Font("Tahoma", Font.BOLD, 12));
