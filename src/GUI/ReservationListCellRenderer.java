@@ -23,15 +23,31 @@ public class ReservationListCellRenderer extends DefaultListCellRenderer {
 	@Override
 	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 			boolean cellHasFocus) {
-//		return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+ super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 	
-		String representation = "Unknown Reservation"; 
+
 		if (value != null) {
 			Reservation reservation = (Reservation) value;
-			representation = String.valueOf(reservation.getCustomer()) + " " + String.valueOf(reservation.getDate() + " (" + String.valueOf(reservation.getReservationId() + ")")); 
-		}
-		return dlcr.getListCellRendererComponent(list, representation, index, isSelected,
-				cellHasFocus);
+			 String representation = String.format(
+		                "<html>" +
+		                 "<b>Kunde:</b> %s<br>" +
+			 "<b>Produkt:</b> %s<br>" +
+		                "<b>Dato:</b> %s<br>" +
+		                "<b>ID:</b> %d<br>" +  
+		                "<br>" +  
+		                "</html>",
+		                reservation.getCustomer(),  
+		                reservation.getBorrowableProduct(),
+		                reservation.getDate(),
+		                reservation.getReservationId()
+		            );
+
+		            setText(representation);
+		}else {
+            setText("<html>Unknown Reservation</html>");
+        }
+
+        return this;
 	
 	}
 }

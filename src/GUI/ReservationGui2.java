@@ -57,7 +57,6 @@ public class ReservationGui2 extends JFrame {
 	private JScrollPane scrollPane_2;
 	private JList<BorrowableProduct> list;
 	private JScrollPane scrollPane;
-	private JList list_1;
 
 	/**
 	 * Launch the application.
@@ -106,8 +105,7 @@ public class ReservationGui2 extends JFrame {
 		gbc_scrollPane.gridy = 11;
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
-		list_1 = new JList();
-		scrollPane.setViewportView(list_1);
+
 		
 
 		
