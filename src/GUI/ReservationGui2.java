@@ -35,7 +35,6 @@ public class ReservationGui2 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JList<BorrowableProduct> productsList; 
 	private DefaultListModel<BorrowableProduct> productsModelList; 
 	private JList<Reservation> reservationList; 
 	private DefaultListModel<Reservation> reservationModelList; 
@@ -46,7 +45,6 @@ public class ReservationGui2 extends JFrame {
 	private JTextField customerTextField;
 	private JLabel lblNewLabel;
 	private JTextField reservationTextField;
-//	private Reservation currentReservation; 
 	private JButton productBtn;
 	private JLabel lblNewLabel_1;
 	private JTextField productTF;
@@ -158,6 +156,8 @@ public class ReservationGui2 extends JFrame {
 			try {
 
 				
+				customerTextField.setText("");
+				productTF.setText("");
 				
 				reservationTextField.setText(String.valueOf(generateRandomNumber())); 
 			int reservationNumber =	Integer.parseInt(reservationTextField.getText()); 
@@ -201,15 +201,20 @@ public class ReservationGui2 extends JFrame {
 	
 	private Customer addCustomer() throws DataAccessException {
 		
+		
+		
+		
 		int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
 		
 			Customer customer = reservationCtr.addCustomerToReservation(studentId);  
 			
 			
+			
+			
 			customerTextField.setText(String.valueOf(customer)); 
 			
-		    reservationModelList.clear();
-		    fillReservationList();
+			textFieldCustomerSearch.setText("");  
+			
 		   
 		    int orderNumber = Integer.parseInt(reservationTextField.getText()); 
 		    
@@ -238,13 +243,7 @@ public class ReservationGui2 extends JFrame {
 			reservationCtr.addProductToReservation(productId); 
 			
 			productTF.setText(String.valueOf(product));
-			
-			
-			
-		    reservationModelList.clear();
-		    fillReservationList();
-		    productsModelList.clear(); 
-		    fillProductList(); 
+
 
  int orderNumber = Integer.parseInt(reservationTextField.getText()); 
 		    
