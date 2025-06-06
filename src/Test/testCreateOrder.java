@@ -159,7 +159,6 @@ void testNoCustomerAdded() throws DataAccessException {
 
 @Test //test case 4
 void testAddMultipleOfOneProduct() throws DataAccessException {
-
 	
 	int studentId = 1234; 
 	int productId = 2;  
@@ -171,23 +170,24 @@ void testAddMultipleOfOneProduct() throws DataAccessException {
 	Product foundProduct = saleOrderCtr.findProductByProductId(productId); 
 	
 	SaleOrder order = saleOrderCtr.createSaleOrder(
-            orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
-	
+            orderNumber, LocalDate.now(), false, null, null, 0, 0);
 
     // Add product to order through controller
 
-	
 	saleOrderCtr.addCustomerToOrder(foundCustomer); 
-	
-	
+
 	
 	saleOrderCtr.addProductToOrder(foundProduct, 2); 
 	
+	double discount = order.getDiscountPercentage(); 
+	
+	double totalPrice = order.getTotalPrice(); 
+
 	// Assert that the product ID matches the expected value
 	assertEquals(foundCustomer.getStudentId(), order.getCustomer().getStudentId()); 
 	assertEquals(1, order.getOrderLines().size()); 
-	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
+	assertEquals(totalPrice, foundProduct.getSalePrice()*2*discount);
+
 	
 	
 	
