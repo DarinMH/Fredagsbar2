@@ -27,6 +27,8 @@ import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDate;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -55,6 +57,7 @@ public class ReservationGui2 extends JFrame {
 	private JScrollPane scrollPane_2;
 	private JList<BorrowableProduct> list;
 	private JScrollPane scrollPane;
+	private JLabel lblNewLabel_3;
 
 	/**
 	 * Launch the application.
@@ -213,7 +216,7 @@ public class ReservationGui2 extends JFrame {
 			
 			customerTextField.setText(String.valueOf(customer)); 
 			
-			textFieldCustomerSearch.setText("");  
+//			textFieldCustomerSearch.setText("");  
 			
 		   
 		    int orderNumber = Integer.parseInt(reservationTextField.getText()); 
@@ -295,6 +298,13 @@ public class ReservationGui2 extends JFrame {
 				} 
 			}
 		});
+		
+		lblNewLabel_3 = new JLabel("Reservations ID");
+		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3.gridx = 2;
+		gbc_lblNewLabel_3.gridy = 0;
+		contentPane.add(lblNewLabel_3, gbc_lblNewLabel_3);
 		GridBagConstraints gbc_reservationBtn = new GridBagConstraints();
 		gbc_reservationBtn.insets = new Insets(0, 0, 5, 5);
 		gbc_reservationBtn.gridx = 1;
@@ -345,6 +355,7 @@ public class ReservationGui2 extends JFrame {
 		
 		searchCustomer = new JButton("Søg Efter Kunde");
 		searchCustomer.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				try {
 					addCustomer();
@@ -361,6 +372,26 @@ public class ReservationGui2 extends JFrame {
 		contentPane.add(searchCustomer, gbc_searchCustomer);
 		
 		textFieldCustomerSearch = new JTextField();
+		textFieldCustomerSearch.setText("Studie ID: "); 
+		textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
+		textFieldCustomerSearch.addFocusListener(new FocusAdapter() {
+		@Override 
+		public void focusGained(FocusEvent e) {
+			if(textFieldCustomerSearch.getText().equals("Studie ID: ")) {
+				textFieldCustomerSearch.setText(""); 
+				textFieldCustomerSearch.setForeground(Color.BLACK); 
+			}
+		}
+		@Override
+		public void focusLost(FocusEvent e) {
+			if(textFieldCustomerSearch.getText().equals("")) {
+				textFieldCustomerSearch.setText("Studie ID: "); 
+				textFieldCustomerSearch.setForeground(new Color(153, 153, 153)); 
+			}
+		}
+			
+			
+		}); 
 		GridBagConstraints gbc_textFieldCustomerSearch = new GridBagConstraints();
 		gbc_textFieldCustomerSearch.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldCustomerSearch.fill = GridBagConstraints.HORIZONTAL;
@@ -394,7 +425,6 @@ public class ReservationGui2 extends JFrame {
 		
 		scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.gridx = 7;
 		gbc_scrollPane_1.gridy = 4;
