@@ -96,6 +96,7 @@ public class KasseSystem extends JFrame {
 	public KasseSystem(SaleOrder saleOrder, LogInd login)  {
 			
 	try { //tries to create a connection to database with an instance of inventoryCtr
+		this.login=login;
 		inventoryCtr = new InventoryCtr();
 	} catch (DataAccessException e) { //Catches it if a problem occurs with the connection
 		// TODO Auto-generated catch block
@@ -112,6 +113,7 @@ public class KasseSystem extends JFrame {
 			}
 			saleOrderCtr.setCurrentOrder(this.currentOrder);
 			total=currentOrder.getTotalPrice(); 
+ 
 			init(); 
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
@@ -260,7 +262,7 @@ public class KasseSystem extends JFrame {
 		JButton btnLager = new JButton("Lager");
 		btnLager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InventoryGui dialog = new InventoryGui(); 
+				InventoryGui dialog = new InventoryGui(KasseSystem.this); 
 				dialog.setVisible(true);
 			}
 		});
@@ -535,7 +537,7 @@ public class KasseSystem extends JFrame {
 	    panelCategory.setLayout(new GridLayout(0, 1));
 
 	    try {
-	        List<String> categoryDrinks = saleOrderCtr.getProductCtr().findDistinctDrinkCategories();
+	        List<String> categoryDrinks = saleOrderCtr.findDistinctDrinkCategories();
 	        
 	        for (String category: categoryDrinks) {
 	            JButton catButton = new JButton(category);
@@ -567,7 +569,7 @@ public class KasseSystem extends JFrame {
 	   panelMisc.setLayout(new BoxLayout(panelMisc, BoxLayout.Y_AXIS));
 	
 	try {
-		List<Miscellaneous> miscellaneous = saleOrderCtr.getProductCtr().findAllMiscellaneous(); 
+		List<Miscellaneous> miscellaneous = saleOrderCtr.findAllMiscellaneous(); 
 		
 		for(Miscellaneous misc : miscellaneous) {
 			JButton miscButton = new JButton(misc.getProductName() + " - " + misc.getSalePrice() + " kr"); 
@@ -605,7 +607,7 @@ public class KasseSystem extends JFrame {
 
 		try {
 		      // Retrieve drinks from the selected category
-			List<Drink> drinks = saleOrderCtr.getProductCtr().findByCategory(category); 
+			List<Drink> drinks = saleOrderCtr.findByCategory(category); 
 			
 			
 		     // Creates a button for each drink with its name and price
@@ -614,7 +616,8 @@ public class KasseSystem extends JFrame {
 			drink.getSalePrice() + " kr"); 
 				productButton.addActionListener(e -> {
 					try { 
-						addProductToOrder(drink.getProductName(), 	drink.getSalePrice());
+					addProductToOrder(drink.getProductName(), 	drink.getSalePrice());
+						
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(),
 								"Error", JOptionPane.ERROR_MESSAGE); 
@@ -643,7 +646,7 @@ public class KasseSystem extends JFrame {
 		
 		 System.out.println("[DEBUG] Current order: " + this.currentOrder);
 		    System.out.println("[DEBUG] Current order number: " + (this.currentOrder != null ? this.currentOrder.getOrderNumber() : "null"));
-		Product product = saleOrderCtr.getProductCtr().findByProductName(productName); 
+		Product product = saleOrderCtr.findByProductName(productName); 
 		
 		
 		if(product != null) {
@@ -695,7 +698,10 @@ public class KasseSystem extends JFrame {
 		
 
 	}
-
+	
+	
+	
+	
 	
 
 	
@@ -734,7 +740,7 @@ public class KasseSystem extends JFrame {
 	// method to update the quantity of the product chosen.
 	private void updateItemQuantity(String item, int newQuantity) {
 		try {
-			Product product = saleOrderCtr.getProductCtr().findByProductName(item); 
+			Product product = saleOrderCtr.findByProductName(item); 
 		
 			
 			if(newQuantity <= inventoryCtr.getTotalStock(product.getProductId())) {
@@ -831,7 +837,7 @@ public class KasseSystem extends JFrame {
 		for (String item : cartItems.keySet()) {
 			int quantity = cartItems.get(item);
 			double price = itemPrices.get(item);
-			total += quantity * price;
+			total += quantity * price * currentOrder.getDiscountPercentage();
 		}
 		currentOrder.setTotalPrice(total);
 		System.out.println("[DEBUG] Updated total to: " + total);
@@ -892,7 +898,7 @@ public class KasseSystem extends JFrame {
 		@Override
 		protected Customer doInBackground() throws Exception {
 //			Thread.sleep(10000);
-			return saleOrderCtr.getCustomerCtr().findByStudentId(studentId); 
+			return saleOrderCtr.findCustomerByStudentId(studentId); 
 		}
 		@Override
 		protected void done() {
@@ -911,8 +917,10 @@ public class KasseSystem extends JFrame {
 			
 			try {
 				saleOrderCtr.addCustomerToOrder(customer);
-				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
-				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+				textFieldCustomer.setText(String.valueOf(customer));
+				JOptionPane.showMessageDialog(null, String.valueOf(customer) + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+//				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
+//				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
 			} catch (DataAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
