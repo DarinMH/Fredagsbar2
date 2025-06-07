@@ -1,3 +1,4 @@
+
 package GUI;
 
 import java.awt.Color;
@@ -99,7 +100,6 @@ public class ReservationGui2 extends JFrame {
 		reservationList.setModel(reservationModelList); 
 		reservationList.setCellRenderer(new ReservationListCellRenderer()); 
 		
-
 		scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
@@ -109,7 +109,6 @@ public class ReservationGui2 extends JFrame {
 		
 
 		
-
 
 		
 	
@@ -218,7 +217,7 @@ public class ReservationGui2 extends JFrame {
 			
 			customerTextField.setText(String.valueOf(customer)); 
 			
-			textFieldCustomerSearch.setText("");  
+//			textFieldCustomerSearch.setText("");  
 			
 		   
 		    int orderNumber = Integer.parseInt(reservationTextField.getText()); 
@@ -284,15 +283,9 @@ public class ReservationGui2 extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 141, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 141, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-
 		contentPane.setLayout(gbl_contentPane);
 		
 		reservationBtn = new JButton("Opret Reservation");
@@ -300,25 +293,6 @@ public class ReservationGui2 extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					createReservation();
-
-				} catch (DataAccessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-			}
-		});
-		GridBagConstraints gbc_reservationBtn = new GridBagConstraints();
-		gbc_reservationBtn.insets = new Insets(0, 0, 5, 5);
-		gbc_reservationBtn.gridx = 2;
-		gbc_reservationBtn.gridy = 1;
-		contentPane.add(reservationBtn, gbc_reservationBtn);
-		
-		searchCustomer = new JButton("Søg Efter Kunde");
-		searchCustomer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					addCustomer();
-
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -326,17 +300,6 @@ public class ReservationGui2 extends JFrame {
 			}
 		});
 		
-
-		reservationTextField = new JTextField();
-		reservationTextField.setEditable(false);
-		GridBagConstraints gbc_reservationTextField = new GridBagConstraints();
-		gbc_reservationTextField.insets = new Insets(0, 0, 5, 5);
-		gbc_reservationTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_reservationTextField.gridx = 3;
-		gbc_reservationTextField.gridy = 1;
-		contentPane.add(reservationTextField, gbc_reservationTextField);
-		reservationTextField.setColumns(10);
-
 		lblNewLabel_3 = new JLabel("Reservations ID");
 		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
 		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
@@ -348,7 +311,6 @@ public class ReservationGui2 extends JFrame {
 		gbc_reservationBtn.gridx = 1;
 		gbc_reservationBtn.gridy = 1;
 		contentPane.add(reservationBtn, gbc_reservationBtn);
-
 		
 		btnNewButton_1 = new JButton("Slut Reservation");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -459,21 +421,11 @@ public class ReservationGui2 extends JFrame {
 		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_1.gridx = 5;
-
-		gbc_btnNewButton_1.gridy = 2;
-
 		gbc_btnNewButton_1.gridy = 4;
-
 		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
 		
 		scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-
-		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 0);
-		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_1.gridx = 7;
-		gbc_scrollPane_1.gridy = 2;
-
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.gridx = 7;
 		gbc_scrollPane_1.gridy = 4;
@@ -481,35 +433,16 @@ public class ReservationGui2 extends JFrame {
 		gbc_scrollPane_1.gridheight = 8; 
 		gbc_scrollPane_1.weightx = 2.0; 
 		gbc_scrollPane_1.weighty = 1.0; 
-
 		contentPane.add(scrollPane_1, gbc_scrollPane_1);
 		
 		reservationList = new JList<>();
 		scrollPane_1.setViewportView(reservationList);
-		GridBagConstraints gbc_searchCustomer = new GridBagConstraints();
-		gbc_searchCustomer.insets = new Insets(0, 0, 5, 5);
-		gbc_searchCustomer.gridx = 1;
-		gbc_searchCustomer.gridy = 3;
-		contentPane.add(searchCustomer, gbc_searchCustomer);
-		
-		textFieldCustomerSearch = new JTextField();
-		GridBagConstraints gbc_textFieldCustomerSearch = new GridBagConstraints();
-		gbc_textFieldCustomerSearch.insets = new Insets(0, 0, 5, 5);
-		gbc_textFieldCustomerSearch.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldCustomerSearch.gridx = 2;
-		gbc_textFieldCustomerSearch.gridy = 3;
-		contentPane.add(textFieldCustomerSearch, gbc_textFieldCustomerSearch);
-		textFieldCustomerSearch.setColumns(10);
 		
 		lblNewLabel_2 = new JLabel("Reservation Oplysninger: ");
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_2.gridx = 2;
-
-		gbc_lblNewLabel_2.gridy = 5;
-
 		gbc_lblNewLabel_2.gridy = 7;
-
 		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		lblNewLabel = new JLabel("Kunde: ");
@@ -517,20 +450,8 @@ public class ReservationGui2 extends JFrame {
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 6;
+		gbc_lblNewLabel.gridy = 8;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
-		
-		productBtn = new JButton("Tilføj Produkt Til Reservation");
-		productBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					addProduct();
-				} catch (DataAccessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-			}
-		});
 		
 		
 		
@@ -542,7 +463,7 @@ public class ReservationGui2 extends JFrame {
 		gbc_customerTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_customerTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_customerTextField.gridx = 2;
-		gbc_customerTextField.gridy = 6;
+		gbc_customerTextField.gridy = 8;
 		contentPane.add(customerTextField, gbc_customerTextField);
 		customerTextField.setColumns(10);
 		
@@ -551,57 +472,6 @@ public class ReservationGui2 extends JFrame {
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.gridx = 1;
-
-		gbc_lblNewLabel_1.gridy = 7;
-		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
-		
-		productTF = new JTextField();
-		productTF.setEditable(false);
-		GridBagConstraints gbc_productTF = new GridBagConstraints();
-		gbc_productTF.insets = new Insets(0, 0, 5, 5);
-		gbc_productTF.fill = GridBagConstraints.HORIZONTAL;
-		gbc_productTF.gridx = 2;
-		gbc_productTF.gridy = 7;
-		contentPane.add(productTF, gbc_productTF);
-		productTF.setColumns(10);
-		
-		btnNewButton = new JButton("Bekræft Reservation");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					reservationCtr.confirmReservation();
-					
-					
-				
-				} catch (DataAccessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-			}
-		});
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton.gridx = 2;
-		gbc_btnNewButton.gridy = 8;
-		contentPane.add(btnNewButton, gbc_btnNewButton);
-		
-		
-		GridBagConstraints gbc_productBtn = new GridBagConstraints();
-		gbc_productBtn.insets = new Insets(0, 0, 0, 5);
-		gbc_productBtn.gridx = 5;
-		gbc_productBtn.gridy = 8;
-		contentPane.add(productBtn, gbc_productBtn);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 7;
-		gbc_scrollPane.gridy = 8;
-		contentPane.add(scrollPane, gbc_scrollPane);
-		
-//		productsList = new JList<>();
-//		scrollPane.setViewportView(productsList);
-
 		gbc_lblNewLabel_1.gridy = 9;
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
@@ -640,7 +510,6 @@ public class ReservationGui2 extends JFrame {
 		scrollPane_2.setViewportView(list);
 		
 		pack(); 
-
 	}
 
 }

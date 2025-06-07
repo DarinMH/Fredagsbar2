@@ -74,6 +74,7 @@ public class InventoryGui extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
 		try {
 			InventoryGui dialog = new InventoryGui(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
