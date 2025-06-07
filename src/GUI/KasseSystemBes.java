@@ -199,16 +199,8 @@ public class KasseSystemBes extends JFrame {
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_3.gridx = 1;
-		gbc_btnNewButton_3.gridy = 3;
+		gbc_btnNewButton_3.gridy = 4;
 		getContentPane().add(btnNewButton_3, gbc_btnNewButton_3);
-		
-		JButton btnReservation = new JButton("Reservation");
-		GridBagConstraints gbc_btnReservation = new GridBagConstraints();
-		gbc_btnReservation.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnReservation.insets = new Insets(0, 0, 5, 5);
-		gbc_btnReservation.gridx = 1;
-		gbc_btnReservation.gridy = 7;
-		getContentPane().add(btnReservation, gbc_btnReservation);
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_2.gridx = 3;
@@ -528,7 +520,6 @@ public class KasseSystemBes extends JFrame {
 			}
 		});
 		GridBagConstraints gbc_orderButton = new GridBagConstraints();
-		gbc_orderButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_orderButton.insets = new Insets(0, 0, 5, 5);
 		gbc_orderButton.gridx = 1;
 		gbc_orderButton.gridy = 8;
