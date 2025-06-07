@@ -632,7 +632,8 @@ public class KasseSystemBes extends JFrame {
 			drink.getSalePrice() + " kr"); 
 				productButton.addActionListener(e -> {
 					try { 
-						addProductToOrder(drink.getProductName(), 	drink.getSalePrice());
+					addProductToOrder(drink.getProductName(), 	drink.getSalePrice());
+						
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(),
 								"Error", JOptionPane.ERROR_MESSAGE); 
@@ -713,7 +714,10 @@ public class KasseSystemBes extends JFrame {
 		
 
 	}
-
+	
+	
+	
+	
 	
 
 	
@@ -849,7 +853,7 @@ public class KasseSystemBes extends JFrame {
 		for (String item : cartItems.keySet()) {
 			int quantity = cartItems.get(item);
 			double price = itemPrices.get(item);
-			total += quantity * price;
+			total += quantity * price * currentOrder.getDiscountPercentage();
 		}
 		currentOrder.setTotalPrice(total);
 		System.out.println("[DEBUG] Updated total to: " + total);

@@ -216,7 +216,7 @@ public class ReservationGui2 extends JFrame {
 			
 			customerTextField.setText(String.valueOf(customer)); 
 			
-//			textFieldCustomerSearch.setText("");  
+			textFieldCustomerSearch.setText("");  
 			
 		   
 		    int orderNumber = Integer.parseInt(reservationTextField.getText()); 

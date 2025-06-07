@@ -61,10 +61,10 @@ void testOrderCompletionWithOneProduct() throws DataAccessException {
             orderNumber, LocalDate.now(), false, foundCustomer, null, 0, 0);
 	
 	//Creates a SaleOrderLine with one product
-	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
-
-	//adds an orderline to the SaleOrder
-	order.addOrderline(saleOrderLine);
+//	SaleOrderLine saleOrderLine = new SaleOrderLine(order, foundProduct, 1); 
+//
+//	//adds an orderline to the SaleOrder
+//	order.addOrderline(saleOrderLine);
 	
 	
 	//calls the controller methods to add a customer and a product to the order
@@ -72,8 +72,9 @@ void testOrderCompletionWithOneProduct() throws DataAccessException {
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 	
 	//assertions to verify that the correct customer and product were found.
-	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
+	assertEquals(foundCustomer.getStudentId(), order.getCustomer().getStudentId()); 
+	assertEquals(1, order.getOrderLines().size()); 
+
 	
 	
 	
@@ -117,9 +118,7 @@ void testOrderCompletionWith2Products() throws DataAccessException {
 	//assertions to verify that the correct customer and products were found.
 	assertEquals(foundCustomer.getStudentId(), order.getCustomer().getStudentId()); 
 	assertEquals(2, order.getOrderLines().size()); 
-	assertEquals(studentId, foundCustomer.getStudentId()); 
-	assertEquals(productId, foundProduct.getProductId());
-	assertEquals(productId2, foundProduct2.getProductId());
+
 	
  
 }
@@ -150,8 +149,9 @@ void testNoCustomerAdded() throws DataAccessException {
 	saleOrderCtr.addProductToOrder(foundProduct, 1); 
 
 	
-	
-	assertEquals(productId, foundProduct.getProductId());
+
+	assertEquals(1, order.getOrderLines().size()); 
+
 
 	
 }
