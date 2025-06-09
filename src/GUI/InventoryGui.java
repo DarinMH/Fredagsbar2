@@ -649,8 +649,7 @@ public class InventoryGui extends JDialog {
 		JButton btnKassesystem = new JButton("Tilbage");
 		btnKassesystem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KasseSystem frame = new KasseSystem(null, null); 
-				frame.setVisible(true); 
+				dispose(); 
 			}
 		});
 		

@@ -431,7 +431,7 @@ public class KasseSystem extends JFrame {
 			    			System.out.println(orderLine.getQuantity() + "x " + orderLine.getProduct() + ": " + orderLine.getPrice() + "kr"); 
 			    		}
 			    		
-			    		
+			    		System.out.println("Rabat: " + Math.round((1 - currentOrder.getDiscountPercentage()) * 100) + "%"); 
 			    		String name = "Standard Kunde"; 
 						if(currentOrder.getCustomer() != null) {
 							name = String.valueOf(currentOrder.getCustomer()); 

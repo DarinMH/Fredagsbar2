@@ -59,6 +59,7 @@ public class ReservationGui2 extends JFrame {
 	private JList<BorrowableProduct> list;
 	private JScrollPane scrollPane;
 	private JLabel lblNewLabel_3;
+	private JButton btnNewButton_2;
 
 	/**
 	 * Launch the application.
@@ -500,6 +501,18 @@ public class ReservationGui2 extends JFrame {
 				} 
 			}
 		});
+		
+		btnNewButton_2 = new JButton("Tilbage");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose(); 
+			}
+		});
+		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
+		gbc_btnNewButton_2.insets = new Insets(0, 0, 0, 5);
+		gbc_btnNewButton_2.gridx = 1;
+		gbc_btnNewButton_2.gridy = 11;
+		contentPane.add(btnNewButton_2, gbc_btnNewButton_2);
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
 		gbc_btnNewButton.gridx = 2;

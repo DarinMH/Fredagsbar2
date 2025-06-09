@@ -102,7 +102,7 @@ public class BorrowableProductDB implements BorrowableProductDBIF {
         
       break; 
       default: 
-    	  System.out.println ("Unknown product type: " + productType);
+
     	  product = null; //set borrowable product to null for unknown types
     	  break;
 		}
