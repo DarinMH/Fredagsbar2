@@ -113,7 +113,9 @@ public class KasseSystemBes extends JFrame {
 			}
 			saleOrderCtr.setCurrentOrder(this.currentOrder);
 			total=currentOrder.getTotalPrice(); 
- 
+			
+			saleOrder = saleOrderCtr.getCurrentSaleOrder(); 
+			 
 			init(); 
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
@@ -188,7 +190,7 @@ public class KasseSystemBes extends JFrame {
 		gbc_productPanel.gridy = 1;
 		getContentPane().add(productScroll, gbc_productPanel);
 		
-		JButton btnNewButton_2 = new JButton("Miscellaneous");
+		JButton btnNewButton_2 = new JButton("Diverse Produkter");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadMisc(); 
@@ -201,6 +203,24 @@ public class KasseSystemBes extends JFrame {
 		gbc_btnNewButton_3.gridx = 1;
 		gbc_btnNewButton_3.gridy = 4;
 		getContentPane().add(btnNewButton_3, gbc_btnNewButton_3);
+		
+		JButton resButton = new JButton("Opret Reservation");
+		resButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					ReservationGui2 res = new ReservationGui2();
+					res.setVisible(true); 
+				} catch (DataAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+			}
+		});
+		GridBagConstraints gbc_resButton = new GridBagConstraints();
+		gbc_resButton.insets = new Insets(0, 0, 5, 5);
+		gbc_resButton.gridx = 1;
+		gbc_resButton.gridy = 5;
+		getContentPane().add(resButton, gbc_resButton);
 		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_2.gridx = 3;
@@ -429,19 +449,22 @@ public class KasseSystemBes extends JFrame {
 				JButton btnNewButton_1 = new JButton("Print Kvittering");
 				btnNewButton_1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
+						SaleOrder saleOrder = saleOrderCtr.getCurrentSaleOrder(); 
 						System.out.println("===================="); 
 			            System.out.println("Kvittering: "); 
-			            System.out.println("Ordre Nummer: " + currentOrder.getOrderNumber());
-			            System.out.println("Dato: " + currentOrder.getDate());   
-			    		List<SaleOrderLine> orderLines = currentOrder.getOrderLines(); 
+			            System.out.println("Ordre Nummer: " + saleOrder.getOrderNumber());
+			            System.out.println("Dato: " + saleOrder.getDate());   
+			    		List<SaleOrderLine> orderLines = saleOrder.getOrderLines(); 
 			    		for(SaleOrderLine orderLine: orderLines) {
 			    			System.out.println(orderLine.getQuantity() + "x " + orderLine.getProduct() + ": " + orderLine.getPrice() + "kr"); 
 			    		}
 			    		
+			    		System.out.println("Rabat: " + Math.round((1 - saleOrder.getDiscountPercentage()) * 100) + "%"); 		    		
 			    		
 			    		String name = "Standard Kunde"; 
-						if(currentOrder.getCustomer() != null) {
-							name = String.valueOf(currentOrder.getCustomer()); 
+						if(saleOrder.getCustomer() != null) {
+							name = String.valueOf(saleOrder.getCustomer()); 
 						}
 						
 						System.out.println("Kunde: " +name); 
@@ -449,7 +472,7 @@ public class KasseSystemBes extends JFrame {
 
 
 			            System.out.println("***********************"); 
-			             System.out.println("Pris: " + currentOrder.getTotalPrice()); 
+			             System.out.println("Pris: " + saleOrder.getTotalPrice()); 
 			             System.out.println("====================");
 					}
 				});
@@ -651,8 +674,6 @@ public class KasseSystemBes extends JFrame {
 	// Adds product to the order. 
 	private void addProductToOrder(String productName, double price) throws DataAccessException {
 		
-		 System.out.println("[DEBUG] Current order: " + this.currentOrder);
-		    System.out.println("[DEBUG] Current order number: " + (this.currentOrder != null ? this.currentOrder.getOrderNumber() : "null"));
 		Product product = saleOrderCtr.findByProductName(productName); 
 		
 		
@@ -689,7 +710,8 @@ public class KasseSystemBes extends JFrame {
 			// Adds the product to the order by calling the method in the controller. 
 		saleOrderCtr.addProductToOrder(product, quantity); 
 		// updates the order with the changes 
-		saleOrderCtr.updateOrder(currentOrder); 
+		SaleOrder saleOrder = saleOrderCtr.getCurrentSaleOrder(); 
+		saleOrderCtr.updateOrder(saleOrder); 
 			
 		}
 
@@ -897,6 +919,7 @@ public class KasseSystemBes extends JFrame {
 	private void findByStudentId() throws DataAccessException {
 		
 	int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
+//	.setEnabled(false);
 	
 	//Initializies a swingWorker to do background tasks without the GUI freezing or having long loading times
 	SwingWorker<Customer, Void>  worker = new SwingWorker<Customer, Void>() {
