@@ -54,7 +54,15 @@ public class ReservationCtr {
     
     
     public boolean confirmReservation() throws DataAccessException {
-		this.currentReservation.setStatus(true);
+	
+    	if(currentReservation.getCustomer() == null|| currentReservation.getBorrowableProduct() == null) {
+        		throw new IllegalArgumentException("Du mangler at tilføje kunde og produkt til reservationen!"); 
+        	}
+    	
+    	this.currentReservation.setStatus(true);
+		
+		
+	
 		
 		reservationDB.update(currentReservation); 
 		
@@ -95,8 +103,15 @@ public class ReservationCtr {
 
 	// This method adds a customer to the current reservation
     public Customer addCustomerToReservation(int studentId) throws DataAccessException { 
+    	
+ 
     	//// Finds the full customer info using their student ID
        Customer customer = customerCtr.findByStudentId(studentId); 
+       
+      	if(customer == null) {
+    		return null; 
+    	}
+    	
        System.out.println("Customer found: " + customer); // Log entire object
        System.out.println("Customer ID: " + customer.getStudentId()); 
         this.currentReservation.setCustomer(customer); // Adds the customer to the reservation
@@ -108,6 +123,11 @@ public class ReservationCtr {
     public BorrowableProduct addProductToReservation(int productId) throws DataAccessException { 
     	// Finds the full product using the product ID
         BorrowableProduct product = borrowableProductCtr.findByProductId(productId); 
+        
+        
+        if(product == null) {
+        	return null; 
+        }
         
         if(product.getProductType().equals("tablee")) {
         	Table table = (Table) product; 

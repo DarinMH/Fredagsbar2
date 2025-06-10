@@ -31,9 +31,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Button;
+import java.awt.Color;
+
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -48,7 +52,6 @@ public class InventoryGui extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JComboBox<Inventory> inventoryBox; 
 	private InventoryCtr inventoryCtr; 
-	private JList<InventoryProduct> inventoryProductList;  
 	private DefaultListModel<InventoryProduct> modelInventoryProduct; 
 	private JTextField textField;
 	private JTextField addStockTF;
@@ -69,6 +72,10 @@ public class InventoryGui extends JDialog {
 	private JTextField flytMængdeTF;
 	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_3;
+	private JTextField ipText;
+	private JLabel lblNewLabel_4;
+	private JLabel lblNewLabel_5;
+	private JLabel lblNewLabel_6;
 
 	/**
 	 * Launch the application.
@@ -101,9 +108,7 @@ public class InventoryGui extends JDialog {
 
 	// initialization of the list for the inventory Product objects
 		
-		modelInventoryProduct = new DefaultListModel<>(); 
-		inventoryProductList = new JList<>(modelInventoryProduct); 
-		inventoryProductList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
+		modelInventoryProduct = new DefaultListModel<>();
 		
 		categoryModel = new DefaultListModel<>();
 		allProducts = new ArrayList<>();
@@ -196,6 +201,7 @@ public class InventoryGui extends JDialog {
 				modelInventoryProduct.addElement(inventoryProduct);
 			}
 			updateStockInfo(selectedProduct, inventory);
+			ipText.setText(String.valueOf(inventoryProduct.getQuantityInStock()));
 		}
 	}
 	
@@ -338,12 +344,16 @@ public class InventoryGui extends JDialog {
 	private void updateStockInfo(Product product, Inventory inventory) throws DataAccessException {
 		if (product != null) {
 			int totalStock = inventoryCtr.getTotalStock(product.getProductId());
+			InventoryProduct ip = inventoryCtr.findInventoryProduct(product.getProductId(), inventory.getInventoryId()); 
 			textField.setText(String.valueOf(totalStock));
+			ipText.setText(String.valueOf(ip.getQuantityInStock()));
 		}
 		
 		if (inventory != null) {
 			int totalStock = inventoryCtr.getTotalInventoryStock(inventory.getInventoryId());  
 			maxCapacityTF.setText(String.valueOf(totalStock + "/" + String.valueOf(inventory.getCapacity())));
+			InventoryProduct ip = inventoryCtr.findInventoryProduct(product.getProductId(), inventory.getInventoryId());
+			ipText.setText(String.valueOf(ip.getQuantityInStock()));
 		}
 	}
 	
@@ -354,9 +364,9 @@ public class InventoryGui extends JDialog {
 		setBounds(100, 100, 804, 600);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 25, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 38, 0, 31, 0, 0, 0, 0, 0, 56, 0, 0, 0, 0, 41, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 38, 0, 31, 0, 0, 0, 0, 0, 56, 0, 0, 0, 0, 41, 0, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
 		
 		JLabel lblNewLabel = new JLabel("Lager");
@@ -368,6 +378,76 @@ public class InventoryGui extends JDialog {
 		gbc_lblNewLabel.gridx = 2;
 		gbc_lblNewLabel.gridy = 1;
 		getContentPane().add(lblNewLabel, gbc_lblNewLabel);
+		
+		JLabel lblProduktnavn = new JLabel("Søg Efter Produkt: ");
+		GridBagConstraints gbc_lblProduktnavn = new GridBagConstraints();
+		gbc_lblProduktnavn.insets = new Insets(0, 0, 5, 5);
+		gbc_lblProduktnavn.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_lblProduktnavn.gridx = 2;
+		gbc_lblProduktnavn.gridy = 2;
+		getContentPane().add(lblProduktnavn, gbc_lblProduktnavn);
+		
+		textSøgprodukt = new JTextField();
+		textSøgprodukt.setText("Indtast Produktnavn: "); 
+		textSøgprodukt.setForeground(new Color(153, 153, 153));
+		textSøgprodukt.addFocusListener(new FocusAdapter() {
+		@Override 
+		public void focusGained(FocusEvent e) {
+			if(textSøgprodukt.getText().equals("Indtast Produktnavn: ")) {
+				textSøgprodukt.setText(""); 
+				textSøgprodukt.setForeground(Color.BLACK); 
+			}
+		}
+		@Override
+		public void focusLost(FocusEvent e) {
+			if(textSøgprodukt.getText().equals("")) {
+				textSøgprodukt.setText("Indtast Produktnavn: "); 
+				textSøgprodukt.setForeground(new Color(153, 153, 153)); 
+			}
+		}
+			
+			
+		}); 
+		textSøgprodukt.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				filterProducts(textSøgprodukt.getText());
+			}
+		});
+		
+		lblNewLabel_6 = new JLabel("Vælg Lager:");
+		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
+		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_6.gridx = 10;
+		gbc_lblNewLabel_6.gridy = 2;
+		getContentPane().add(lblNewLabel_6, gbc_lblNewLabel_6);
+		
+		lblNewLabel_2 = new JLabel("Angiv mængde i tal");
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_2.gridx = 18;
+		gbc_lblNewLabel_2.gridy = 2;
+		getContentPane().add(lblNewLabel_2, gbc_lblNewLabel_2);
+		GridBagConstraints gbc_textSøgprodukt = new GridBagConstraints();
+		gbc_textSøgprodukt.insets = new Insets(0, 0, 5, 5);
+		gbc_textSøgprodukt.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textSøgprodukt.gridx = 2;
+		gbc_textSøgprodukt.gridy = 4;
+		getContentPane().add(textSøgprodukt, gbc_textSøgprodukt);
+		textSøgprodukt.setColumns(10);
+		
+		JButton addProductBtn = new JButton("Tilføj produkt");
+		addProductBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addStock();
+					addStockTF.setText(""); 
+				} catch (DataAccessException e1) {
+					e1.printStackTrace();
+				} 
+			}
+		});
 		
 		inventoryBox = new JComboBox<Inventory>();
 		// Implements action listener for when a certain value in the JComboBox is selected
@@ -387,84 +467,18 @@ public class InventoryGui extends JDialog {
 				} 
 			}
 		});
-		
-		JLabel lblProduktnavn = new JLabel("Produkt navn:");
-		GridBagConstraints gbc_lblProduktnavn = new GridBagConstraints();
-		gbc_lblProduktnavn.insets = new Insets(0, 0, 5, 5);
-		gbc_lblProduktnavn.anchor = GridBagConstraints.SOUTHWEST;
-		gbc_lblProduktnavn.gridx = 2;
-		gbc_lblProduktnavn.gridy = 2;
-		getContentPane().add(lblProduktnavn, gbc_lblProduktnavn);
 		GridBagConstraints gbc_inventoryBox = new GridBagConstraints();
 		gbc_inventoryBox.gridwidth = 3;
 		gbc_inventoryBox.insets = new Insets(0, 0, 5, 5);
 		gbc_inventoryBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_inventoryBox.gridx = 3;
-		gbc_inventoryBox.gridy = 2;
+		gbc_inventoryBox.gridx = 9;
+		gbc_inventoryBox.gridy = 4;
 		getContentPane().add(inventoryBox, gbc_inventoryBox);
-		
-		textSøgprodukt = new JTextField();
-		textSøgprodukt.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				filterProducts(textSøgprodukt.getText());
-			}
-		});
-		
-		maxCapacityTF = new JTextField();
-		maxCapacityTF.setEditable(false);
-		GridBagConstraints gbc_maxCapacityTF = new GridBagConstraints();
-		gbc_maxCapacityTF.gridwidth = 4;
-		gbc_maxCapacityTF.insets = new Insets(0, 0, 5, 5);
-		gbc_maxCapacityTF.fill = GridBagConstraints.HORIZONTAL;
-		gbc_maxCapacityTF.gridx = 13;
-		gbc_maxCapacityTF.gridy = 2;
-		getContentPane().add(maxCapacityTF, gbc_maxCapacityTF);
-		maxCapacityTF.setColumns(10);
-		
-		lblNewLabel_2 = new JLabel("Angiv mængde i tal");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_2.gridx = 18;
-		gbc_lblNewLabel_2.gridy = 2;
-		getContentPane().add(lblNewLabel_2, gbc_lblNewLabel_2);
-		GridBagConstraints gbc_textSøgprodukt = new GridBagConstraints();
-		gbc_textSøgprodukt.insets = new Insets(0, 0, 5, 5);
-		gbc_textSøgprodukt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textSøgprodukt.gridx = 2;
-		gbc_textSøgprodukt.gridy = 3;
-		getContentPane().add(textSøgprodukt, gbc_textSøgprodukt);
-		textSøgprodukt.setColumns(10);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridheight = 13;
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridwidth = 14;
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane.gridx = 3;
-		gbc_scrollPane.gridy = 3;
-		getContentPane().add(scrollPane, gbc_scrollPane);
-		
-		inventoryProductList.setModel(modelInventoryProduct);
-		scrollPane.setViewportView(inventoryProductList);
-		
-		JButton addProductBtn = new JButton("Tilføj produkt");
-		addProductBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					addStock();
-					addStockTF.setText(""); 
-				} catch (DataAccessException e1) {
-					e1.printStackTrace();
-				} 
-			}
-		});
 		GridBagConstraints gbc_addProductBtn = new GridBagConstraints();
 		gbc_addProductBtn.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addProductBtn.insets = new Insets(0, 0, 5, 5);
 		gbc_addProductBtn.gridx = 17;
-		gbc_addProductBtn.gridy = 3;
+		gbc_addProductBtn.gridy = 4;
 		getContentPane().add(addProductBtn, gbc_addProductBtn);
 		
 		addStockTF = new JTextField();
@@ -472,7 +486,7 @@ public class InventoryGui extends JDialog {
 		gbc_addStockTF.insets = new Insets(0, 0, 5, 0);
 		gbc_addStockTF.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addStockTF.gridx = 18;
-		gbc_addStockTF.gridy = 3;
+		gbc_addStockTF.gridy = 4;
 		getContentPane().add(addStockTF, gbc_addStockTF);
 		addStockTF.setColumns(10);
 		
@@ -481,9 +495,11 @@ public class InventoryGui extends JDialog {
 		gbc_scrollPane_1.gridheight = 5;
 		gbc_scrollPane_1.anchor = GridBagConstraints.BASELINE;
 		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_scrollPane_1.fill = GridBagConstraints.BOTH; 
 		gbc_scrollPane_1.gridx = 2;
-		gbc_scrollPane_1.gridy = 4;
+		gbc_scrollPane_1.gridy = 5;
+		gbc_scrollPane_1.gridwidth = 3; 
+
 		getContentPane().add(scrollPane_1, gbc_scrollPane_1);
 		
 		Category = new JList<>();
@@ -518,11 +534,29 @@ public class InventoryGui extends JDialog {
 				} 
 			}
 		});
+		
+		lblNewLabel_5 = new JLabel("Lagerkapacitet:");
+		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
+		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_5.gridx = 8;
+		gbc_lblNewLabel_5.gridy = 5;
+		getContentPane().add(lblNewLabel_5, gbc_lblNewLabel_5);
+		
+		maxCapacityTF = new JTextField();
+		maxCapacityTF.setEditable(false);
+		GridBagConstraints gbc_maxCapacityTF = new GridBagConstraints();
+		gbc_maxCapacityTF.gridwidth = 4;
+		gbc_maxCapacityTF.insets = new Insets(0, 0, 5, 5);
+		gbc_maxCapacityTF.fill = GridBagConstraints.HORIZONTAL;
+		gbc_maxCapacityTF.gridx = 9;
+		gbc_maxCapacityTF.gridy = 5;
+		getContentPane().add(maxCapacityTF, gbc_maxCapacityTF);
+		maxCapacityTF.setColumns(10);
 		GridBagConstraints gbc_removeProductBtn = new GridBagConstraints();
 		gbc_removeProductBtn.fill = GridBagConstraints.HORIZONTAL;
 		gbc_removeProductBtn.insets = new Insets(0, 0, 5, 5);
 		gbc_removeProductBtn.gridx = 17;
-		gbc_removeProductBtn.gridy = 4;
+		gbc_removeProductBtn.gridy = 5;
 		getContentPane().add(removeProductBtn, gbc_removeProductBtn);
 		
 		removeStockTF = new JTextField();
@@ -530,7 +564,7 @@ public class InventoryGui extends JDialog {
 		gbc_removeStockTF.insets = new Insets(0, 0, 5, 0);
 		gbc_removeStockTF.fill = GridBagConstraints.HORIZONTAL;
 		gbc_removeStockTF.gridx = 18;
-		gbc_removeStockTF.gridy = 4;
+		gbc_removeStockTF.gridy = 5;
 		getContentPane().add(removeStockTF, gbc_removeStockTF);
 		removeStockTF.setColumns(10);
 		
@@ -539,16 +573,16 @@ public class InventoryGui extends JDialog {
 		gbc_btnTilfjNyProdukt.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnTilfjNyProdukt.insets = new Insets(0, 0, 5, 5);
 		gbc_btnTilfjNyProdukt.gridx = 17;
-		gbc_btnTilfjNyProdukt.gridy = 6;
+		gbc_btnTilfjNyProdukt.gridy = 7;
 		getContentPane().add(btnTilfjNyProdukt, gbc_btnTilfjNyProdukt);
 		
-		JLabel lblFra = new JLabel("Flyt fra Lager");
+		JLabel lblFra = new JLabel("Flyt fra: ");
 		lblFra.setFont(new Font("Tahoma", Font.BOLD, 12));
 		GridBagConstraints gbc_lblFra = new GridBagConstraints();
 		gbc_lblFra.anchor = GridBagConstraints.EAST;
 		gbc_lblFra.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFra.gridx = 17;
-		gbc_lblFra.gridy = 7;
+		gbc_lblFra.gridy = 8;
 		getContentPane().add(lblFra, gbc_lblFra);
 
 		comboBoxFraLager = new JComboBox<>();
@@ -556,16 +590,16 @@ public class InventoryGui extends JDialog {
 		gbc_comboBoxFraLager.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBoxFraLager.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBoxFraLager.gridx = 18;
-		gbc_comboBoxFraLager.gridy = 7;
+		gbc_comboBoxFraLager.gridy = 8;
 		getContentPane().add(comboBoxFraLager, gbc_comboBoxFraLager);
 
-		JLabel lblTil = new JLabel("Flyt til Lager");
+		JLabel lblTil = new JLabel("Flyt til:");
 		lblTil.setFont(new Font("Tahoma", Font.BOLD, 12));
 		GridBagConstraints gbc_lblTil = new GridBagConstraints();
 		gbc_lblTil.anchor = GridBagConstraints.EAST;
 		gbc_lblTil.insets = new Insets(0, 0, 5, 5);
 		gbc_lblTil.gridx = 17;
-		gbc_lblTil.gridy = 9;
+		gbc_lblTil.gridy = 10;
 		getContentPane().add(lblTil, gbc_lblTil);
 
 		comboBoxTilLager = new JComboBox<>();
@@ -573,15 +607,33 @@ public class InventoryGui extends JDialog {
 		gbc_comboBoxTilLager.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBoxTilLager.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBoxTilLager.gridx = 18;
-		gbc_comboBoxTilLager.gridy = 9;
+		gbc_comboBoxTilLager.gridy = 10;
 		getContentPane().add(comboBoxTilLager, gbc_comboBoxTilLager);
 		
 		lblNewLabel_3 = new JLabel("Angiv Mængde i Tal");
 		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
 		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_3.gridx = 18;
-		gbc_lblNewLabel_3.gridy = 10;
+		gbc_lblNewLabel_3.gridy = 11;
 		getContentPane().add(lblNewLabel_3, gbc_lblNewLabel_3);
+		
+		lblNewLabel_4 = new JLabel("Antal På Lager: ");
+		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
+		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_4.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_4.gridx = 1;
+		gbc_lblNewLabel_4.gridy = 12;
+		getContentPane().add(lblNewLabel_4, gbc_lblNewLabel_4);
+		
+		ipText = new JTextField();
+		ipText.setEditable(false);
+		GridBagConstraints gbc_ipText = new GridBagConstraints();
+		gbc_ipText.insets = new Insets(0, 0, 5, 5);
+		gbc_ipText.fill = GridBagConstraints.HORIZONTAL;
+		gbc_ipText.gridx = 2;
+		gbc_ipText.gridy = 12;
+		getContentPane().add(ipText, gbc_ipText);
+		ipText.setColumns(10);
 		
 		JLabel lblMængde = new JLabel("Mængde");
 		lblMængde.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -589,7 +641,7 @@ public class InventoryGui extends JDialog {
 		gbc_lblMængde.anchor = GridBagConstraints.EAST;
 		gbc_lblMængde.insets = new Insets(0, 0, 5, 5);
 		gbc_lblMængde.gridx = 17;
-		gbc_lblMængde.gridy = 11;
+		gbc_lblMængde.gridy = 12;
 		getContentPane().add(lblMængde, gbc_lblMængde);
 		
 		flytMængdeTF = new JTextField();
@@ -597,7 +649,7 @@ public class InventoryGui extends JDialog {
 		gbc_flytMængdeTF.insets = new Insets(0, 0, 5, 0);
 		gbc_flytMængdeTF.fill = GridBagConstraints.HORIZONTAL;
 		gbc_flytMængdeTF.gridx = 18;
-		gbc_flytMængdeTF.gridy = 11;
+		gbc_flytMængdeTF.gridy = 12;
 		getContentPane().add(flytMængdeTF, gbc_flytMængdeTF);
 		flytMængdeTF.setColumns(10);
 		
@@ -611,19 +663,13 @@ public class InventoryGui extends JDialog {
 				}
 			}
 		});
-		GridBagConstraints gbc_flytBtn = new GridBagConstraints();
-		gbc_flytBtn.anchor = GridBagConstraints.NORTH;
-		gbc_flytBtn.insets = new Insets(0, 0, 5, 0);
-		gbc_flytBtn.gridx = 18;
-		gbc_flytBtn.gridy = 12;
-		getContentPane().add(flytBtn, gbc_flytBtn);
 		
-		JLabel lblNewLabel_1 = new JLabel("I alt på lager:");
+		JLabel lblNewLabel_1 = new JLabel("Antal På alle Lagre");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_1.gridx = 2;
-		gbc_lblNewLabel_1.gridy = 16;
+		gbc_lblNewLabel_1.gridx = 1;
+		gbc_lblNewLabel_1.gridy = 13;
 		getContentPane().add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		textField = new JTextField();
@@ -631,10 +677,16 @@ public class InventoryGui extends JDialog {
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 3;
-		gbc_textField.gridy = 16;
+		gbc_textField.gridx = 2;
+		gbc_textField.gridy = 13;
 		getContentPane().add(textField, gbc_textField);
 		textField.setColumns(10);
+		GridBagConstraints gbc_flytBtn = new GridBagConstraints();
+		gbc_flytBtn.anchor = GridBagConstraints.NORTH;
+		gbc_flytBtn.insets = new Insets(0, 0, 5, 0);
+		gbc_flytBtn.gridx = 18;
+		gbc_flytBtn.gridy = 13;
+		getContentPane().add(flytBtn, gbc_flytBtn);
 		
 		JButton btnKassesystem = new JButton("Tilbage");
 		btnKassesystem.addActionListener(new ActionListener() {
@@ -645,10 +697,12 @@ public class InventoryGui extends JDialog {
 		
 		GridBagConstraints gbc_btnKassesystem = new GridBagConstraints();
 		gbc_btnKassesystem.anchor = GridBagConstraints.WEST;
-		gbc_btnKassesystem.insets = new Insets(0, 0, 5, 5);
+		gbc_btnKassesystem.insets = new Insets(0, 0, 0, 5);
 		gbc_btnKassesystem.fill = GridBagConstraints.VERTICAL;
-		gbc_btnKassesystem.gridx = 2;
-		gbc_btnKassesystem.gridy = 15;
+		gbc_btnKassesystem.gridx = 0;
+		gbc_btnKassesystem.gridy = 19;
 		getContentPane().add(btnKassesystem, gbc_btnKassesystem);
+		
+		pack(); 
 	}
 }
