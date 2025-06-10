@@ -222,20 +222,14 @@ public class InventoryGui extends JDialog {
 	
 	// method that adds products to an inventory
 	public void addStock() throws DataAccessException {
-	
-	
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
-		
 		if (inventory == null || selectedProduct == null || addStockTF.getText().trim().isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Vælg produkt og lager, og angiv en gyldig mængde", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
 		try {
-			
 			// The quantity of stock the user wants to add is decided here
 			int quantity = Integer.parseInt(addStockTF.getText()); 
-			
 			// to make sure that the max capacity of the inventory is not exceeded
 			int max = inventoryCtr.getTotalInventoryStock(inventory.getInventoryId()); 
 			
@@ -251,11 +245,9 @@ public class InventoryGui extends JDialog {
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(this, "Ugyldig mængde angivet", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		}
+	}
 	
 	
-	
-
 	
 	// Method that transfers stock from one inventory to another. 
 	private void transferStock() throws DataAccessException {
@@ -315,8 +307,6 @@ public class InventoryGui extends JDialog {
 	
 	// method to remove stock from inventory
 	public void removeStock() throws DataAccessException {
-		
-		
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
 		
 		if (inventory == null || selectedProduct == null || removeStockTF.getText().trim().isEmpty()) {
