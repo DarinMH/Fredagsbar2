@@ -60,21 +60,20 @@ public class KasseSystemBes extends JFrame {
 	private LogInd logInd;
 	private JTextField totalField;
 	private JPanel productPanel;
-	private JPanel panelMisc; 
+	private JPanel panelMisc;
 //	private double total = 0.0; 
 
 	private JPanel orderItemsPanel;
-	private InventoryCtr inventoryCtr; 
+	private InventoryCtr inventoryCtr;
 	private Map<String, Integer> cartItems = new HashMap<>();
 	private Map<String, Double> itemPrices = new HashMap<>();
 	private JTextField textFieldOrderNr;
-	private SaleOrderCtr saleOrderCtr; 
+	private SaleOrderCtr saleOrderCtr;
 	private SaleOrder currentOrder;
 	private double total;
 	private JTextField textFieldCustomer;
 	private JTextField textFieldCustomerSearch;
-	private LogInd login; 
- 
+	private LogInd login;
 
 	/*
 	 * Launch the application.
@@ -91,44 +90,43 @@ public class KasseSystemBes extends JFrame {
 			}
 		});
 	}
-	//constructor For the KasseSystem GUI and initializes the controllers so a new saleorder can be made
-	
-	public KasseSystemBes(SaleOrder saleOrder, LogInd login)  {
-			
-	try { //tries to create a connection to database with an instance of inventoryCtr
-		this.login=login;
-		inventoryCtr = new InventoryCtr();
-	} catch (DataAccessException e) { //Catches it if a problem occurs with the connection
-		// TODO Auto-generated catch block
-		e.printStackTrace(); 
-	} 
-	
+	// constructor For the KasseSystem GUI and initializes the controllers so a new
+	// saleorder can be made
+
+	public KasseSystemBes(SaleOrder saleOrder, LogInd login) {
+
+		try { // tries to create a connection to database with an instance of inventoryCtr
+			this.login = login;
+			inventoryCtr = new InventoryCtr();
+		} catch (DataAccessException e) { // Catches it if a problem occurs with the connection
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		try {
 			saleOrderCtr = new SaleOrderCtr();
-			if(currentOrder == null) {
-				this.currentOrder = saleOrderCtr.createSaleOrder(generateRandomNumber(), LocalDate.now(), false, null, null, 0, 0); 
+			if (currentOrder == null) {
+				this.currentOrder = saleOrderCtr.createSaleOrder(generateRandomNumber(), LocalDate.now(), false, null,
+						null, 0, 0);
 			} else {
 //			this.currentOrder=currentOrder; 
-			
+
 			}
 			saleOrderCtr.setCurrentOrder(this.currentOrder);
-			total=currentOrder.getTotalPrice(); 
-			
-			saleOrder = saleOrderCtr.getCurrentSaleOrder(); 
-			 
-			init(); 
+			total = currentOrder.getTotalPrice();
+
+			saleOrder = saleOrderCtr.getCurrentSaleOrder();
+
+			init();
 		} catch (DataAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
-		
-	
-		
-	
+		}
+
 	}
 
-	
-	//Initializes The main GUI layout and all the components on the JFrame for the Kassesystem
+	// Initializes The main GUI layout and all the components on the JFrame for the
+	// Kassesystem
 	private void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Kasse System");
@@ -136,7 +134,7 @@ public class KasseSystemBes extends JFrame {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		setSize(953, 541);
 
-		gridBagLayout.columnWidths = new int[] {25, 10, 25, 120, 200, 25, 140, 140, 10, 25 };
+		gridBagLayout.columnWidths = new int[] { 25, 10, 25, 120, 200, 25, 140, 140, 10, 25 };
 		gridBagLayout.rowHeights = new int[] { 74, 30, 31, 0, 31, 0, 31, 12, 0, 0, 0, 0, 18, 18, 60, 0, 38, 0 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
@@ -189,31 +187,36 @@ public class KasseSystemBes extends JFrame {
 		gbc_productPanel.gridx = 4;
 		gbc_productPanel.gridy = 1;
 		getContentPane().add(productScroll, gbc_productPanel);
-		
+
 		JButton btnNewButton_2 = new JButton("Diverse Produkter");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadMisc(); 
+				loadMisc();
 			}
 		});
-		
+
 		JButton btnNewButton_3 = new JButton("Salgs Rapport");
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_3.gridx = 1;
 		gbc_btnNewButton_3.gridy = 4;
 		getContentPane().add(btnNewButton_3, gbc_btnNewButton_3);
-		
+
 		JButton resButton = new JButton("Opret Reservation");
 		resButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+<<<<<<< HEAD
+					ReservationGui2 res = new ReservationGui2();
+					res.setVisible(true);
+=======
 					ReservationGui2 res = new ReservationGui2(null);
 					res.setVisible(true); 
+>>>>>>> 02872fdd533b7d5cf6d4344a77af45a9d2187e3e
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} 
+				}
 			}
 		});
 		GridBagConstraints gbc_resButton = new GridBagConstraints();
@@ -225,8 +228,8 @@ public class KasseSystemBes extends JFrame {
 		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_2.gridx = 3;
 		gbc_btnNewButton_2.gridy = 14;
-		getContentPane().add(btnNewButton_2, gbc_btnNewButton_2);		
-		
+		getContentPane().add(btnNewButton_2, gbc_btnNewButton_2);
+
 		panelMisc = new JPanel();
 		JScrollPane scrollPaneMisc = new JScrollPane(panelMisc);
 		GridBagConstraints gbc_panelMisc = new GridBagConstraints();
@@ -235,8 +238,7 @@ public class KasseSystemBes extends JFrame {
 		gbc_panelMisc.gridx = 4;
 		gbc_panelMisc.gridy = 14;
 		getContentPane().add(scrollPaneMisc, gbc_panelMisc);
-		
-		
+
 		scrollPaneMisc.setViewportView(panelMisc);
 
 		// Order items panel
@@ -289,7 +291,7 @@ public class KasseSystemBes extends JFrame {
 		JButton btnLager = new JButton("Lager");
 		btnLager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InventoryGui dialog = new InventoryGui(KasseSystemBes.this); 
+				InventoryGui dialog = new InventoryGui(KasseSystemBes.this);
 				dialog.setVisible(true);
 			}
 		});
@@ -302,11 +304,11 @@ public class KasseSystemBes extends JFrame {
 
 		JButton mobilePayBtn = new JButton("MobilePay");
 		mobilePayBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        processPayment("MobilePay");
-		    }
+			public void actionPerformed(ActionEvent e) {
+				processPayment("MobilePay");
+			}
 		});
-		
+
 		JButton btnNewButton = new JButton("Bekræft Ordre");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -315,8 +317,8 @@ public class KasseSystemBes extends JFrame {
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} 
-				
+				}
+
 			}
 		});
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
@@ -324,15 +326,14 @@ public class KasseSystemBes extends JFrame {
 		gbc_btnNewButton.gridx = 8;
 		gbc_btnNewButton.gridy = 7;
 		getContentPane().add(btnNewButton, gbc_btnNewButton);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Ordre Nummer: ");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.gridx = 0;
 		gbc_lblNewLabel_1.gridy = 10;
 		getContentPane().add(lblNewLabel_1, gbc_lblNewLabel_1);
-		
-		
+
 		textFieldOrderNr = new JTextField(String.valueOf(currentOrder.getOrderNumber()));
 		textFieldOrderNr.setEditable(false);
 		GridBagConstraints gbc_textFieldOrderNr = new GridBagConstraints();
@@ -342,7 +343,7 @@ public class KasseSystemBes extends JFrame {
 		gbc_textFieldOrderNr.gridy = 10;
 		getContentPane().add(textFieldOrderNr, gbc_textFieldOrderNr);
 		textFieldOrderNr.setColumns(10);
-		
+
 		JButton customerBtn = new JButton("Søg efter Kunde");
 		customerBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -351,7 +352,7 @@ public class KasseSystemBes extends JFrame {
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} 
+				}
 			}
 		});
 		GridBagConstraints gbc_customerBtn = new GridBagConstraints();
@@ -359,28 +360,28 @@ public class KasseSystemBes extends JFrame {
 		gbc_customerBtn.gridx = 0;
 		gbc_customerBtn.gridy = 12;
 		getContentPane().add(customerBtn, gbc_customerBtn);
-		
+
 		textFieldCustomerSearch = new JTextField();
-		textFieldCustomerSearch.setText("Studie ID: "); 
+		textFieldCustomerSearch.setText("Studie ID: ");
 		textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
 		textFieldCustomerSearch.addFocusListener(new FocusAdapter() {
-		@Override 
-		public void focusGained(FocusEvent e) {
-			if(textFieldCustomerSearch.getText().equals("Studie ID: ")) {
-				textFieldCustomerSearch.setText(""); 
-				textFieldCustomerSearch.setForeground(Color.BLACK); 
+			@Override
+			public void focusGained(FocusEvent e) {
+				if (textFieldCustomerSearch.getText().equals("Studie ID: ")) {
+					textFieldCustomerSearch.setText("");
+					textFieldCustomerSearch.setForeground(Color.BLACK);
+				}
 			}
-		}
-		@Override
-		public void focusLost(FocusEvent e) {
-			if(textFieldCustomerSearch.getText().equals("")) {
-				textFieldCustomerSearch.setText("Studie ID: "); 
-				textFieldCustomerSearch.setForeground(new Color(153, 153, 153)); 
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (textFieldCustomerSearch.getText().equals("")) {
+					textFieldCustomerSearch.setText("Studie ID: ");
+					textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
+				}
 			}
-		}
-			
-			
-		}); 
+
+		});
 		GridBagConstraints gbc_textFieldCustomerSearch = new GridBagConstraints();
 		gbc_textFieldCustomerSearch.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldCustomerSearch.fill = GridBagConstraints.HORIZONTAL;
@@ -388,21 +389,20 @@ public class KasseSystemBes extends JFrame {
 		gbc_textFieldCustomerSearch.gridy = 12;
 		getContentPane().add(textFieldCustomerSearch, gbc_textFieldCustomerSearch);
 		textFieldCustomerSearch.setColumns(10);
-		
+
 		JLabel lblNewLabel_2 = new JLabel("Kunde: ");
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_2.gridx = 0;
 		gbc_lblNewLabel_2.gridy = 13;
 		getContentPane().add(lblNewLabel_2, gbc_lblNewLabel_2);
-		
-		String name = "Standard Kunde"; 
-		if(this.currentOrder.getCustomer() != null) {
-				name = String.valueOf(this.currentOrder.getCustomer()); 
+
+		String name = "Standard Kunde";
+		if (this.currentOrder.getCustomer() != null) {
+			name = String.valueOf(this.currentOrder.getCustomer());
 		}
-		textFieldCustomer = new JTextField(name); 
-		
-		
+		textFieldCustomer = new JTextField(name);
+
 		textFieldCustomer.setEditable(false);
 		GridBagConstraints gbc_textFieldCustomer = new GridBagConstraints();
 		gbc_textFieldCustomer.insets = new Insets(0, 0, 5, 5);
@@ -411,10 +411,6 @@ public class KasseSystemBes extends JFrame {
 		gbc_textFieldCustomer.gridy = 13;
 		getContentPane().add(textFieldCustomer, gbc_textFieldCustomer);
 		textFieldCustomer.setColumns(10);
-		
-
-		
-
 
 		GridBagConstraints gbc_mobilePayBtn = new GridBagConstraints();
 		gbc_mobilePayBtn.fill = GridBagConstraints.HORIZONTAL;
@@ -425,13 +421,12 @@ public class KasseSystemBes extends JFrame {
 
 		JButton cashBtn = new JButton("Kontant");
 		cashBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        processPayment("Kontanter");
-	
-	
-		    }
+			public void actionPerformed(ActionEvent e) {
+				processPayment("Kontanter");
+
+			}
 		});
-		
+
 		GridBagConstraints gbc_cashBtn = new GridBagConstraints();
 		gbc_cashBtn.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cashBtn.insets = new Insets(0, 0, 5, 5);
@@ -441,68 +436,64 @@ public class KasseSystemBes extends JFrame {
 
 		JButton cardPaymentBtn = new JButton("Kortbetaling");
 		cardPaymentBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        processPayment("Kort");
-		    }
+			public void actionPerformed(ActionEvent e) {
+				processPayment("Kort");
+			}
 		});
-				
-				JButton btnNewButton_1 = new JButton("Print Kvittering");
-				btnNewButton_1.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-						SaleOrder saleOrder = saleOrderCtr.getCurrentSaleOrder(); 
-						System.out.println("===================="); 
-			            System.out.println("Kvittering: "); 
-			            System.out.println("Ordre Nummer: " + saleOrder.getOrderNumber());
-			            System.out.println("Dato: " + saleOrder.getDate());   
-			    		List<SaleOrderLine> orderLines = saleOrder.getOrderLines(); 
-			    		for(SaleOrderLine orderLine: orderLines) {
-			    			System.out.println(orderLine.getQuantity() + "x " + orderLine.getProduct() + ": " + orderLine.getPrice() + "kr"); 
-			    		}
-			    		
-			    		System.out.println("Rabat: " + Math.round((1 - saleOrder.getDiscountPercentage()) * 100) + "%"); 		    		
-			    		
-			    		String name = "Standard Kunde"; 
-						if(saleOrder.getCustomer() != null) {
-							name = String.valueOf(saleOrder.getCustomer()); 
-						}
-						
-						System.out.println("Kunde: " +name); 
 
+		JButton btnNewButton_1 = new JButton("Print Kvittering");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
+				SaleOrder saleOrder = saleOrderCtr.getCurrentSaleOrder();
+				System.out.println("====================");
+				System.out.println("Kvittering: ");
+				System.out.println("Ordre Nummer: " + saleOrder.getOrderNumber());
+				System.out.println("Dato: " + saleOrder.getDate());
+				List<SaleOrderLine> orderLines = saleOrder.getOrderLines();
+				for (SaleOrderLine orderLine : orderLines) {
+					System.out.println(orderLine.getQuantity() + "x " + orderLine.getProduct() + ": "
+							+ orderLine.getPrice() + "kr");
+				}
+				System.out.println("Rabat: " + Math.round((1 - saleOrder.getDiscountPercentage()) * 100) + "%");
 
-			            System.out.println("***********************"); 
-			             System.out.println("Pris: " + saleOrder.getTotalPrice()); 
-			             System.out.println("====================");
-					}
-				});
-			
-				
-				GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-				gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-				gbc_btnNewButton_1.gridx = 8;
-				gbc_btnNewButton_1.gridy = 14;
-				getContentPane().add(btnNewButton_1, gbc_btnNewButton_1);
-		
-				JButton btnlogOut = new JButton("Log ud");
-				GridBagConstraints gbc_btnlogOut = new GridBagConstraints();
-				gbc_btnlogOut.fill = GridBagConstraints.HORIZONTAL;
-				gbc_btnlogOut.insets = new Insets(0, 0, 5, 5);
-				gbc_btnlogOut.gridx = 1;
-				gbc_btnlogOut.gridy = 15;
-				getContentPane().add(btnlogOut, gbc_btnlogOut);
-				
-						btnlogOut.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								dispose();
-									LogInd login = new LogInd(); 
-									login.setVisible(true);
-								
-							}
+				String name = "Standard Kunde";
+				if (saleOrder.getCustomer() != null) {
+					name = String.valueOf(saleOrder.getCustomer());
+				}
+				System.out.println("Kunde: " + name);
 
-						});
-		
+				System.out.println("***********************");
+				System.out.println("Pris: " + saleOrder.getTotalPrice());
+				System.out.println("====================");
+			}
+		});
+
+		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
+		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_1.gridx = 8;
+		gbc_btnNewButton_1.gridy = 14;
+		getContentPane().add(btnNewButton_1, gbc_btnNewButton_1);
+
+		JButton btnlogOut = new JButton("Log ud");
+		GridBagConstraints gbc_btnlogOut = new GridBagConstraints();
+		gbc_btnlogOut.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnlogOut.insets = new Insets(0, 0, 5, 5);
+		gbc_btnlogOut.gridx = 1;
+		gbc_btnlogOut.gridy = 15;
+		getContentPane().add(btnlogOut, gbc_btnlogOut);
+
+		btnlogOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				LogInd login = new LogInd();
+				login.setVisible(true);
+
+			}
+
+		});
+
 		GridBagConstraints gbc_cardPaymentBtn = new GridBagConstraints();
 		gbc_cardPaymentBtn.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cardPaymentBtn.gridwidth = 2;
@@ -531,15 +522,15 @@ public class KasseSystemBes extends JFrame {
 		JButton orderButton = new JButton("Opret Ordre");
 		orderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			try {
-				createOrder();
-			} catch (DataAccessException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} 
-			
-	        textFieldCustomerSearch.setText("Studie ID: "); 
-				textFieldCustomerSearch.setForeground(new Color(153, 153, 153)); 
+				try {
+					createOrder();
+				} catch (DataAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				textFieldCustomerSearch.setText("Studie ID: ");
+				textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
 			}
 		});
 		GridBagConstraints gbc_orderButton = new GridBagConstraints();
@@ -555,185 +546,153 @@ public class KasseSystemBes extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		pack(); 
-			}
-			
-		
-	
-	
-	
+
+		pack();
+	}
+
 	private void addCategoryButtons(JPanel panelCategory) throws DataAccessException {
-	    panelCategory.setLayout(new GridLayout(0, 1));
+		panelCategory.setLayout(new GridLayout(0, 1));
 
-	    try {
-	        List<String> categoryDrinks = saleOrderCtr.findDistinctDrinkCategories();
-	        
-	        for (String category: categoryDrinks) {
-	            JButton catButton = new JButton(category);
+		try {
+			List<String> categoryDrinks = saleOrderCtr.findDistinctDrinkCategories();
 
-	            catButton.addActionListener(e -> {
-	                loadDrinksForCategory(category); 
-	            });
-	            
-	            panelCategory.add(catButton);
-	        }
-	        
-	        panelCategory.revalidate();
-	        panelCategory.repaint();
+			for (String category : categoryDrinks) {
+				JButton catButton = new JButton(category);
 
-	    } catch (DataAccessException e) {
-	        panelCategory.revalidate();
-	        throw e;
-	    }
-	}
+				catButton.addActionListener(e -> {
+					loadDrinksForCategory(category);
+				});
 
-	
-	
-	
-	
-	// Loads and displays all miscellaneous products 
-	private void loadMisc() {
-	panelMisc.removeAll();
-	
-	   panelMisc.setLayout(new BoxLayout(panelMisc, BoxLayout.Y_AXIS));
-	
-	try {
-		List<Miscellaneous> miscellaneous = saleOrderCtr.findAllMiscellaneous(); 
-		
-		for(Miscellaneous misc : miscellaneous) {
-			JButton miscButton = new JButton(misc.getProductName() + " - " + misc.getSalePrice() + " kr"); 
-			miscButton.addActionListener(e -> {
-				try {
-					addProductToOrder(misc.getProductName(), misc.getSalePrice()); 
-			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(),
-						"Error", JOptionPane.ERROR_MESSAGE); 
-				ex.printStackTrace(); 
+				panelCategory.add(catButton);
 			}
-			});
-			panelMisc.add(miscButton); 
+
+			panelCategory.revalidate();
+			panelCategory.repaint();
+
+		} catch (DataAccessException e) {
+			panelCategory.revalidate();
+			throw e;
 		}
-	}catch (DataAccessException e) {
-		JOptionPane.showMessageDialog(this,
-	            "Error loading products: " + e.getMessage(),
-	            "Error",
-	            JOptionPane.ERROR_MESSAGE);
-		e.printStackTrace();
 	}
-	
-	panelMisc.revalidate();  
-	panelMisc.repaint(); 
-	
-	
+
+	// Loads and displays all miscellaneous products
+	private void loadMisc() {
+		panelMisc.removeAll();
+
+		panelMisc.setLayout(new BoxLayout(panelMisc, BoxLayout.Y_AXIS));
+
+		try {
+			List<Miscellaneous> miscellaneous = saleOrderCtr.findAllMiscellaneous();
+
+			for (Miscellaneous misc : miscellaneous) {
+				JButton miscButton = new JButton(misc.getProductName() + " - " + misc.getSalePrice() + " kr");
+				miscButton.addActionListener(e -> {
+					try {
+						addProductToOrder(misc.getProductName(), misc.getSalePrice());
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(), "Error",
+								JOptionPane.ERROR_MESSAGE);
+						ex.printStackTrace();
+					}
+				});
+				panelMisc.add(miscButton);
+			}
+		} catch (DataAccessException e) {
+			JOptionPane.showMessageDialog(this, "Error loading products: " + e.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+
+		panelMisc.revalidate();
+		panelMisc.repaint();
+
 	}
 
 	// Loads and displays drink products for a given category in the UI
 	private void loadDrinksForCategory(String category) {
-		
-	    // Clear existing products and set layout for product panel
+
+		// Clear existing products and set layout for product panel
 		productPanel.removeAll();
 		productPanel.setLayout(new GridLayout(0, 1));
 
 		try {
-		      // Retrieve drinks from the selected category
-			List<Drink> drinks = saleOrderCtr.findByCategory(category); 
-			
-			
-		     // Creates a button for each drink with its name and price
-			for(Drink drink : drinks) {
-				JButton productButton = new JButton(drink.getProductName() + " - " + 
-			drink.getSalePrice() + " kr"); 
+			// Retrieve drinks from the selected category
+			List<Drink> drinks = saleOrderCtr.findByCategory(category);
+
+			// Creates a button for each drink with its name and price
+			for (Drink drink : drinks) {
+				JButton productButton = new JButton(drink.getProductName() + " - " + drink.getSalePrice() + " kr");
 				productButton.addActionListener(e -> {
-					try { 
-					addProductToOrder(drink.getProductName(), 	drink.getSalePrice());
-						
+					try {
+						addProductToOrder(drink.getProductName(), drink.getSalePrice());
 					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(),
-								"Error", JOptionPane.ERROR_MESSAGE); 
-						ex.printStackTrace(); 
+						JOptionPane.showMessageDialog(this, "Error adding product:" + ex.getMessage(), "Error",
+								JOptionPane.ERROR_MESSAGE);
+						ex.printStackTrace();
 					}
-				}); 
-					
-				productPanel.add(productButton); 
+				});
+
+				productPanel.add(productButton);
 			}
-			
 
 		} catch (DataAccessException e) {
-			JOptionPane.showMessageDialog(this,
-		            "Error loading drinks: " + e.getMessage(),
-		            "Error",
-		            JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Error loading drinks: " + e.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
 		productPanel.revalidate();
 		productPanel.repaint();
 	}
-	
-	// Adds product to the order. 
+
+	// Adds product to the order.
 	private void addProductToOrder(String productName, double price) throws DataAccessException {
-		
-		Product product = saleOrderCtr.findByProductName(productName); 
-		
-		
-		if(product != null) {
-			   // Increase quantity if product already in cart, otherwise start with 1
-			int quantity = cartItems.getOrDefault(productName, 0) + 1; 
-			
-	        // Get stock levels from bar (inventory ID 1) and total stock
-		    int barStock = inventoryCtr.getInventoryStockForProduct(1, product.getProductId());
-		    int totalStock = inventoryCtr.getTotalStock(product.getProductId());
-		    
-		    
-		    // If the product is not available at the bar inventory, an error message will be shown. 
-		  if(quantity > barStock) {
-			JOptionPane.showMessageDialog(this, "Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret", 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return; 
-		  }
 
-	// If the product is out of stock, this error message will be shown. 
-		    else if(quantity > totalStock) {
+		Product product = saleOrderCtr.findByProductName(productName);
+
+		if (product != null) {
+			// Increase quantity if product already in cart, otherwise start with 1
+			int quantity = cartItems.getOrDefault(productName, 0) + 1;
+
+			// Get stock levels from bar (inventory ID 1) and total stock
+			int barStock = inventoryCtr.getInventoryStockForProduct(1, product.getProductId());
+			int totalStock = inventoryCtr.getTotalStock(product.getProductId());
+
+			// If the product is not available at the bar inventory, an error message will
+			// be shown.
+			if (quantity > barStock) {
+				JOptionPane.showMessageDialog(this,
+						"Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret",
+						"Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			// If the product is out of stock, this error message will be shown.
+			else if (quantity > totalStock) {
 				JOptionPane.showMessageDialog(this, productName + " er udsolgt", "Error", JOptionPane.ERROR_MESSAGE);
-				return; 
-		
-		
+				return;
+			} else {
+				// Add or update product in cart and price map
+
+				cartItems.put(productName, quantity);
+				itemPrices.put(productName, price);
+				// Recalculate total and update order
+				updateTotal();
+
+				// Adds the product to the order by calling the method in the controller.
+				saleOrderCtr.addProductToOrder(product, quantity);
+				// updates the order with the changes
+				SaleOrder saleOrder = saleOrderCtr.getCurrentSaleOrder();
+				saleOrderCtr.updateOrder(saleOrder);
+			}
+
+			updateOrderItemsUI();
+
 		} else {
-			// Add or update product in cart and price map
-
-			cartItems.put(productName, quantity); 
-			itemPrices.put(productName, price); 
-		      // Recalculate total and update order
-			updateTotal();
-			
-			// Adds the product to the order by calling the method in the controller. 
-		saleOrderCtr.addProductToOrder(product, quantity); 
-		// updates the order with the changes 
-		SaleOrder saleOrder = saleOrderCtr.getCurrentSaleOrder(); 
-		saleOrderCtr.updateOrder(saleOrder); 
-			
+			JOptionPane.showMessageDialog(this, "Produkt ikke at finde: " + productName, "Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
-
-		
-		updateOrderItemsUI();
-		
-	 
-		} else {
-			JOptionPane.showMessageDialog(this, "Produkt ikke at finde: " + productName, "Error", JOptionPane.ERROR_MESSAGE); 
-		}
-		
-
-		
 
 	}
-	
-	
-	
-	
-	
-
-	
 
 // Updates the order items based on the products chosen by the user 
 	private void updateOrderItemsUI() {
@@ -742,7 +701,7 @@ public class KasseSystemBes extends JFrame {
 		for (String item : cartItems.keySet()) {
 			int quantity = cartItems.get(item);
 			double price = itemPrices.get(item);
- 
+
 			JPanel itemPanel = new JPanel();
 			itemPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -764,102 +723,93 @@ public class KasseSystemBes extends JFrame {
 		orderItemsPanel.revalidate();
 		orderItemsPanel.repaint();
 	}
-	
-	
+
 	// method to update the quantity of the product chosen.
 	private void updateItemQuantity(String item, int newQuantity) {
 		try {
-			Product product = saleOrderCtr.findByProductName(item); 
-		
-			
-			if(newQuantity <= inventoryCtr.getTotalStock(product.getProductId())) {
-			
-		// The product is removed if the quantity is less than 0
-		if (newQuantity <= 0) {
-			cartItems.remove(item);
-			
-			
-			// 1 is the inventory ID of the inventory used for the bar.
-			// If there are no more instances of the given product, an error message appears. 
-		}else if(inventoryCtr.getInventoryStockForProduct(1, product.getProductId()) < newQuantity) {
-			JOptionPane.showMessageDialog(this, "Der er ikke flere produkter af " + "ved baren. Du bedes venligst hente noget mere fra lageret", 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			return; 
-			
-		} else {
-			cartItems.put(item, newQuantity);
-		}
-		
+			Product product = saleOrderCtr.findByProductName(item);
+
+			if (newQuantity <= inventoryCtr.getTotalStock(product.getProductId())) {
+
+				// The product is removed if the quantity is less than 0
+				if (newQuantity <= 0) {
+					cartItems.remove(item);
+
+					// 1 is the inventory ID of the inventory used for the bar.
+					// If there are no more instances of the given product, an error message
+					// appears.
+				} else if (inventoryCtr.getInventoryStockForProduct(1, product.getProductId()) < newQuantity) {
+					JOptionPane.showMessageDialog(this,
+							"Der er ikke flere produkter af "
+									+ "ved baren. Du bedes venligst hente noget mere fra lageret",
+							"Error", JOptionPane.ERROR_MESSAGE);
+					return;
+
+				} else {
+					cartItems.put(item, newQuantity);
+				}
+
 // Sets the quantity of the order line.
-		
-		for(SaleOrderLine orderLine: currentOrder.getOrderLines()) {
-			
-			if(orderLine.getProduct().getProductId() == product.getProductId()) {
-				orderLine.setQuantity(newQuantity);
-				break;
-				
-				
-			}
-		}
-		
-		updateTotal(); 
-		
-		saleOrderCtr.updateOrder(currentOrder);
-		
 
-	
+				for (SaleOrderLine orderLine : currentOrder.getOrderLines()) {
 
-		updateOrderItemsUI();
-			
-		currentOrder.setTotalPrice(total);
-		
+					if (orderLine.getProduct().getProductId() == product.getProductId()) {
+						orderLine.setQuantity(newQuantity);
+						break;
+
+					}
+				}
+
+				updateTotal();
+
+				saleOrderCtr.updateOrder(currentOrder);
+
+				updateOrderItemsUI();
+
+				currentOrder.setTotalPrice(total);
+
 			} else {
-				JOptionPane.showMessageDialog(this, product.getProductName() + " er udsolgt", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, product.getProductName() + " er udsolgt", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 		} catch (DataAccessException e) {
-	        JOptionPane.showMessageDialog(this,
-	            "Error updating quantity: " + e.getMessage(),
-	            "Error",
-	            JOptionPane.ERROR_MESSAGE);
-	        e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error updating quantity: " + e.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
 	// method that confirms the order
-	
-	private boolean confirmOrder() throws DataAccessException { 
-		
-		
+
+	private boolean confirmOrder() throws DataAccessException {
+
 		// method in the saleOrderCtr class being called
-		saleOrderCtr.confirmOrder(); 
-	
-		
-		if(currentOrder.isStatus() == true) {
-			JOptionPane.showMessageDialog(KasseSystemBes.this, "Ordre er afsluttet succesfuldt!", "Succes", JOptionPane.INFORMATION_MESSAGE); 
-			Product product = null; 
-			int quantity = 0; 
-			Inventory inventory = inventoryCtr.findByInventoryId(1); 
-			
+		saleOrderCtr.confirmOrder();
+
+		if (currentOrder.isStatus() == true) {
+			JOptionPane.showMessageDialog(KasseSystemBes.this, "Ordre er afsluttet succesfuldt!", "Succes",
+					JOptionPane.INFORMATION_MESSAGE);
+			Product product = null;
+			int quantity = 0;
+			Inventory inventory = inventoryCtr.findByInventoryId(1);
+
 			// The method removeStock from the inventory controller is now being called.
 //			the products are being removed from the inventory, when they´re being sold. 
-			for(SaleOrderLine orderLine : currentOrder.getOrderLines()) {
-				product = orderLine.getProduct(); 
+			for (SaleOrderLine orderLine : currentOrder.getOrderLines()) {
+				product = orderLine.getProduct();
 				quantity = orderLine.getQuantity();
-				inventoryCtr.removeStock(inventory, product, quantity); 
+				inventoryCtr.removeStock(inventory, product, quantity);
 			}
-	
-			return true; 
+
+			return true;
 		} else {
-			JOptionPane.showMessageDialog(this, "Ordre er ikke afsluttet", "Fejl", JOptionPane.ERROR_MESSAGE); 
-			return false; 
+			JOptionPane.showMessageDialog(this, "Ordre er ikke afsluttet", "Fejl", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
-		
-		
+
 	}
-	
+
 	// Calculates the total price based on items and their quantities in the cart
 	private void updateTotal() {
 		total = 0.0;
@@ -870,64 +820,72 @@ public class KasseSystemBes extends JFrame {
 		}
 		currentOrder.setTotalPrice(total);
 		System.out.println("[DEBUG] Updated total to: " + total);
-		totalField.setText(String.valueOf(currentOrder.getTotalPrice())); 
+		totalField.setText(String.valueOf(currentOrder.getTotalPrice()));
 
 		totalField.setText(String.format("%.2f kr", total));
 	}
-	
-	
+
 	// Handles payment logic based on selected method
 	private void processPayment(String method) {
-		
 
-	    if (total > 0 && currentOrder.isStatus() == true) {
-	        JOptionPane.showMessageDialog(this, 
-	            "Betaling på " + String.format("%.2f", total) + " kr via " + method + " gennemført.",
-	            "Betaling Gennemført",
-	            JOptionPane.INFORMATION_MESSAGE);
-	        
-	        // Clear cart and reset UI
-	        cartItems.clear();
-	        itemPrices.clear();
-	        orderItemsPanel.removeAll();
-	        orderItemsPanel.revalidate();
-	        orderItemsPanel.repaint();
-	        total = 0.0;
-	        totalField.setText(String.valueOf(currentOrder.getTotalPrice()));
-	    } else if (currentOrder.isStatus() == false) {
-	    	JOptionPane.showMessageDialog(this, "Hov hov makker. Du skal altså lige bekræfte ordren!", 
-	    			"Fejl", JOptionPane.WARNING_MESSAGE); 
-	    }
-	    
-	    else {
-	        JOptionPane.showMessageDialog(this,
-	            "Ingen varer i kurven.",
-	            "Fejl",
-	            JOptionPane.WARNING_MESSAGE);
-	    }
+		if (total > 0 && currentOrder.isStatus() == true) {
+			JOptionPane.showMessageDialog(this,
+					"Betaling på " + String.format("%.2f", total) + " kr via " + method + " gennemført.",
+					"Betaling Gennemført", JOptionPane.INFORMATION_MESSAGE);
+
+			// Clear cart and reset UI
+			cartItems.clear();
+			itemPrices.clear();
+			orderItemsPanel.removeAll();
+			orderItemsPanel.revalidate();
+			orderItemsPanel.repaint();
+			total = 0.0;
+			totalField.setText(String.valueOf(currentOrder.getTotalPrice()));
+		} else if (currentOrder.isStatus() == false) {
+			JOptionPane.showMessageDialog(this, "Hov hov makker. Du skal altså lige bekræfte ordren!", "Fejl",
+					JOptionPane.WARNING_MESSAGE);
+		}
+
+		else {
+			JOptionPane.showMessageDialog(this, "Ingen varer i kurven.", "Fejl", JOptionPane.WARNING_MESSAGE);
+		}
 
 	}
-	
-	// Generates a random order number for the given order. 
+
+	// Generates a random order number for the given order.
 	private int generateRandomNumber() {
-		return 100000 + new java.util.Random().nextInt(900000); 
+		return 100000 + new java.util.Random().nextInt(900000);
 	}
-	
-	
-	// finds the customer to add to the order. 
+
+	// finds the customer to add to the order.
 
 	private void findByStudentId() throws DataAccessException {
+<<<<<<< HEAD
 		
 	int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
+=======
+
+		int studentId = Integer.parseInt(textFieldCustomerSearch.getText());
 //	.setEnabled(false);
+<<<<<<< HEAD
+
+		// Initializies a swingWorker to do background tasks without the GUI freezing or
+		// having long loading times
+		SwingWorker<Customer, Void> worker = new SwingWorker<Customer, Void>() {
+
+			@Override
+			protected Customer doInBackground() throws Exception {
+//			Thread.sleep(10000);
+				return saleOrderCtr.findCustomerByStudentId(studentId);
+=======
+>>>>>>> 04188925adff30fa16699808e4cf340151d8154b
 	
 	//Initializies a swingWorker to do background tasks without the GUI freezing or having long loading times
 	SwingWorker<Customer, Void>  worker = new SwingWorker<Customer, Void>() {
 		
-		
 		@Override
 		protected Customer doInBackground() throws Exception {
-			Thread.sleep(10000);
+//		Thread.sleep(10000);
 			return saleOrderCtr.findCustomerByStudentId(studentId); 
 		}
 		@Override
@@ -943,93 +901,91 @@ public class KasseSystemBes extends JFrame {
 							textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
 			return; 
 			
+>>>>>>> 02872fdd533b7d5cf6d4344a77af45a9d2187e3e
 			}
-			
-			try {
-				saleOrderCtr.addCustomerToOrder(customer);
-				textFieldCustomer.setText(String.valueOf(customer));
-				JOptionPane.showMessageDialog(null, String.valueOf(customer) + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
+
+			@Override
+			protected void done() {
+				try {
+
+					Customer customer = get(); // Retrieve the result of the background task
+
+					if (customer == null) {
+						JOptionPane.showMessageDialog(null, "Kunde ikke registreret i systemet", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						textFieldCustomerSearch.setText("Studie ID: ");
+						textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
+						return;
+
+					}
+
+					try {
+						saleOrderCtr.addCustomerToOrder(customer);
+						textFieldCustomer.setText(String.valueOf(customer));
+						JOptionPane.showMessageDialog(null, String.valueOf(customer) + " er hermed tilføjet til ordre",
+								"Succes", JOptionPane.INFORMATION_MESSAGE);
 //				textFieldCustomer.setText(String.valueOf(customer.getFirstName() + " " + customer.getLastName()));
 //				JOptionPane.showMessageDialog(null, customer.getFirstName() + " " + customer.getLastName() + " er hermed tilføjet til ordre", "Succes", JOptionPane.INFORMATION_MESSAGE);
-			} catch (DataAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-	
-			
-			
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			
-		} catch (ExecutionException e) {          
-            e.printStackTrace();
-        }
+					} catch (DataAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
 			}
-		
-	 
-	 	
-	 
-	};
 
-	
-	
+		};
 
-	// Start the background task
-	
-	worker.execute(); 
-	
+		// Start the background task
 
-	
+		worker.execute();
+
 	}
-	
-	
-	
-private void createOrder() throws DataAccessException {
+
+	private void createOrder() throws DataAccessException {
 
 		try {
 			try {
-				
+
 				textFieldCustomer.setText("Standard Kunde");
-				
-				textFieldOrderNr.setText(String.valueOf(generateRandomNumber())); 
-			int orderNumber =	Integer.parseInt(textFieldOrderNr.getText()); 
-			
-			
-			 // Create a new sale order, where the the date attribute is being set to the current time. 
+
+				textFieldOrderNr.setText(String.valueOf(generateRandomNumber()));
+				int orderNumber = Integer.parseInt(textFieldOrderNr.getText());
+
+				// Create a new sale order, where the the date attribute is being set to the
+				// current time.
 				currentOrder = saleOrderCtr.createSaleOrder(orderNumber, LocalDate.now(), false, null, null, 0, 0);
-		
-				
+
 			} catch (DataAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			JOptionPane.showMessageDialog(KasseSystemBes.this, "Ordre er oprettet ", "Succes", JOptionPane.INFORMATION_MESSAGE); 
-			
-			
+			JOptionPane.showMessageDialog(KasseSystemBes.this, "Ordre er oprettet ", "Succes",
+					JOptionPane.INFORMATION_MESSAGE);
+
 			// Reset and update UI elements for the new order
-				textFieldOrderNr.setText(""); 
-				textFieldOrderNr.setText(String.valueOf(currentOrder.getOrderNumber())); 
-				cartItems.clear();
-				itemPrices.clear();
-		        orderItemsPanel.removeAll();
-		        orderItemsPanel.revalidate();
-		        orderItemsPanel.repaint();
-		        total = 0.0;
-		        totalField.setText("0 kr");
-				
+			textFieldOrderNr.setText("");
+			textFieldOrderNr.setText(String.valueOf(currentOrder.getOrderNumber()));
+			cartItems.clear();
+			itemPrices.clear();
+			orderItemsPanel.removeAll();
+			orderItemsPanel.revalidate();
+			orderItemsPanel.repaint();
+			total = 0.0;
+			totalField.setText("0 kr");
 
-		} catch(IllegalArgumentException e) {
-			e.printStackTrace(); 
-			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Order kunne ikke oprettes", JOptionPane.ERROR_MESSAGE);
-			
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Order kunne ikke oprettes",
+					JOptionPane.ERROR_MESSAGE);
+
 		}
-	
 
-	
-	
+	}
 
-
-				}
-	
 }

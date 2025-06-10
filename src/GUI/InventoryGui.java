@@ -76,6 +76,7 @@ public class InventoryGui extends JDialog {
 	private JLabel lblNewLabel_4;
 	private JLabel lblNewLabel_5;
 	private JLabel lblNewLabel_6;
+	private JLabel lblNewLabel_7;
 
 	/**
 	 * Launch the application.
@@ -228,20 +229,14 @@ public class InventoryGui extends JDialog {
 	
 	// method that adds products to an inventory
 	public void addStock() throws DataAccessException {
-	
-	
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
-		
 		if (inventory == null || selectedProduct == null || addStockTF.getText().trim().isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Vælg produkt og lager, og angiv en gyldig mængde", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
 		try {
-			
 			// The quantity of stock the user wants to add is decided here
 			int quantity = Integer.parseInt(addStockTF.getText()); 
-			
 			// to make sure that the max capacity of the inventory is not exceeded
 			int max = inventoryCtr.getTotalInventoryStock(inventory.getInventoryId()); 
 			
@@ -257,11 +252,9 @@ public class InventoryGui extends JDialog {
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(this, "Ugyldig mængde angivet", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		}
+	}
 	
 	
-	
-
 	
 	// Method that transfers stock from one inventory to another. 
 	private void transferStock() throws DataAccessException {
@@ -321,8 +314,6 @@ public class InventoryGui extends JDialog {
 	
 	// method to remove stock from inventory
 	public void removeStock() throws DataAccessException {
-		
-		
 		Inventory inventory = (Inventory) inventoryBox.getSelectedItem(); 
 		
 		if (inventory == null || selectedProduct == null || removeStockTF.getText().trim().isEmpty()) {
@@ -545,7 +536,7 @@ public class InventoryGui extends JDialog {
 			}
 		});
 		
-		lblNewLabel_5 = new JLabel("Lagerkapacitet:");
+		lblNewLabel_5 = new JLabel("Lagerkapacitet for valgte lager:");
 		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
 		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_5.gridx = 8;
@@ -620,6 +611,13 @@ public class InventoryGui extends JDialog {
 		gbc_comboBoxTilLager.gridy = 10;
 		getContentPane().add(comboBoxTilLager, gbc_comboBoxTilLager);
 		
+		lblNewLabel_7 = new JLabel("Produktets Lager Status: ");
+		GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
+		gbc_lblNewLabel_7.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_7.gridx = 2;
+		gbc_lblNewLabel_7.gridy = 11;
+		getContentPane().add(lblNewLabel_7, gbc_lblNewLabel_7);
+		
 		lblNewLabel_3 = new JLabel("Angiv Mængde i Tal");
 		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
 		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 0);
@@ -627,7 +625,7 @@ public class InventoryGui extends JDialog {
 		gbc_lblNewLabel_3.gridy = 11;
 		getContentPane().add(lblNewLabel_3, gbc_lblNewLabel_3);
 		
-		lblNewLabel_4 = new JLabel("Antal På Lager: ");
+		lblNewLabel_4 = new JLabel("Antal på pågældende lager");
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
 		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_4.anchor = GridBagConstraints.EAST;
@@ -674,7 +672,7 @@ public class InventoryGui extends JDialog {
 			}
 		});
 		
-		JLabel lblNewLabel_1 = new JLabel("Antal På alle Lagre");
+		JLabel lblNewLabel_1 = new JLabel("Antal på tværs af alle lagere");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
