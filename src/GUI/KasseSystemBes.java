@@ -206,13 +206,12 @@ public class KasseSystemBes extends JFrame {
 		resButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-<<<<<<< HEAD
-					ReservationGui2 res = new ReservationGui2();
-					res.setVisible(true);
-=======
+
+		
+
 					ReservationGui2 res = new ReservationGui2(null);
 					res.setVisible(true); 
->>>>>>> 02872fdd533b7d5cf6d4344a77af45a9d2187e3e
+
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -860,25 +859,15 @@ public class KasseSystemBes extends JFrame {
 	// finds the customer to add to the order.
 
 	private void findByStudentId() throws DataAccessException {
-<<<<<<< HEAD
+
 		
 	int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
-=======
 
-		int studentId = Integer.parseInt(textFieldCustomerSearch.getText());
-//	.setEnabled(false);
-<<<<<<< HEAD
 
-		// Initializies a swingWorker to do background tasks without the GUI freezing or
-		// having long loading times
-		SwingWorker<Customer, Void> worker = new SwingWorker<Customer, Void>() {
 
-			@Override
-			protected Customer doInBackground() throws Exception {
-//			Thread.sleep(10000);
-				return saleOrderCtr.findCustomerByStudentId(studentId);
-=======
->>>>>>> 04188925adff30fa16699808e4cf340151d8154b
+
+
+
 	
 	//Initializies a swingWorker to do background tasks without the GUI freezing or having long loading times
 	SwingWorker<Customer, Void>  worker = new SwingWorker<Customer, Void>() {
@@ -888,21 +877,7 @@ public class KasseSystemBes extends JFrame {
 //		Thread.sleep(10000);
 			return saleOrderCtr.findCustomerByStudentId(studentId); 
 		}
-		@Override
-		protected void done() {
-			try {
-		
-			Customer customer = get(); // Retrieve the result of the background task
-			
-			
-			if(customer == null) {
-				JOptionPane.showMessageDialog(null, "Kunde ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
-			       textFieldCustomerSearch.setText("Studie ID: "); 
-							textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
-			return; 
-			
->>>>>>> 02872fdd533b7d5cf6d4344a77af45a9d2187e3e
-			}
+
 
 			@Override
 			protected void done() {
