@@ -927,7 +927,7 @@ public class KasseSystemBes extends JFrame {
 		
 		@Override
 		protected Customer doInBackground() throws Exception {
-//			Thread.sleep(10000);
+			Thread.sleep(10000);
 			return saleOrderCtr.findCustomerByStudentId(studentId); 
 		}
 		@Override

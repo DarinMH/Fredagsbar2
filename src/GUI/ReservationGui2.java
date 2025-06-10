@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 import DB.DataAccessException;
 import controller.ReservationCtr;
+import controller.SaleOrderCtr;
 import model.BorrowableProduct;
 import model.Customer;
 import model.Reservation;
@@ -60,6 +61,7 @@ public class ReservationGui2 extends JFrame {
 	private JScrollPane scrollPane;
 	private JLabel lblNewLabel_3;
 	private JButton btnNewButton_2;
+	private Reservation res; 
 
 	/**
 	 * Launch the application.
@@ -68,7 +70,7 @@ public class ReservationGui2 extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ReservationGui2 frame = new ReservationGui2();
+					ReservationGui2 frame = new ReservationGui2(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -81,13 +83,11 @@ public class ReservationGui2 extends JFrame {
 	 * Create the frame.
 	 * @throws DataAccessException 
 	 */
-	public ReservationGui2() throws DataAccessException {
+	public ReservationGui2(Reservation res) throws DataAccessException {
 		
 		
 		this.reservationCtr= new ReservationCtr(); 
-		
-		
-//    currentReservation = this.reservationCtr.getCurrentReservation();  
+
 		
 		productsModelList = new DefaultListModel<>(); 
 		reservationModelList = new DefaultListModel<>(); 
@@ -95,32 +95,25 @@ public class ReservationGui2 extends JFrame {
 		
 		init();
 		
+	
+		
 		list.setModel(productsModelList); 
 		list.setCellRenderer(new BorrowableProductsListCellRenderer()); 
 		
 		reservationList.setModel(reservationModelList); 
 		reservationList.setCellRenderer(new ReservationListCellRenderer()); 
 		
-		scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 7;
-		gbc_scrollPane.gridy = 11;
-		contentPane.add(scrollPane, gbc_scrollPane);
+		
+		reservationCtr = new ReservationCtr();
+		if(res == null) {
+			this.res = reservationCtr.createReservation(generateRandomNumber(), LocalDate.now(), 0, null, false, null); 
+		    reservationTextField.setText(String.valueOf(this.res.getReservationId()));
+
+		} else {
+			this.res = res; 
+		}
 		
 
-		
-
-		
-	
-		
-	
-		
-
-		
-//		productsModelList = new DefaultListModel<>(); 
-//		productsList = new JList<BorrowableProduct>(); 
-//		this.productsList.setCellRenderer(new BorrowableProductsListCellRenderer());
 		
 		fillProductList(); 
 		fillReservationList(); 
@@ -155,21 +148,41 @@ public class ReservationGui2 extends JFrame {
 	}
 	
 	
+	private boolean confirmReservation() throws DataAccessException {
+		
+		try {
+		
+			if(res.getCustomer() != null && res.getBorrowableProduct() != null) {
+		reservationCtr.confirmReservation(); 
+		return true; 
+			}
+			
+	
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+	        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+		
+		}
+		return false; 
+		
+		
+	}
+	
+	
 	private void createReservation() throws DataAccessException {
 
-		try {
-			try {
 
+			try {
 				
+				textFieldCustomerSearch.setText("");
 				customerTextField.setText("");
 				productTF.setText("");
+
 				
 				reservationTextField.setText(String.valueOf(generateRandomNumber())); 
 			int reservationNumber =	Integer.parseInt(reservationTextField.getText()); 
-			
-//			Customer customer = addCustomer(); 
-			
-			 // Create a new sale order, where the the date attribute is being set to the current time. 
+
 			reservationCtr.createReservation(reservationNumber, LocalDate.now(), 0, null, false, null);
 			
 			
@@ -177,24 +190,21 @@ public class ReservationGui2 extends JFrame {
 		    fillReservationList();
 			   productsModelList.clear(); 
 			    fillProductList(); 
+			    
+			    
+				JOptionPane.showMessageDialog(ReservationGui2.this, "Reservation er oprettet ", "Succes", JOptionPane.INFORMATION_MESSAGE); 
 
 		
 				
-			} catch (DataAccessException e) {
+			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+		        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	
+			
 			}
-			JOptionPane.showMessageDialog(ReservationGui2.this, "Reservation er oprettet ", "Succes", JOptionPane.INFORMATION_MESSAGE); 
-			
-			
-			// Reset and update UI elements for the new order
-				
+		
+	
 
-		} catch(IllegalArgumentException e) {
-			e.printStackTrace(); 
-			JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Order kunne ikke oprettes", JOptionPane.ERROR_MESSAGE);
-			
-		}
 	}
 	
 	
@@ -208,29 +218,33 @@ public class ReservationGui2 extends JFrame {
 		
 		
 		
-		
+	
 		int studentId =	Integer.parseInt(textFieldCustomerSearch.getText());  
 		
 			Customer customer = reservationCtr.addCustomerToReservation(studentId);  
 			
-			
-			
+			if(customer != null) {
 			
 			customerTextField.setText(String.valueOf(customer)); 
-			
-//			textFieldCustomerSearch.setText("");  
 			
 		   
 		    int orderNumber = Integer.parseInt(reservationTextField.getText()); 
 		    
 		    Reservation reservation = reservationCtr.findByReservationId(orderNumber); 
-
-			
-			System.out.println(reservation.getCustomer() + " er kunden tilføjet til reservation med reservation nummer: " + 
-			reservation.getReservationId()); 
-		
+		    
+			JOptionPane.showMessageDialog(this, customer + " er hermed tilføjet til reservation!", "Success", JOptionPane.INFORMATION_MESSAGE);
 			
 			return customer; 
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Kunde ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+			
+			
+	
+			return null; 
+			
+		
 		
 		}
 	
@@ -243,7 +257,13 @@ public class ReservationGui2 extends JFrame {
 		try {
 	BorrowableProduct product = list.getSelectedValue(); 
 	
+	if(product != null) {
+		
+
+	
 	int productId = product.getProductId(); 
+	
+	
 		
 			reservationCtr.addProductToReservation(productId); 
 			
@@ -253,14 +273,22 @@ public class ReservationGui2 extends JFrame {
  int orderNumber = Integer.parseInt(reservationTextField.getText()); 
 		    
 		    Reservation reservation = reservationCtr.findByReservationId(orderNumber); 
-
-			
-			System.out.println(reservation.getBorrowableProduct() + " er produktet tilføjet til reservation med reservation nummer: " + 
-			reservation.getReservationId()); 
-		
+		    
+			JOptionPane.showMessageDialog(this, product + " er hermed tilføjet til reservation!", "Success", JOptionPane.INFORMATION_MESSAGE);
 			
 			
 			return product; 
+		    
+		    
+	} else {
+		JOptionPane.showMessageDialog(null, "produkt ikke registreret i systemet", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+			
+	return null; 
+
+		
+			
+		
 			
 	 } catch (IllegalArgumentException e) {
 	        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -268,12 +296,7 @@ public class ReservationGui2 extends JFrame {
 	 }
 		
 		}
-	
-	
 
-	
-		
-	
 	
 	private void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -289,7 +312,7 @@ public class ReservationGui2 extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		reservationBtn = new JButton("Opret Reservation");
+		reservationBtn = new JButton("Opret Ny Reservation");
 		reservationBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -355,7 +378,7 @@ public class ReservationGui2 extends JFrame {
 			}
 		});
 		
-		searchCustomer = new JButton("Søg Efter Kunde");
+		searchCustomer = new JButton("Tilføj Kunde til Reservation");
 		searchCustomer.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -374,12 +397,12 @@ public class ReservationGui2 extends JFrame {
 		contentPane.add(searchCustomer, gbc_searchCustomer);
 		
 		textFieldCustomerSearch = new JTextField();
-		textFieldCustomerSearch.setText("Studie ID: "); 
+		textFieldCustomerSearch.setText("Indtast Studie ID På Kunde: "); 
 		textFieldCustomerSearch.setForeground(new Color(153, 153, 153));
 		textFieldCustomerSearch.addFocusListener(new FocusAdapter() {
 		@Override 
 		public void focusGained(FocusEvent e) {
-			if(textFieldCustomerSearch.getText().equals("Studie ID: ")) {
+			if(textFieldCustomerSearch.getText().equals("Indtast Studie ID På Kunde: ")) {
 				textFieldCustomerSearch.setText(""); 
 				textFieldCustomerSearch.setForeground(Color.BLACK); 
 			}
@@ -387,7 +410,7 @@ public class ReservationGui2 extends JFrame {
 		@Override
 		public void focusLost(FocusEvent e) {
 			if(textFieldCustomerSearch.getText().equals("")) {
-				textFieldCustomerSearch.setText("Studie ID: "); 
+				textFieldCustomerSearch.setText("Indtast Studie ID På Kunde: "); 
 				textFieldCustomerSearch.setForeground(new Color(153, 153, 153)); 
 			}
 		}
@@ -453,10 +476,6 @@ public class ReservationGui2 extends JFrame {
 		gbc_lblNewLabel.gridx = 1;
 		gbc_lblNewLabel.gridy = 8;
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
-		
-		
-		
-		
 
 		customerTextField = new JTextField(); 
 		customerTextField.setEditable(false);
@@ -490,8 +509,18 @@ public class ReservationGui2 extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					reservationCtr.confirmReservation();
-					createReservation(); 
+					
+					
+					boolean reservation = confirmReservation();
+					if(reservation) {
+					createReservation(); 				
+				
+			        textFieldCustomerSearch.setText("Indtast Studie ID På Kunde: "); 
+					textFieldCustomerSearch.setForeground(new Color(153, 153, 153)); 
+					
+					}
+	
+					
 					
 					
 				
@@ -521,6 +550,13 @@ public class ReservationGui2 extends JFrame {
 		
 		list = new JList<>();
 		scrollPane_2.setViewportView(list);
+		
+		scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 7;
+		gbc_scrollPane.gridy = 11;
+		contentPane.add(scrollPane, gbc_scrollPane);
 		
 		pack(); 
 	}
