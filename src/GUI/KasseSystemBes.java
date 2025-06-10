@@ -208,7 +208,7 @@ public class KasseSystemBes extends JFrame {
 		resButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					ReservationGui2 res = new ReservationGui2();
+					ReservationGui2 res = new ReservationGui2(null);
 					res.setVisible(true); 
 				} catch (DataAccessException e1) {
 					// TODO Auto-generated catch block
